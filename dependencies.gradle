@@ -1,26 +1,12 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnly("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-70-GTNH:api") {
-        transitive = false
-    }
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.40.19:dev") {
-        transitive = false
-    }
-    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.2.3-GTNH:dev") {
-        transitive = false
-    }
-    compileOnly("com.github.GTNewHorizons:waila:1.5.18:dev") {
-        transitive = false
-    }
+    compileOnly('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-76-GTNH:api')
+    compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.40.33:dev') {transitive=false}
+    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.2.6-GTNH:dev') {transitive=false}
+    compileOnly('com.github.GTNewHorizons:waila:1.5.18:dev') {transitive=false}
 
-    compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev") {
-        transitive = false
-    }
-    compileOnly("curse.maven:refined-relocation-75811:2262970") {
-        transitive = false
-    }
-    compileOnly("curse.maven:minetweaker3-224029:2255759") {
-        transitive = false
-    }
+    compileOnly('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
+    compileOnly('curse.maven:refined-relocation-75811:2262970')
+    compileOnly('curse.maven:minetweaker3-224029:2255759')
 }
