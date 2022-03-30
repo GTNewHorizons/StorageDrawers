@@ -89,6 +89,7 @@ public class DefaultStorageProvider implements IStorageProvider
 
         StorageDrawers.network.sendToAllAround(message, targetPoint);
 
+        tile.getWorldObj().markTileEntityChunkModified(tile.xCoord, tile.yCoord, tile.zCoord, tile);
         if (isRedstone(slot)) {
             tile.getWorldObj().notifyBlocksOfNeighborChange(tile.xCoord, tile.yCoord, tile.zCoord, tile.getBlockType());
             tile.getWorldObj().notifyBlocksOfNeighborChange(tile.xCoord, tile.yCoord - 1, tile.zCoord, tile.getBlockType());
@@ -101,5 +102,6 @@ public class DefaultStorageProvider implements IStorageProvider
             return;
 
         tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+        tile.getWorldObj().markTileEntityChunkModified(tile.xCoord, tile.yCoord, tile.zCoord, tile);
     }
 }
