@@ -23,6 +23,7 @@ import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import fox.spiteful.avaritia.items.ItemMatterCluster;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -577,12 +578,26 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                     if (!tile.isDrawerEnabled(i)) continue;
 
                     IDrawer drawer = tile.getDrawer(i);
-                    if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
-                    while (drawer.getStoredItemCount() > 0) {
-                        ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
-                        if (stack == null || stack.stackSize == 0) break;
+                    if (drawer.getStoredItemCount() > maxDropNum) {
+                        List<ItemStack> stacks = new ArrayList<>();
+                        while (drawer.getStoredItemCount() > 0) {
+                            ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
+                            if (stack == null || stack.stackSize == 0) break;
 
-                        dropStackInBatches(world, x, y, z, stack);
+                            stacks.add(stack);
+                        }
+
+                        List<ItemStack> clusters = ItemMatterCluster.makeClusters(stacks);
+                        for (ItemStack stack : clusters) {
+                            dropStackInBatches(world, x, y, z, stack);
+                        }
+                    } else {
+                        while (drawer.getStoredItemCount() > 0) {
+                            ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
+                            if (stack == null || stack.stackSize == 0) break;
+
+                            dropStackInBatches(world, x, y, z, stack);
+                        }
                     }
                 }
             }
