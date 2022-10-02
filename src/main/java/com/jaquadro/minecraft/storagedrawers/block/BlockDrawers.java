@@ -572,10 +572,12 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             }
 
             if (!tile.isVending()) {
+                int maxDropNum = 2048 / tile.getDrawerCount();
                 for (int i = 0; i < tile.getDrawerCount(); i++) {
                     if (!tile.isDrawerEnabled(i)) continue;
 
                     IDrawer drawer = tile.getDrawer(i);
+                    if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
                     while (drawer.getStoredItemCount() > 0) {
                         ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
                         if (stack == null || stack.stackSize == 0) break;
@@ -630,7 +632,6 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         if (willHarvest) return true;
-
         return super.removedByPlayer(world, player, x, y, z, willHarvest);
     }
 
