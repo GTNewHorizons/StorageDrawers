@@ -62,6 +62,7 @@ public class ConfigManager {
         public boolean renderStorageUpgrades;
         public boolean enableDrawerUI;
         public String itemRenderType;
+        public String breakDrawerDropMode;
         public boolean creativeTabVanillaWoods;
         public boolean enableSidedInput;
         public boolean enableSidedOutput;
@@ -334,6 +335,14 @@ public class ConfigManager {
                         "Writes additional log messages while using the mod.  Mainly for debug purposes.  Should be kept disabled unless instructed otherwise.")
                 .setLanguageKey(LANG_PREFIX + "prop.enableDebugLogging")
                 .getBoolean();
+        cache.breakDrawerDropMode = config.get(
+                        Configuration.CATEGORY_GENERAL,
+                        "breakDrawerDropMode",
+                        "merge",
+                        "Select: default, merge, destroy and cluster. ",
+                        new String[] {"default", "destroy", "merge", "cluster"})
+                .setLanguageKey(LANG_PREFIX + "prop.breakDrawerDropMode")
+                .getString();
 
         cache.enableAE2Integration = config.get(sectionIntegration.getQualifiedName(), "enableAE2", true)
                 .setLanguageKey(LANG_PREFIX + "integration.enableAE2")

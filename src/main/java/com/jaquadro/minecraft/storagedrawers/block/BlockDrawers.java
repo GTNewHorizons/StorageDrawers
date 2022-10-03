@@ -23,10 +23,11 @@ import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import fox.spiteful.avaritia.items.ItemMatterCluster;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -559,6 +560,23 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         return super.removedByPlayer(world, player, x, y, z);
     }
 
+    private void dropBigStackInWord(World world, int x, int y, int z, ItemStack stack) {
+        if (stack == null) return;
+        Random rand = world.rand;
+
+        float ex = rand.nextFloat() * .8f + .1f;
+        float ey = rand.nextFloat() * .8f + .1f;
+        float ez = rand.nextFloat() * .8f + .1f;
+
+        if (stack.stackSize > 0) {
+            EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
+            if (stack.hasTagCompound())
+                entity.getEntityItem()
+                        .setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+            world.spawnEntityInWorld(entity);
+        }
+    }
+
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntityDrawers tile = getTileEntity(world, x, y, z);
@@ -573,32 +591,81 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             }
 
             if (!tile.isVending()) {
-                int maxDropNum = 2048 / tile.getDrawerCount();
-                for (int i = 0; i < tile.getDrawerCount(); i++) {
-                    if (!tile.isDrawerEnabled(i)) continue;
-
-                    IDrawer drawer = tile.getDrawer(i);
-                    if (drawer.getStoredItemCount() > maxDropNum) {
-                        List<ItemStack> stacks = new ArrayList<>();
-                        while (drawer.getStoredItemCount() > 0) {
-                            ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
-                            if (stack == null || stack.stackSize == 0) break;
-
-                            stacks.add(stack);
+                switch (StorageDrawers.config.cache.breakDrawerDropMode) {
+                    case "merge":
+                        /* Only a minimum number of ItemStack are dropped */
+                        for (int i = 0; i < tile.getDrawerCount(); i++) {
+                            if (!tile.isDrawerEnabled(i)) continue;
+                            dropBigStackInWord(world, x, y, z, tile.getDrawer(i).getStoredItemCopy());
                         }
+                        break;
+                    case "destroy":
+                        /* Destroy excess items */
+                        int maxDropNum = 2048 / tile.getDrawerCount();
+                        for (int i = 0; i < tile.getDrawerCount(); i++) {
+                            if (!tile.isDrawerEnabled(i)) continue;
+                            IDrawer drawer = tile.getDrawer(i);
+                            if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
+                            while (drawer.getStoredItemCount() > 0) {
+                                ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
+                                if (stack == null || stack.stackSize == 0) break;
 
-                        List<ItemStack> clusters = ItemMatterCluster.makeClusters(stacks);
-                        for (ItemStack stack : clusters) {
-                            dropStackInBatches(world, x, y, z, stack);
+                                dropStackInBatches(world, x, y, z, stack);
+                            }
                         }
-                    } else {
-                        while (drawer.getStoredItemCount() > 0) {
-                            ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
-                            if (stack == null || stack.stackSize == 0) break;
+                        break;
+                    case "cluster":
+                        /* System.out.println("hello"); */
+                        if (cpw.mods.fml.common.Loader.isModLoaded("Avaritia")) {
+                            try {
+                                Class<?> itemMatterClusterClass =
+                                        Class.forName("fox.spiteful.avaritia.items.ItemMatterCluster");
+                                Method method = itemMatterClusterClass.getMethod("makeClusters", List.class);
+                                /* May not be used */
+                                for (int i = 0; i < tile.getDrawerCount(); i++) {
+                                    IDrawer drawer = tile.getDrawer(i);
+                                    List<ItemStack> stacks = new ArrayList<>();
+                                    while (drawer.getStoredItemCount() > 0) {
+                                        ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
+                                        if (stack == null || stack.stackSize == 0) break;
 
-                            dropStackInBatches(world, x, y, z, stack);
+                                        stacks.add(stack);
+                                    }
+
+                                    List<ItemStack> clusters =
+                                            (List<ItemStack>) method.invoke(itemMatterClusterClass, stacks);
+                                    for (ItemStack stack : clusters) {
+                                        dropStackInBatches(world, x, y, z, stack);
+                                    }
+                                }
+                                break; /* switch */
+                            } catch (NoSuchMethodException
+                                    | InvocationTargetException
+                                    | IllegalAccessException
+                                    | ClassNotFoundException e) {
+                                StorageDrawers.config.cache.breakDrawerDropMode = "default";
+                                FMLLog.log(
+                                        StorageDrawers.MOD_ID,
+                                        Level.INFO,
+                                        "Avaritia does not exist or cannot build a cluster!");
+                                if (StorageDrawers.config.cache.debugTrace)
+                                    FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, e.getMessage());
+                                // :P
+                            }
                         }
-                    }
+                    case "default":
+                    default:
+                        for (int i = 0; i < tile.getDrawerCount(); i++) {
+                            if (!tile.isDrawerEnabled(i)) continue;
+
+                            IDrawer drawer = tile.getDrawer(i);
+                            while (drawer.getStoredItemCount() > 0) {
+                                ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
+                                if (stack == null || stack.stackSize == 0) break;
+
+                                dropStackInBatches(world, x, y, z, stack);
+                            }
+                        }
                 }
             }
 
