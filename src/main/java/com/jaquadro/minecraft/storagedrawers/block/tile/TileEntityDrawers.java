@@ -860,8 +860,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     }
 
     @Override
-    public int getSizeInventory() {
-        return getDrawerCount();
+    public int getSizeInventory () {
+        return inventory.getSizeInventory();
     }
 
     @Override
