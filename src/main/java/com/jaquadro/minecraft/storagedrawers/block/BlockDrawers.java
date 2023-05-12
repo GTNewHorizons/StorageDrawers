@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -598,7 +599,13 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                         /* Only a minimum number of ItemStack are dropped */
                         for (int i = 0; i < tile.getDrawerCount(); i++) {
                             if (!tile.isDrawerEnabled(i)) continue;
-                            dropBigStackInWord(world, x, y, z, tile.getDrawer(i).getStoredItemCopy());
+
+                            final ItemStack rawStoredItem = tile.getDrawer(i).getStoredItemPrototype();
+                            if (rawStoredItem != null && rawStoredItem.isStackable()) {
+                                dropBigStackInWord(world, x, y, z, tile.getDrawer(i).getStoredItemCopy());
+                            } else {
+                                forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
+                            }
                         }
                         break;
                     case "destroy":
@@ -608,12 +615,8 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                             if (!tile.isDrawerEnabled(i)) continue;
                             IDrawer drawer = tile.getDrawer(i);
                             if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
-                            while (drawer.getStoredItemCount() > 0) {
-                                ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
-                                if (stack == null || stack.stackSize == 0) break;
 
-                                dropStackInBatches(world, x, y, z, stack);
-                            }
+                            forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
                         }
                         break;
                     case "cluster":
@@ -625,14 +628,8 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                                 Method method = itemMatterClusterClass.getMethod("makeClusters", List.class);
                                 /* May not be used */
                                 for (int i = 0; i < tile.getDrawerCount(); i++) {
-                                    IDrawer drawer = tile.getDrawer(i);
                                     List<ItemStack> stacks = new ArrayList<>();
-                                    while (drawer.getStoredItemCount() > 0) {
-                                        ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
-                                        if (stack == null || stack.stackSize == 0) break;
-
-                                        stacks.add(stack);
-                                    }
+                                    forEachSplitStack(tile, i, stacks::add);
 
                                     List<ItemStack> clusters = (List<ItemStack>) method
                                             .invoke(itemMatterClusterClass, stacks);
@@ -656,15 +653,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                     case "default":
                     default:
                         for (int i = 0; i < tile.getDrawerCount(); i++) {
-                            if (!tile.isDrawerEnabled(i)) continue;
-
-                            IDrawer drawer = tile.getDrawer(i);
-                            while (drawer.getStoredItemCount() > 0) {
-                                ItemStack stack = tile.takeItemsFromSlot(i, drawer.getStoredItemStackSize());
-                                if (stack == null || stack.stackSize == 0) break;
-
-                                dropStackInBatches(world, x, y, z, stack);
-                            }
+                            forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
                         }
                 }
             }
@@ -673,6 +662,18 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         }
 
         super.breakBlock(world, x, y, z, block, meta);
+    }
+
+    private void forEachSplitStack(TileEntityDrawers tile, int index, Consumer<ItemStack> forEachStack) {
+        if (!tile.isDrawerEnabled(index)) return;
+        IDrawer drawer = tile.getDrawer(index);
+
+        while (drawer.getStoredItemCount() > 0) {
+            ItemStack stack = tile.takeItemsFromSlot(index, drawer.getStoredItemStackSize());
+            if (stack == null || stack.stackSize == 0) break;
+
+            forEachStack.accept(stack);
+        }
     }
 
     private void dropStackInBatches(World world, int x, int y, int z, ItemStack stack) {
