@@ -15,6 +15,7 @@ import com.jaquadro.minecraft.storagedrawers.core.recipe.FallbackShapedOreRecipe
 import com.jaquadro.minecraft.storagedrawers.core.recipe.TemplateRecipe;
 import com.jaquadro.minecraft.storagedrawers.integration.ChiselIntegrationModule;
 import com.jaquadro.minecraft.storagedrawers.integration.GTNHIntegrationModule;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModRecipes {

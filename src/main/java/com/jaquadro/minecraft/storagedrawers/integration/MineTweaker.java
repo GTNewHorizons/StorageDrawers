@@ -1,10 +1,10 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
-import minetweaker.MineTweakerAPI;
-
 import com.jaquadro.minecraft.storagedrawers.integration.minetweaker.Compaction;
 import com.jaquadro.minecraft.storagedrawers.integration.minetweaker.OreDictionaryBlacklist;
 import com.jaquadro.minecraft.storagedrawers.integration.minetweaker.OreDictionaryWhitelist;
+
+import minetweaker.MineTweakerAPI;
 
 public class MineTweaker extends IntegrationModule {
 

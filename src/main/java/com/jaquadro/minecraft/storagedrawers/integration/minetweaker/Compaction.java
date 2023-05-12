@@ -1,16 +1,15 @@
 package com.jaquadro.minecraft.storagedrawers.integration.minetweaker;
 
+import net.minecraft.item.ItemStack;
+
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
-
-import net.minecraft.item.ItemStack;
-
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 
 @ZenClass("mods.storagedrawers.Compaction")
 public class Compaction {

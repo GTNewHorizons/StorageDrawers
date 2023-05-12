@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
 import com.jaquadro.minecraft.storagedrawers.config.ModConfigGui;
+
 import cpw.mods.fml.client.IModGuiFactory;
 
 public class ModGuiFactory implements IModGuiFactory {

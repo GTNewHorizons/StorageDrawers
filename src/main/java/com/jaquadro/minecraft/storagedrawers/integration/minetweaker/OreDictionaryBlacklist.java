@@ -1,11 +1,11 @@
 package com.jaquadro.minecraft.storagedrawers.integration.minetweaker;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 
 @ZenClass("mods.storagedrawers.OreDictionaryBlacklist")
 public class OreDictionaryBlacklist {

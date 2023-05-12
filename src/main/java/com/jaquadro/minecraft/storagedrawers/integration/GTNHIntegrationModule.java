@@ -2,6 +2,7 @@ package com.jaquadro.minecraft.storagedrawers.integration;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.integration.gtnh.ModRecipes;
+
 import cpw.mods.fml.common.Loader;
 
 public class GTNHIntegrationModule extends IntegrationModule {

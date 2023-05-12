@@ -9,6 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.integration.thermalfoundation.CoFHSecurityProvider;
 import com.mojang.authlib.GameProfile;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ThermalFoundation extends IntegrationModule {

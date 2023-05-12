@@ -8,11 +8,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import codechicken.nei.api.API;
-import codechicken.nei.api.IConfigureNEI;
-
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 
+import codechicken.nei.api.API;
+import codechicken.nei.api.IConfigureNEI;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameData;
 

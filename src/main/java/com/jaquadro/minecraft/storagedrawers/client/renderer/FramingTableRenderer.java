@@ -11,6 +11,7 @@ import com.jaquadro.minecraft.storagedrawers.block.BlockFramingTable;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonFramingRenderer;
 import com.jaquadro.minecraft.storagedrawers.core.ClientProxy;
 import com.jaquadro.minecraft.storagedrawers.util.RenderHelper;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class FramingTableRenderer implements ISimpleBlockRenderingHandler {

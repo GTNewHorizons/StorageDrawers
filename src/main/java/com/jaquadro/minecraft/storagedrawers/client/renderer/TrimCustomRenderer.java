@@ -10,6 +10,7 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockTrimCustom;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityTrim;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonTrimRenderer;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class TrimCustomRenderer implements ISimpleBlockRenderingHandler {

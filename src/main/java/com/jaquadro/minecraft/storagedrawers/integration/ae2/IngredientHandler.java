@@ -2,9 +2,9 @@ package com.jaquadro.minecraft.storagedrawers.integration.ae2;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.recipes.IIngredient;
-
 import com.jaquadro.minecraft.storagedrawers.api.registry.IIngredientHandler;
+
+import appeng.api.recipes.IIngredient;
 
 public class IngredientHandler implements IIngredientHandler {
 

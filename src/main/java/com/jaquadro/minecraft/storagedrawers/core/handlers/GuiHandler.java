@@ -10,6 +10,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityFramingTable;
 import com.jaquadro.minecraft.storagedrawers.client.gui.GuiDrawers;
 import com.jaquadro.minecraft.storagedrawers.client.gui.GuiFraming;
 import com.jaquadro.minecraft.storagedrawers.inventory.*;
+
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {

@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.item.*;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModItems {

@@ -2,15 +2,15 @@ package com.jaquadro.minecraft.storagedrawers.integration;
 
 import java.lang.reflect.Constructor;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import com.jaquadro.minecraft.storagedrawers.integration.ae2.*;
+
 import appeng.api.AEApi;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.recipes.IIngredient;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
-
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.integration.ae2.*;
 
 public class AppliedEnergistics extends IntegrationModule {
 
