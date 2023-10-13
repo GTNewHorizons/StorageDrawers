@@ -93,6 +93,8 @@ public class ConfigManager {
         public int level4Mult;
         public int level5Mult;
         public int level6Mult;
+        public int level7Mult;
+        public int level8Mult;
 
         public boolean addonSeparateVanilla;
         public boolean addonShowNEI;
@@ -441,6 +443,10 @@ public class ConfigManager {
                 .setLanguageKey(LANG_PREFIX + "upgrades.level5Mult").setRequiresWorldRestart(true).getInt();
         cache.level6Mult = config.get(sectionUpgrades.getQualifiedName(), "level6Mult", 13)
                 .setLanguageKey(LANG_PREFIX + "upgrades.level6Mult").setRequiresWorldRestart(true).getInt();
+        cache.level7Mult = config.get(sectionUpgrades.getQualifiedName(), "level7Mult", 21)
+                .setLanguageKey(LANG_PREFIX + "upgrades.level7Mult").setRequiresWorldRestart(true).getInt();
+        cache.level8Mult = config.get(sectionUpgrades.getQualifiedName(), "level8Mult", 34)
+                .setLanguageKey(LANG_PREFIX + "upgrades.level8Mult").setRequiresWorldRestart(true).getInt();
 
         cache.addonShowNEI = config.get(sectionAddons.getQualifiedName(), "showBlocksInNEI", true)
                 .setLanguageKey(LANG_PREFIX + "addons.showNEI").setRequiresWorldRestart(true).getBoolean();
@@ -506,6 +512,10 @@ public class ConfigManager {
                 return cache.level5Mult;
             case 6:
                 return cache.level6Mult;
+            case 7:
+                return cache.level7Mult;
+            case 8:
+                return cache.level8Mult;
             default:
                 return 1;
         }

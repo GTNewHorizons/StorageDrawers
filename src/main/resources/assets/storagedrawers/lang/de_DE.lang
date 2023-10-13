@@ -129,6 +129,8 @@ storageDrawers.config.upgrades.level3Mult=Speichermultiplikator (III)
 storageDrawers.config.upgrades.level4Mult=Speichermultiplikator (IV)
 storageDrawers.config.upgrades.level5Mult=Speichermultiplikator (V)
 storageDrawers.config.upgrades.level6Mult=Speichermultiplikator (VI)
+storageDrawers.config.upgrades.level6Mult=Speichermultiplikator (VII)
+storageDrawers.config.upgrades.level6Mult=Speichermultiplikator (VIII)
 
 storageDrawers.config.prop.itemRenderType=Itemrendertyp
 storageDrawers.config.prop.itemRenderType.tooltip=Rendere Items in 3D oder flach (2D).
