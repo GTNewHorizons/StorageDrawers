@@ -1,6 +1,6 @@
 package com.jaquadro.minecraft.storagedrawers.core.api;
 
-import static com.jaquadro.minecraft.storagedrawers.StorageDrawers.*;
+import static com.jaquadro.minecraft.storagedrawers.StorageDrawers.config;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;

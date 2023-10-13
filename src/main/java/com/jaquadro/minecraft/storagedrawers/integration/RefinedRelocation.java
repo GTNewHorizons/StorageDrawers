@@ -11,8 +11,17 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
-import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.*;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.BlockSortingCompDrawers;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.BlockSortingDrawers;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.BlockSortingTrim;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.ItemSortingCompDrawers;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.ItemSortingDrawers;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.ItemSortingTrim;
 import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.ItemUpgradeSorting;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.SortingBlockRegistry;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.TileSortingDrawersComp;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.TileSortingDrawersStandard;
+import com.jaquadro.minecraft.storagedrawers.integration.refinedrelocation.TileSortingTrim;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;

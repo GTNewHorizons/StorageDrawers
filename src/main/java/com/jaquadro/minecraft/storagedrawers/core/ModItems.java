@@ -3,7 +3,16 @@ package com.jaquadro.minecraft.storagedrawers.core;
 import net.minecraft.item.Item;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.item.*;
+import com.jaquadro.minecraft.storagedrawers.item.ItemPersonalKey;
+import com.jaquadro.minecraft.storagedrawers.item.ItemShroudKey;
+import com.jaquadro.minecraft.storagedrawers.item.ItemTape;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgrade;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgradeCreative;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgradeDowngrade;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgradeLock;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgradeRedstone;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgradeStatus;
+import com.jaquadro.minecraft.storagedrawers.item.ItemUpgradeVoid;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 

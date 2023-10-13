@@ -3,7 +3,11 @@ package com.jaquadro.minecraft.storagedrawers.integration;
 import java.lang.reflect.Constructor;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.integration.ae2.*;
+import com.jaquadro.minecraft.storagedrawers.integration.ae2.DrawerExternalStorageHandler;
+import com.jaquadro.minecraft.storagedrawers.integration.ae2.IStorageBusMonitorFactory;
+import com.jaquadro.minecraft.storagedrawers.integration.ae2.IngredientHandler;
+import com.jaquadro.minecraft.storagedrawers.integration.ae2.ShapedRecipeHandler;
+import com.jaquadro.minecraft.storagedrawers.integration.ae2.ShapelessRecipeHandler;
 
 import appeng.api.AEApi;
 import appeng.api.networking.security.BaseActionSource;

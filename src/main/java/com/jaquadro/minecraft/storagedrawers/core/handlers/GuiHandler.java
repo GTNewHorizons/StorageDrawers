@@ -9,7 +9,11 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityFramingTable;
 import com.jaquadro.minecraft.storagedrawers.client.gui.GuiDrawers;
 import com.jaquadro.minecraft.storagedrawers.client.gui.GuiFraming;
-import com.jaquadro.minecraft.storagedrawers.inventory.*;
+import com.jaquadro.minecraft.storagedrawers.inventory.ContainerDrawers;
+import com.jaquadro.minecraft.storagedrawers.inventory.ContainerDrawers1;
+import com.jaquadro.minecraft.storagedrawers.inventory.ContainerDrawers2;
+import com.jaquadro.minecraft.storagedrawers.inventory.ContainerDrawers4;
+import com.jaquadro.minecraft.storagedrawers.inventory.ContainerFramingTable;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 

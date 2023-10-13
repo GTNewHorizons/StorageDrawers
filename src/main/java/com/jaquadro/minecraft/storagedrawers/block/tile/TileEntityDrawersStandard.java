@@ -4,7 +4,8 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
-import com.jaquadro.minecraft.storagedrawers.storage.*;
+import com.jaquadro.minecraft.storagedrawers.storage.DefaultStorageProvider;
+import com.jaquadro.minecraft.storagedrawers.storage.DrawerData;
 import com.jaquadro.minecraft.storagedrawers.storage.IStorageProvider;
 
 public class TileEntityDrawersStandard extends TileEntityDrawers {

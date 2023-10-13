@@ -7,7 +7,15 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityFramingTable;
-import com.jaquadro.minecraft.storagedrawers.client.renderer.*;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.ControllerRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.DrawersCustomRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.DrawersItemRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.DrawersRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.FramingTableRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityDrawersRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityFramingRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.TrimCustomRenderer;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.TrimItemRender;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;

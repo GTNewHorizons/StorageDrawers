@@ -5,7 +5,11 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import com.jaquadro.minecraft.storagedrawers.api.storage.*;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IFractionalDrawer;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IPriorityGroup;
+import com.jaquadro.minecraft.storagedrawers.api.storage.ISmartGroup;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ILockable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IVoidable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;

@@ -22,7 +22,10 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute
 import com.jaquadro.minecraft.storagedrawers.config.CompTierRegistry;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
-import com.jaquadro.minecraft.storagedrawers.storage.*;
+import com.jaquadro.minecraft.storagedrawers.storage.BaseDrawerData;
+import com.jaquadro.minecraft.storagedrawers.storage.CompDrawerData;
+import com.jaquadro.minecraft.storagedrawers.storage.DrawerData;
+import com.jaquadro.minecraft.storagedrawers.storage.ICentralInventory;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.NetworkRegistry;
