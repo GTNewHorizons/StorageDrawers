@@ -599,7 +599,7 @@ public class ModRecipes {
         // Upgarde Ruby
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 6),
+                        new ItemStack(ModItems.upgrade, 1, 7),
                         new String[] { "pup", "utu", "psp" },
                         'p',
                         ORE_plateRuby,
@@ -613,7 +613,7 @@ public class ModRecipes {
         // Upgarde Tanzanite
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 6),
+                        new ItemStack(ModItems.upgrade, 1, 8),
                         new String[] { "pup", "utu", "psp" },
                         'p',
                         ORE_plateTanzanite,
