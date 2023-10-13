@@ -1004,7 +1004,8 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         iconTaped = register.registerIcon(StorageDrawers.MOD_ID + ":tape");
 
-        String[] overlays = new String[] { null, null, "iron", "gold", "obsidian", "diamond", "emerald" , "ruby" , "tanzanite"};
+        String[] overlays = new String[] { null, null, "iron", "gold", "obsidian", "diamond", "emerald", "ruby",
+                "tanzanite" };
 
         iconOverlay = new IIcon[overlays.length];
         iconOverlayH = new IIcon[overlays.length];
