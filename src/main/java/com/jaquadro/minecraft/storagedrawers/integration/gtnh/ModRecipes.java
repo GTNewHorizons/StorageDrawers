@@ -33,6 +33,7 @@ public class ModRecipes {
     private static final String ORE_drawerBasic = "drawerBasic";
     private static final String ORE_fenceWood = "fenceWood";
     private static final String ORE_plateAluminium = "plateAluminium";
+    private static final String ORE_plateBronze = "plateBronze";
     private static final String ORE_plateDiamond = "plateDiamond";
     private static final String ORE_plateDenseObsidian = "plateDenseObsidian";
     private static final String ORE_plateEnderEye = "plateEnderEye";
@@ -41,10 +42,13 @@ public class ModRecipes {
     private static final String ORE_plateIron = "plateIron";
     private static final String ORE_plateObsidian = "plateObsidian";
     private static final String ORE_plateRedstone = "plateRedstone";
+    private static final String ORE_plateRubber = "plateRubber";
+    private static final String ORE_plateRuby = "plateRuby";
     private static final String ORE_plateStainlessSteel = "plateStainlessSteel";
     private static final String ORE_plateSteel = "plateSteel";
+    private static final String ORE_plateTantalum = "plateTantalum";
+    private static final String ORE_plateTanzanite = "plateTanzanite";
     private static final String ORE_plateTitanium = "plateTitanium";
-    private static final String ORE_plateRubber = "plateRubber";
     private static final String ORE_screwSteel = "screwSteel";
     private static final String ORE_slabWood = "slabWood";
     private static final String ORE_stickDiamond = "stickDiamond";
@@ -53,6 +57,8 @@ public class ModRecipes {
     private static final String ORE_stickIron = "stickIron";
     private static final String ORE_stickObsidian = "stickObsidian";
     private static final String ORE_stickRubber = "stickRubber";
+    private static final String ORE_stickRuby = "stickRuby";
+    private static final String ORE_stickTanzanite = "stickTanzanite";
     private static final String ORE_stickWood = "stickWood";
     private static final String ORE_stoneConcrete = "stoneConcrete";
     private static final String NAME_blockCarpentersBlock = "blockCarpentersBlock";
@@ -546,7 +552,7 @@ public class ModRecipes {
                         'u',
                         upgradeTemplate,
                         't',
-                        ORE_plateSteel));
+                        ORE_plateBronze));
 
         // Upgarde Obsidian
         GameRegistry.addRecipe(
@@ -560,7 +566,7 @@ public class ModRecipes {
                         'u',
                         upgradeTemplate,
                         't',
-                        ORE_plateAluminium));
+                        ORE_plateSteel));
 
         // Upgarde Diamond
         GameRegistry.addRecipe(
@@ -574,7 +580,7 @@ public class ModRecipes {
                         'u',
                         upgradeTemplate,
                         't',
-                        ORE_plateStainlessSteel));
+                        ORE_plateAluminium));
 
         // Upgarde Emerald
         GameRegistry.addRecipe(
@@ -585,6 +591,34 @@ public class ModRecipes {
                         ORE_plateEmerald,
                         's',
                         ORE_stickEmerald,
+                        'u',
+                        upgradeTemplate,
+                        't',
+                        ORE_plateTantalum));
+
+        // Upgarde Ruby
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(ModItems.upgrade, 1, 6),
+                        new String[] { "pup", "utu", "psp" },
+                        'p',
+                        ORE_plateRuby,
+                        's',
+                        ORE_stickRuby,
+                        'u',
+                        upgradeTemplate,
+                        't',
+                        ORE_plateStainlessSteel));
+
+        // Upgarde Tanzanite
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(ModItems.upgrade, 1, 6),
+                        new String[] { "pup", "utu", "psp" },
+                        'p',
+                        ORE_plateTanzanite,
+                        's',
+                        ORE_stickTanzanite,
                         'u',
                         upgradeTemplate,
                         't',
