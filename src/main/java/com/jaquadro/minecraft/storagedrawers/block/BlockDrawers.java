@@ -54,6 +54,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.INetworked;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
@@ -615,6 +616,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                             } else {
                                 forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
                             }
+                            if (tile instanceof TileEntityDrawersComp) break;
                         }
                         break;
                     case "destroy":
