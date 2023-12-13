@@ -573,20 +573,18 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         return super.removedByPlayer(world, player, x, y, z);
     }
 
-    private void dropBigStackInWord(World world, int x, int y, int z, ItemStack stack) {
-        if (stack == null) return;
+    private void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0) return;
         Random rand = world.rand;
 
         float ex = rand.nextFloat() * .8f + .1f;
         float ey = rand.nextFloat() * .8f + .1f;
         float ez = rand.nextFloat() * .8f + .1f;
 
-        if (stack.stackSize > 0) {
-            EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
-            if (stack.hasTagCompound())
-                entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
-            world.spawnEntityInWorld(entity);
-        }
+        EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
+        if (stack.hasTagCompound())
+            entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+        world.spawnEntityInWorld(entity);
     }
 
     @Override
@@ -608,10 +606,12 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                         /* Only a minimum number of ItemStack are dropped */
                         for (int i = 0; i < tile.getDrawerCount(); i++) {
                             if (!tile.isDrawerEnabled(i)) continue;
+                            IDrawer drawer = tile.getDrawer(i);
 
-                            final ItemStack rawStoredItem = tile.getDrawer(i).getStoredItemPrototype();
+                            final ItemStack rawStoredItem = drawer.getStoredItemPrototype();
                             if (rawStoredItem != null && rawStoredItem.isStackable()) {
-                                dropBigStackInWord(world, x, y, z, tile.getDrawer(i).getStoredItemCopy());
+                                dropBigStackInWorld(world, x, y, z, drawer.getStoredItemCopy());
+                                drawer.setStoredItemCount(0);
                             } else {
                                 forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
                             }
