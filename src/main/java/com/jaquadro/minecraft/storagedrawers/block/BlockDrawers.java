@@ -373,6 +373,18 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                     } else
                 if (item.getItem() == ModItems.upgradeLock) {
                     boolean locked = tileDrawers.isLocked(LockAttribute.LOCK_POPULATED);
+
+                    if (locked) {
+                        int slot = getDrawerSlot(side, hitX, hitY, hitZ);
+                        IDrawer drawer = tileDrawers.getDrawer(slot);
+                        ItemStack stack = drawer.getStoredItemPrototype();
+                        int count = drawer.getStoredItemCount();
+
+                        if (stack != null && count == 0) {
+                            drawer.setStoredItemRedir(null, 0);
+                            return true;
+                        }
+                    }
                     tileDrawers.setLocked(LockAttribute.LOCK_POPULATED, !locked);
                     tileDrawers.setLocked(LockAttribute.LOCK_EMPTY, !locked);
 
