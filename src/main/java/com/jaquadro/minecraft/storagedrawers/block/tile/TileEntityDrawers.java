@@ -183,7 +183,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     }
 
     public int getDrawerCapacity() {
-        return drawerCapacity;
+        return isDowngraded() ? 1 : drawerCapacity;
     }
 
     public void setDrawerCapacity(int stackCount) {
