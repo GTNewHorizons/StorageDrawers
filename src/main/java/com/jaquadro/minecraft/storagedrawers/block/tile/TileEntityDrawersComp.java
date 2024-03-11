@@ -566,7 +566,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
         @Override
         public int getMaxCapacity(int slot) {
-            if (protoStack[slot] == null || convRate == null || convRate[slot] == 0) return 0;
+            if (protoStack[slot] == null || protoStack[0] == null || convRate == null || convRate[slot] == 0) return 0;
 
             if (TileEntityDrawersComp.this.isUnlimited() || TileEntityDrawersComp.this.isVending()) {
                 if (convRate == null || protoStack[slot] == null || convRate[slot] == 0) return Integer.MAX_VALUE;
