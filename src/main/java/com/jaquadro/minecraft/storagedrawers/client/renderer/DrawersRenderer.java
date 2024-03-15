@@ -1,12 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers.client.renderer;
 
-import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
@@ -275,7 +275,8 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                         (xywh[1] + xywh[3]) * unit,
                         (depth - depthAdj + .06) * unit);
                 RenderHelper.instances.get().state.setRotateTransform(RenderHelper.ZPOS, side);
-                RenderHelper.instances.get().renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOn);
+                RenderHelper.instances.get()
+                        .renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOn);
                 RenderHelper.instances.get().state.clearRotateTransform();
                 RenderHelper.instances.get().state.resetColorMult();
             } else if (level >= 2) {
@@ -298,7 +299,8 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                             indYCur * unit,
                             (depth - depthAdj + .06) * unit);
                     RenderHelper.instances.get().state.setRotateTransform(RenderHelper.ZPOS, side);
-                    RenderHelper.instances.get().renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOn);
+                    RenderHelper.instances.get()
+                            .renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOn);
                     RenderHelper.instances.get().state.clearRotateTransform();
                     RenderHelper.instances.get().state.resetColorMult();
                 }

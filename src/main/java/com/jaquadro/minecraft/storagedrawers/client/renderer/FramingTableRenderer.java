@@ -1,12 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers.client.renderer;
 
-import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockFramingTable;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonFramingRenderer;
@@ -37,7 +37,8 @@ public class FramingTableRenderer implements ISimpleBlockRenderingHandler {
         GL11.glTranslatef(.15f, -.5f, -.5f);
         GL11.glScalef(.65f, .65f, .65f);
 
-        RenderHelper.instances.get().state.setUVRotation(RenderHelper.YPOS, RenderHelper.instances.get().state.rotateTransform);
+        RenderHelper.instances.get().state
+                .setUVRotation(RenderHelper.YPOS, RenderHelper.instances.get().state.rotateTransform);
 
         framingRenderer.renderRight(null, 0, 0, 0, framingTable);
         framingRenderer.renderLeft(null, -1, 0, 0, framingTable);
@@ -63,7 +64,8 @@ public class FramingTableRenderer implements ISimpleBlockRenderingHandler {
         if (side == 2 || side == 3) right = !right;
 
         RenderHelper.instances.get().state.setRotateTransform(side, RenderHelper.ZNEG);
-        RenderHelper.instances.get().state.setUVRotation(RenderHelper.YPOS, RenderHelper.instances.get().state.rotateTransform);
+        RenderHelper.instances.get().state
+                .setUVRotation(RenderHelper.YPOS, RenderHelper.instances.get().state.rotateTransform);
 
         if (ClientProxy.renderPass == 0) {
             if (right) framingRenderer.renderRight(world, x, y, z, framingTable);
