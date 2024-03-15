@@ -1,5 +1,6 @@
 package com.jaquadro.minecraft.storagedrawers.client.renderer;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
@@ -15,6 +16,7 @@ import com.jaquadro.minecraft.storagedrawers.util.RenderHelperState;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
+@ThreadSafeISBRH(perThread = true)
 public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
     private static final double unit = .0625f;
@@ -37,7 +39,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         GL11.glRotatef(90, 0, 1, 0);
         GL11.glTranslatef(-.5f, -.5f, -.5f);
 
-        RenderHelper.instance.state
+        RenderHelper.instances.get().state
                 .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         renderExterior(block, 0, 0, 0, side, renderer);
@@ -47,7 +49,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
         renderInterior(block, 0, 0, 0, side, renderer);
 
-        RenderHelper.instance.state.clearUVRotation(RenderHelper.YPOS);
+        RenderHelper.instances.get().state.clearUVRotation(RenderHelper.YPOS);
 
         GL11.glTranslatef(.5f, .5f, .5f);
     }
@@ -67,7 +69,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
         int side = tile.getDirection();
 
-        RenderHelper.instance.state
+        RenderHelper.instances.get().state
                 .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         boxRenderer.setUnit(unit);
@@ -84,7 +86,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
         renderInterior(block, x, y, z, side, renderer);
 
-        RenderHelper.instance.state.clearUVRotation(RenderHelper.YPOS);
+        RenderHelper.instances.get().state.clearUVRotation(RenderHelper.YPOS);
 
         return true;
     }

@@ -31,8 +31,7 @@ public class RenderHelper {
     private RenderHelperLL llHelper = new RenderHelperLL(state);
 
     private float[] colorScratch = new float[3];
-
-    public static RenderHelper instance = new RenderHelper();
+    public static final ThreadLocal<RenderHelper> instances = ThreadLocal.withInitial(RenderHelper::new);
 
     public static void calculateBaseColor(float[] target, int color) {
         float r = (float) (color >> 16 & 255) / 255f;

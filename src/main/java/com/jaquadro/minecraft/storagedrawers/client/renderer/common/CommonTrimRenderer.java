@@ -22,7 +22,7 @@ public class CommonTrimRenderer {
         panelRenderer.setTrimColor(ModularBoxRenderer.COLOR_WHITE);
         panelRenderer.setPanelColor(ModularBoxRenderer.COLOR_WHITE);
 
-        RenderHelper renderHelper = RenderHelper.instance;
+        RenderHelper renderHelper = RenderHelper.instances.get();
         if (world != null) renderHelper.setColorAndBrightness(world, block, x, y, z);
 
         return renderHelper;

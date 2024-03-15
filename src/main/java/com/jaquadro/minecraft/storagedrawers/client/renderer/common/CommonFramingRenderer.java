@@ -80,7 +80,7 @@ public class CommonFramingRenderer {
             double[][] baseBoundsY, boolean left) {
         IIcon iconOverlay = block.getIconOverlay(left);
 
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         for (double[] bound : baseBoundsY) {
             renderer.setRenderBounds(bound);
@@ -99,7 +99,7 @@ public class CommonFramingRenderer {
     private void renderTableBox(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block,
             double[][] baseBoundsY, double[][] trimBoundsY, double[][] trimBoundsZ, double[][] trimBoundsX,
             boolean left) {
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         IIcon iconSurface = block.getIconBase();
         IIcon iconTrim = block.getIconTrim();
@@ -132,7 +132,7 @@ public class CommonFramingRenderer {
 
     private void renderFoot(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block, IIcon icon,
             boolean left) {
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         float oldColor = renderer.state.colorMultYPos;
         renderer.state.colorMultYPos = .9f;
@@ -152,7 +152,7 @@ public class CommonFramingRenderer {
 
     private void renderLegs(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block, IIcon icon,
             boolean left) {
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         for (int i = 2; i < 6; i++) renderer.state.setUVRotation(i, RenderHelperState.ROTATE90);
 
@@ -169,7 +169,7 @@ public class CommonFramingRenderer {
 
     private void renderBraces(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block, IIcon icon,
             boolean left) {
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         float oldColor = renderer.state.colorMultYPos;
         renderer.state.colorMultYPos = .85f;

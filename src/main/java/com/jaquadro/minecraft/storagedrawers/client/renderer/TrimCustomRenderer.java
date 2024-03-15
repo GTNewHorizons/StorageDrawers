@@ -1,5 +1,6 @@
 package com.jaquadro.minecraft.storagedrawers.client.renderer;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,7 @@ import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonTrimRe
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
+@ThreadSafeISBRH(perThread = false)
 public class TrimCustomRenderer implements ISimpleBlockRenderingHandler {
 
     private CommonTrimRenderer commonRender = new CommonTrimRenderer();

@@ -32,7 +32,7 @@ public class CommonDrawerRenderer {
         panelRenderer.setTrimColor(ModularBoxRenderer.COLOR_WHITE);
         panelRenderer.setPanelColor(ModularBoxRenderer.COLOR_WHITE);
 
-        RenderHelper renderHelper = RenderHelper.instance;
+        RenderHelper renderHelper = RenderHelper.instances.get();
         if (world != null) renderHelper.setColorAndBrightness(world, block, x, y, z);
 
         renderHelper.state.setRotateTransform(RenderHelper.ZNEG, direction);
@@ -44,7 +44,7 @@ public class CommonDrawerRenderer {
     }
 
     private void end() {
-        RenderHelper renderHelper = RenderHelper.instance;
+        RenderHelper renderHelper = RenderHelper.instances.get();
 
         renderHelper.state.clearRotateTransform();
         renderHelper.state.clearUVRotation(RenderHelper.YPOS);
@@ -154,7 +154,7 @@ public class CommonDrawerRenderer {
             renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
             renderHelper.setRenderBounds(unit7, unit7, depth + trimDepth, unit9, unit9, 1);
             renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
-        } else RenderHelper.instance.renderEmptyPlane(x, y, z);
+        } else RenderHelper.instances.get().renderEmptyPlane(x, y, z);
 
         end();
     }

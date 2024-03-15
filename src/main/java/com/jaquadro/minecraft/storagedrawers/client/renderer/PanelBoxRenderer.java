@@ -58,7 +58,7 @@ public class PanelBoxRenderer {
 
     public void renderFacePanel(int face, IBlockAccess blockAccess, Block block, double x, double y, double z,
             double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         switch (face) {
             case FACE_YNEG:
@@ -131,7 +131,7 @@ public class PanelBoxRenderer {
 
     public void renderInteriorTrim(int face, IBlockAccess blockAccess, Block block, double x, double y, double z,
             double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         switch (face) {
             case FACE_YNEG:
@@ -349,7 +349,7 @@ public class PanelBoxRenderer {
     public void renderFaceTrim(int face, IBlockAccess blockAccess, Block block, double x, double y, double z,
             double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
         double unit = trimWidth;
-        RenderHelper renderer = RenderHelper.instance;
+        RenderHelper renderer = RenderHelper.instances.get();
 
         switch (face) {
             case FACE_YNEG:
@@ -475,7 +475,7 @@ public class PanelBoxRenderer {
     }
 
     private void renderCutFace(int face, IBlockAccess blockAccess, Block block, double x, double y, double z) {
-        RenderHelper.instance.renderFace(
+        RenderHelper.instances.get().renderFace(
                 face,
                 blockAccess,
                 block,
@@ -489,7 +489,7 @@ public class PanelBoxRenderer {
     }
 
     private void renderPaneltFace(int face, IBlockAccess blockAccess, Block block, double x, double y, double z) {
-        RenderHelper.instance.renderFace(
+        RenderHelper.instances.get().renderFace(
                 face,
                 blockAccess,
                 block,
