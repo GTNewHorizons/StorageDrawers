@@ -90,6 +90,8 @@ public class ModularBoxRenderer {
 
     public boolean flipOpposite;
 
+    private RenderHelper renderHelper = RenderHelper.instances.get();
+
     private void copyFrom(float[] target, float[] source) {
         target[0] = source[0];
         target[1] = source[1];
@@ -251,8 +253,6 @@ public class ModularBoxRenderer {
 
     public void renderExterior(IBlockAccess blockAccess, Block block, double x, double y, double z, double xNeg,
             double yNeg, double zNeg, double xPos, double yPos, double zPos, int connectedFlags, int cutFlags) {
-        RenderHelper renderHelper = RenderHelper.instances.get();
-
         if ((cutFlags & CUT_YNEG) != 0) connectedFlags |= CONNECT_YNEG;
         if ((cutFlags & CUT_YPOS) != 0) connectedFlags |= CONNECT_YPOS;
         if ((cutFlags & CUT_ZNEG) != 0) connectedFlags |= CONNECT_ZNEG;
@@ -459,8 +459,6 @@ public class ModularBoxRenderer {
 
     public void renderInterior(IBlockAccess blockAccess, Block block, double x, double y, double z, double xNeg,
             double yNeg, double zNeg, double xPos, double yPos, double zPos, int connectedFlags, int cutFlags) {
-        RenderHelper renderHelper = RenderHelper.instances.get();
-
         if ((cutFlags & CUT_YNEG) != 0) connectedFlags |= PLANE_YNEG;
         if ((cutFlags & CUT_YPOS) != 0) connectedFlags |= PLANE_YPOS;
         if ((cutFlags & CUT_ZNEG) != 0) connectedFlags |= CONNECT_ZNEG;
@@ -690,7 +688,6 @@ public class ModularBoxRenderer {
 
     private void renderFace(int face, IBlockAccess blockAccess, Block block, double x, double y, double z, IIcon icon,
             float r, float g, float b) {
-        RenderHelper renderHelper = RenderHelper.instances.get();
         switch (face) {
             case FACE_YNEG:
             case FACE_YPOS:

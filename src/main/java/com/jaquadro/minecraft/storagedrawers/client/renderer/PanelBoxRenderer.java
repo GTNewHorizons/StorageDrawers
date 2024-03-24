@@ -23,6 +23,8 @@ public class PanelBoxRenderer {
 
     private ModularBoxRenderer trimRenderer = new ModularBoxRenderer();
 
+    private RenderHelper renderHelper = RenderHelper.instances.get();
+
     private double trimWidth = 0.0625;
     private double trimDepth = 0;
 
@@ -58,11 +60,9 @@ public class PanelBoxRenderer {
 
     public void renderFacePanel(int face, IBlockAccess blockAccess, Block block, double x, double y, double z,
             double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
-        RenderHelper renderer = RenderHelper.instances.get();
-
         switch (face) {
             case FACE_YNEG:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimDepth,
                         zNeg + trimWidth,
@@ -73,7 +73,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_YPOS:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yPos - trimDepth,
                         zNeg + trimWidth,
@@ -84,7 +84,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_ZNEG:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimWidth,
                         zNeg + trimDepth,
@@ -95,7 +95,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_ZPOS:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimWidth,
                         zPos - trimDepth,
@@ -106,7 +106,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_XNEG:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimDepth,
                         yNeg + trimWidth,
                         zNeg + trimWidth,
@@ -117,7 +117,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_XPOS:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimDepth,
                         yNeg + trimWidth,
                         zNeg + trimWidth,
@@ -131,11 +131,9 @@ public class PanelBoxRenderer {
 
     public void renderInteriorTrim(int face, IBlockAccess blockAccess, Block block, double x, double y, double z,
             double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
-        RenderHelper renderer = RenderHelper.instances.get();
-
         switch (face) {
             case FACE_YNEG:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg,
                         zPos - trimWidth,
@@ -143,7 +141,7 @@ public class PanelBoxRenderer {
                         yNeg + trimDepth,
                         zPos - trimWidth);
                 renderCutFace(FACE_ZNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg,
                         zNeg + trimWidth,
@@ -151,7 +149,7 @@ public class PanelBoxRenderer {
                         yNeg + trimDepth,
                         zNeg + trimWidth);
                 renderCutFace(FACE_ZPOS, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimWidth,
                         yNeg,
                         zNeg + trimWidth,
@@ -159,7 +157,7 @@ public class PanelBoxRenderer {
                         yNeg + trimDepth,
                         zPos - trimWidth);
                 renderCutFace(FACE_XNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg,
                         zNeg + trimWidth,
@@ -170,7 +168,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_YPOS:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yPos - trimDepth,
                         zPos - trimWidth,
@@ -178,7 +176,7 @@ public class PanelBoxRenderer {
                         yPos,
                         zPos - trimWidth);
                 renderCutFace(FACE_ZNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yPos - trimDepth,
                         zNeg + trimWidth,
@@ -186,7 +184,7 @@ public class PanelBoxRenderer {
                         yPos,
                         zNeg + trimWidth);
                 renderCutFace(FACE_ZPOS, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimWidth,
                         yPos - trimDepth,
                         zNeg + trimWidth,
@@ -194,7 +192,7 @@ public class PanelBoxRenderer {
                         yPos,
                         zPos - trimWidth);
                 renderCutFace(FACE_XNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yPos - trimDepth,
                         zNeg + trimWidth,
@@ -205,7 +203,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_ZNEG:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yPos - trimWidth,
                         zNeg,
@@ -213,7 +211,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zNeg + trimDepth);
                 renderCutFace(FACE_YNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimWidth,
                         zNeg,
@@ -221,7 +219,7 @@ public class PanelBoxRenderer {
                         yNeg + trimWidth,
                         zNeg + trimDepth);
                 renderCutFace(FACE_YPOS, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimWidth,
                         yNeg + trimWidth,
                         zNeg,
@@ -229,7 +227,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zNeg + trimDepth);
                 renderCutFace(FACE_XNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimWidth,
                         zNeg,
@@ -240,7 +238,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_ZPOS:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yPos - trimWidth,
                         zPos - trimDepth,
@@ -248,7 +246,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zPos);
                 renderCutFace(FACE_YNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimWidth,
                         zPos - trimDepth,
@@ -256,7 +254,7 @@ public class PanelBoxRenderer {
                         yNeg + trimWidth,
                         zPos);
                 renderCutFace(FACE_YPOS, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimWidth,
                         yNeg + trimWidth,
                         zPos - trimDepth,
@@ -264,7 +262,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zPos);
                 renderCutFace(FACE_XNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg + trimWidth,
                         yNeg + trimWidth,
                         zPos - trimDepth,
@@ -275,7 +273,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_XNEG:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg,
                         yNeg + trimWidth,
                         zPos - trimWidth,
@@ -283,7 +281,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zPos - trimWidth);
                 renderCutFace(FACE_ZNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg,
                         yNeg + trimWidth,
                         zNeg + trimWidth,
@@ -291,7 +289,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zNeg + trimWidth);
                 renderCutFace(FACE_ZPOS, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg,
                         yPos - trimWidth,
                         zNeg + trimWidth,
@@ -299,7 +297,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zPos - trimWidth);
                 renderCutFace(FACE_YNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xNeg,
                         yNeg + trimWidth,
                         zNeg + trimWidth,
@@ -310,7 +308,7 @@ public class PanelBoxRenderer {
                 break;
 
             case FACE_XPOS:
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimDepth,
                         yNeg + trimWidth,
                         zPos - trimWidth,
@@ -318,7 +316,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zPos - trimWidth);
                 renderCutFace(FACE_ZNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimDepth,
                         yNeg + trimWidth,
                         zNeg + trimWidth,
@@ -326,7 +324,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zNeg + trimWidth);
                 renderCutFace(FACE_ZPOS, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimDepth,
                         yPos - trimWidth,
                         zNeg + trimWidth,
@@ -334,7 +332,7 @@ public class PanelBoxRenderer {
                         yPos - trimWidth,
                         zPos - trimWidth);
                 renderCutFace(FACE_YNEG, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(
+                renderHelper.setRenderBounds(
                         xPos - trimDepth,
                         yNeg + trimWidth,
                         zNeg + trimWidth,
@@ -349,133 +347,132 @@ public class PanelBoxRenderer {
     public void renderFaceTrim(int face, IBlockAccess blockAccess, Block block, double x, double y, double z,
             double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos) {
         double unit = trimWidth;
-        RenderHelper renderer = RenderHelper.instances.get();
 
         switch (face) {
             case FACE_YNEG:
-                renderer.setRenderBounds(xNeg, yNeg, zNeg, xNeg + unit, yNeg, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg, yNeg, zNeg, xNeg + unit, yNeg, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg, zNeg, xPos, yNeg, zNeg + unit);
+                renderHelper.setRenderBounds(xPos - unit, yNeg, zNeg, xPos, yNeg, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg, zPos - unit, xNeg + unit, yNeg, zPos);
+                renderHelper.setRenderBounds(xNeg, yNeg, zPos - unit, xNeg + unit, yNeg, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg, zPos - unit, xPos, yNeg, zPos);
+                renderHelper.setRenderBounds(xPos - unit, yNeg, zPos - unit, xPos, yNeg, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
 
-                renderer.setRenderBounds(xNeg + unit, yNeg, zNeg, xPos - unit, yNeg, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg + unit, yNeg, zNeg, xPos - unit, yNeg, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg + unit, yNeg, zPos - unit, xPos - unit, yNeg, zPos);
+                renderHelper.setRenderBounds(xNeg + unit, yNeg, zPos - unit, xPos - unit, yNeg, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg, zNeg + unit, xNeg + unit, yNeg, zPos - unit);
+                renderHelper.setRenderBounds(xNeg, yNeg, zNeg + unit, xNeg + unit, yNeg, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg, zNeg + unit, xPos, yNeg, zPos - unit);
+                renderHelper.setRenderBounds(xPos - unit, yNeg, zNeg + unit, xPos, yNeg, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
                 break;
 
             case FACE_YPOS:
-                renderer.setRenderBounds(xNeg, yPos, zNeg, xNeg + unit, yPos, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg, yPos, zNeg, xNeg + unit, yPos, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yPos, zNeg, xPos, yPos, zNeg + unit);
+                renderHelper.setRenderBounds(xPos - unit, yPos, zNeg, xPos, yPos, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos, zPos - unit, xNeg + unit, yPos, zPos);
+                renderHelper.setRenderBounds(xNeg, yPos, zPos - unit, xNeg + unit, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yPos, zPos - unit, xPos, yPos, zPos);
+                renderHelper.setRenderBounds(xPos - unit, yPos, zPos - unit, xPos, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
 
-                renderer.setRenderBounds(xNeg + unit, yPos, zNeg, xPos - unit, yPos, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg + unit, yPos, zNeg, xPos - unit, yPos, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg + unit, yPos, zPos - unit, xPos - unit, yPos, zPos);
+                renderHelper.setRenderBounds(xNeg + unit, yPos, zPos - unit, xPos - unit, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos, zNeg + unit, xNeg + unit, yPos, zPos - unit);
+                renderHelper.setRenderBounds(xNeg, yPos, zNeg + unit, xNeg + unit, yPos, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yPos, zNeg + unit, xPos, yPos, zPos - unit);
+                renderHelper.setRenderBounds(xPos - unit, yPos, zNeg + unit, xPos, yPos, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
                 break;
 
             case FACE_ZNEG:
-                renderer.setRenderBounds(xNeg, yNeg, zNeg, xNeg + unit, yNeg + unit, zNeg);
+                renderHelper.setRenderBounds(xNeg, yNeg, zNeg, xNeg + unit, yNeg + unit, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg, zNeg, xPos, yNeg + unit, zNeg);
+                renderHelper.setRenderBounds(xPos - unit, yNeg, zNeg, xPos, yNeg + unit, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos - unit, zNeg, xNeg + unit, yPos, zNeg);
+                renderHelper.setRenderBounds(xNeg, yPos - unit, zNeg, xNeg + unit, yPos, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yPos - unit, zNeg, xPos, yPos, zNeg);
+                renderHelper.setRenderBounds(xPos - unit, yPos - unit, zNeg, xPos, yPos, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
 
-                renderer.setRenderBounds(xNeg + unit, yNeg, zNeg, xPos - unit, yNeg + unit, zNeg);
+                renderHelper.setRenderBounds(xNeg + unit, yNeg, zNeg, xPos - unit, yNeg + unit, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg + unit, yPos - unit, zNeg, xPos - unit, yPos, zNeg);
+                renderHelper.setRenderBounds(xNeg + unit, yPos - unit, zNeg, xPos - unit, yPos, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg + unit, zNeg, xNeg + unit, yPos - unit, zNeg);
+                renderHelper.setRenderBounds(xNeg, yNeg + unit, zNeg, xNeg + unit, yPos - unit, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg + unit, zNeg, xPos, yPos - unit, zNeg);
+                renderHelper.setRenderBounds(xPos - unit, yNeg + unit, zNeg, xPos, yPos - unit, zNeg);
                 renderCutFace(face, blockAccess, block, x, y, z);
                 break;
 
             case FACE_ZPOS:
-                renderer.setRenderBounds(xNeg, yNeg, zPos, xNeg + unit, yNeg + unit, zPos);
+                renderHelper.setRenderBounds(xNeg, yNeg, zPos, xNeg + unit, yNeg + unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg, zPos, xPos, yNeg + unit, zPos);
+                renderHelper.setRenderBounds(xPos - unit, yNeg, zPos, xPos, yNeg + unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos - unit, zPos, xNeg + unit, yPos, zPos);
+                renderHelper.setRenderBounds(xNeg, yPos - unit, zPos, xNeg + unit, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yPos - unit, zPos, xPos, yPos, zPos);
+                renderHelper.setRenderBounds(xPos - unit, yPos - unit, zPos, xPos, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
 
-                renderer.setRenderBounds(xNeg + unit, yNeg, zPos, xPos - unit, yNeg + unit, zPos);
+                renderHelper.setRenderBounds(xNeg + unit, yNeg, zPos, xPos - unit, yNeg + unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg + unit, yPos - unit, zPos, xPos - unit, yPos, zPos);
+                renderHelper.setRenderBounds(xNeg + unit, yPos - unit, zPos, xPos - unit, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg + unit, zPos, xNeg + unit, yPos - unit, zPos);
+                renderHelper.setRenderBounds(xNeg, yNeg + unit, zPos, xNeg + unit, yPos - unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos - unit, yNeg + unit, zPos, xPos, yPos - unit, zPos);
+                renderHelper.setRenderBounds(xPos - unit, yNeg + unit, zPos, xPos, yPos - unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
                 break;
 
             case FACE_XNEG:
-                renderer.setRenderBounds(xNeg, yNeg, zNeg, xNeg, yNeg + unit, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg, yNeg, zNeg, xNeg, yNeg + unit, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos - unit, zNeg, xNeg, yPos, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg, yPos - unit, zNeg, xNeg, yPos, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg, zPos - unit, xNeg, yNeg + unit, zPos);
+                renderHelper.setRenderBounds(xNeg, yNeg, zPos - unit, xNeg, yNeg + unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos - unit, zPos - unit, xNeg, yPos, zPos);
+                renderHelper.setRenderBounds(xNeg, yPos - unit, zPos - unit, xNeg, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
 
-                renderer.setRenderBounds(xNeg, yNeg + unit, zNeg, xNeg, yPos - unit, zNeg + unit);
+                renderHelper.setRenderBounds(xNeg, yNeg + unit, zNeg, xNeg, yPos - unit, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg + unit, zPos - unit, xNeg, yPos - unit, zPos);
+                renderHelper.setRenderBounds(xNeg, yNeg + unit, zPos - unit, xNeg, yPos - unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yNeg, zNeg + unit, xNeg, yNeg + unit, zPos - unit);
+                renderHelper.setRenderBounds(xNeg, yNeg, zNeg + unit, xNeg, yNeg + unit, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xNeg, yPos - unit, zNeg + unit, xNeg, yPos, zPos - unit);
+                renderHelper.setRenderBounds(xNeg, yPos - unit, zNeg + unit, xNeg, yPos, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
                 break;
 
             case FACE_XPOS:
-                renderer.setRenderBounds(xPos, yNeg, zNeg, xPos, yNeg + unit, zNeg + unit);
+                renderHelper.setRenderBounds(xPos, yNeg, zNeg, xPos, yNeg + unit, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos, yPos - unit, zNeg, xPos, yPos, zNeg + unit);
+                renderHelper.setRenderBounds(xPos, yPos - unit, zNeg, xPos, yPos, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos, yNeg, zPos - unit, xPos, yNeg + unit, zPos);
+                renderHelper.setRenderBounds(xPos, yNeg, zPos - unit, xPos, yNeg + unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos, yPos - unit, zPos - unit, xPos, yPos, zPos);
+                renderHelper.setRenderBounds(xPos, yPos - unit, zPos - unit, xPos, yPos, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
 
-                renderer.setRenderBounds(xPos, yNeg + unit, zNeg, xPos, yPos - unit, zNeg + unit);
+                renderHelper.setRenderBounds(xPos, yNeg + unit, zNeg, xPos, yPos - unit, zNeg + unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos, yNeg + unit, zPos - unit, xPos, yPos - unit, zPos);
+                renderHelper.setRenderBounds(xPos, yNeg + unit, zPos - unit, xPos, yPos - unit, zPos);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos, yNeg, zNeg + unit, xPos, yNeg + unit, zPos - unit);
+                renderHelper.setRenderBounds(xPos, yNeg, zNeg + unit, xPos, yNeg + unit, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
-                renderer.setRenderBounds(xPos, yPos - unit, zNeg + unit, xPos, yPos, zPos - unit);
+                renderHelper.setRenderBounds(xPos, yPos - unit, zNeg + unit, xPos, yPos, zPos - unit);
                 renderCutFace(face, blockAccess, block, x, y, z);
                 break;
         }
     }
 
     private void renderCutFace(int face, IBlockAccess blockAccess, Block block, double x, double y, double z) {
-        RenderHelper.instances.get().renderFace(
+        renderHelper.renderFace(
                 face,
                 blockAccess,
                 block,
@@ -489,7 +486,7 @@ public class PanelBoxRenderer {
     }
 
     private void renderPaneltFace(int face, IBlockAccess blockAccess, Block block, double x, double y, double z) {
-        RenderHelper.instances.get().renderFace(
+        renderHelper.renderFace(
                 face,
                 blockAccess,
                 block,

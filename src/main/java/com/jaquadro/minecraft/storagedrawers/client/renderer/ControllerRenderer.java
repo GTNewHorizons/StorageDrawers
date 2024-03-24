@@ -1,6 +1,5 @@
 package com.jaquadro.minecraft.storagedrawers.client.renderer;
 
-import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
@@ -8,6 +7,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockController;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
@@ -21,6 +21,8 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
     private static final double unit = .0625f;
     private ModularBoxRenderer boxRenderer = new ModularBoxRenderer();
+
+    private RenderHelper renderHelper = RenderHelper.instances.get();
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
@@ -39,7 +41,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         GL11.glRotatef(90, 0, 1, 0);
         GL11.glTranslatef(-.5f, -.5f, -.5f);
 
-        RenderHelper.instances.get().state
+        renderHelper.state
                 .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         renderExterior(block, 0, 0, 0, side, renderer);
@@ -49,7 +51,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
         renderInterior(block, 0, 0, 0, side, renderer);
 
-        RenderHelper.instances.get().state.clearUVRotation(RenderHelper.YPOS);
+        renderHelper.state.clearUVRotation(RenderHelper.YPOS);
 
         GL11.glTranslatef(.5f, .5f, .5f);
     }
@@ -69,7 +71,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
         int side = tile.getDirection();
 
-        RenderHelper.instances.get().state
+        renderHelper.state
                 .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         boxRenderer.setUnit(unit);
@@ -86,7 +88,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
         renderInterior(block, x, y, z, side, renderer);
 
-        RenderHelper.instances.get().state.clearUVRotation(RenderHelper.YPOS);
+        renderHelper.state.clearUVRotation(RenderHelper.YPOS);
 
         return true;
     }

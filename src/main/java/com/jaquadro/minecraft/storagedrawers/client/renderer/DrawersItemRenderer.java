@@ -24,6 +24,8 @@ public class DrawersItemRenderer implements IItemRenderer {
     // private PanelBoxRenderer panelRenderer = new PanelBoxRenderer();
     // private float[] colorScratch = new float[3];
 
+    private static RenderHelper renderHelper = RenderHelper.instances.get();
+
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
         return true;
