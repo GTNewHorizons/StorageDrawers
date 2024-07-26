@@ -182,7 +182,7 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
     }
 
     @Override
-    public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out) {
+    public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out, int iteration) {
         int[] order = null;
         if (group instanceof IPriorityGroup) order = ((IPriorityGroup) group).getAccessibleDrawerSlots();
 
