@@ -19,4 +19,9 @@ public interface IUserConfig {
      * Configuration options related to third party mod integration.
      */
     IIntegrationConfig integrationConfig();
+
+    /**
+     * Configuration options related to extra drawer packs.
+     */
+    IPacksConfig packsConfig();
 }

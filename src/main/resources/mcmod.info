@@ -1,13 +1,25 @@
 [
-{
-	"modid": "${modId}",
-	"name": "${modName}",
-	"description": "Multi-drawer storage blocks for quick storage and retrieval.",
-	"version": "${modVersion}",
-    "mcversion": "${minecraftVersion}",
-	"credits": "By jaquadro",
-	"logoFile": "",
-	"url": "http://www.jaquadro.com/",
-	"authors": [ "jaquadro" ]
-}
+    {
+        "modid": "${modId}",
+        "name": "${modName}",
+        "description": "Multi-drawer storage blocks for quick storage and retrieval.",
+        "version": "${modVersion}",
+        "mcversion": "${minecraftVersion}",
+        "credits": "By jaquadro",
+        "logoFile": "",
+        "url": "http://www.jaquadro.com/",
+        "authors": [ "jaquadro" ]
+    },
+    {
+        "modid": "StorageDrawersNatura,
+        "name": "Storage Drawers: Natura Pack",
+        "description": "Adds additional wood styles from the Natura mod.",
+        "version": "${modVersion}",
+        "mcversion": "${minecraftVersion}",
+        "credits": "By jaquadro",
+        "logoFile": "",
+        "url": "http://www.jaquadro.com/",
+        "parent": "${modId}",
+        "authorList": [ "jaquadro" ]
+    }
 ]

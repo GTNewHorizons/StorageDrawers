@@ -6,13 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-
 import com.jaquadro.minecraft.storagedrawers.api.config.IAddonConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IBlockConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IIntegrationConfig;
+import com.jaquadro.minecraft.storagedrawers.api.config.IPacksConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IUserConfig;
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
+
 import com.jaquadro.minecraft.storagedrawers.api.pack.BlockConfiguration;
 
 public class ConfigManager {
@@ -81,6 +82,7 @@ public class ConfigManager {
         public boolean enableThermalFoundationIntegration;
         public boolean enableChiselIntegration;
         public boolean enableGTNHIntegration;
+        public boolean enableNaturaPack;
         public boolean enableTape;
         public boolean enableFallbackRecipes;
         public boolean enableFramedDrawers;
@@ -181,6 +183,12 @@ public class ConfigManager {
         }
     }
 
+    private class PacksConfig implements IPacksConfig {
+
+        @Override
+        public boolean isNaturaPackEnabled() { return cache.enableNaturaPack; }
+    }
+
     private class UserConfig implements IUserConfig {
 
         @Override
@@ -197,6 +205,9 @@ public class ConfigManager {
         public IIntegrationConfig integrationConfig() {
             return integrationConfig;
         }
+
+        @Override
+        public IPacksConfig packsConfig() { return packsConfig; }
     }
 
     private static final String LANG_PREFIX = "storageDrawers.config.";
@@ -207,6 +218,7 @@ public class ConfigManager {
     public final List<ConfigSection> sections = new ArrayList<ConfigSection>();
     public final ConfigSection sectionGeneral = new ConfigSection(sections, "general", "general");
     public final ConfigSection sectionIntegration = new ConfigSection(sections, "integration", "integration");
+    public final ConfigSection sectionPacks = new ConfigSection(sections, "packs", "packs");
     public final ConfigSection sectionBlocks = new ConfigSection(sections, "blocks", "blocks");
     public final ConfigSection sectionUpgrades = new ConfigSection(sections, "upgrades", "upgrades");
     public final ConfigSection sectionAddons = new ConfigSection(sections, "addons", "addons");
@@ -263,6 +275,7 @@ public class ConfigManager {
     public IAddonConfig addonConfig = new AddonConfig();
     public IBlockConfig blockConfig = new BlockConfig();
     public IIntegrationConfig integrationConfig = new IntegrationConfig();
+    public IPacksConfig packsConfig = new PacksConfig();
     public IUserConfig userConfig = new UserConfig();
 
     // private Property itemRenderType;
@@ -375,6 +388,9 @@ public class ConfigManager {
                 .setLanguageKey(LANG_PREFIX + "integration.enableChisel").setRequiresMcRestart(true).getBoolean();
         cache.enableGTNHIntegration = config.get(sectionIntegration.getQualifiedName(), "enableGTNH", true)
                 .setLanguageKey(LANG_PREFIX + "integration.enableGTNH").setRequiresMcRestart(true).getBoolean();
+
+        cache.enableNaturaPack = config.get(sectionPacks.getQualifiedName(), "enableNatura", true)
+                        .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
 
         config.get(sectionBlocksFullDrawers1x1.getQualifiedName(), "enabled", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enabled").setRequiresMcRestart(true);
