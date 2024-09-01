@@ -4,4 +4,6 @@ public interface IPacksConfig {
 
     boolean isNaturaPackEnabled();
 
+    boolean isBopPackEnabled();
+
 }

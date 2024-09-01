@@ -21,5 +21,17 @@
         "url": "http://www.jaquadro.com/",
         "parent": "${modId}",
         "authorList": [ "jaquadro" ]
+    },
+    {
+      "modid": "StorageDrawersBop",
+      "name": "Storage Drawers: Biomes O' Plenty Pack",
+      "description": "Adds additional wood styles from the Biomes O' Plenty mod.",
+      "version": "${modVersion}",
+      "mcversion": "${minecraftVersion}",
+      "credits": "By jaquadro",
+      "logoFile": "",
+      "url": "http://www.jaquadro.com/",
+      "parent": "${modId}",
+      "authorList": [ "jaquadro" ]
     }
 ]

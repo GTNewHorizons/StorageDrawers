@@ -1,11 +1,11 @@
-package com.jaquadro.minecraft.storagedrawers.packs.natura;
+package com.jaquadro.minecraft.storagedrawers.packs.bop;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.IStorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.api.StorageDrawersApi;
-import com.jaquadro.minecraft.storagedrawers.packs.natura.core.DataResolver;
-import com.jaquadro.minecraft.storagedrawers.packs.natura.core.ModBlocks;
-import com.jaquadro.minecraft.storagedrawers.packs.natura.core.RefinedRelocation;
+import com.jaquadro.minecraft.storagedrawers.packs.bop.core.DataResolver;
+import com.jaquadro.minecraft.storagedrawers.packs.bop.core.ModBlocks;
+import com.jaquadro.minecraft.storagedrawers.packs.bop.core.RefinedRelocation;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -20,9 +20,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
         dependencies = "required-after:StorageDrawers;")
 public class StorageDrawersPack {
 
-    public static final String MOD_ID = "StorageDrawersNatura";
-    public static final String MOD_NAME = "Storage Drawers: Natura Pack";
-    public static final String SOURCE_PATH = "com.jaquadro.minecraft.storagedrawers.packs.natura.";
+    public static final String MOD_ID = "StorageDrawersBop";
+    public static final String MOD_NAME = "Storage Drawers: Biomes O' Plenty Pack";
+    public static final String SOURCE_PATH = "com.jaquadro.minecraft.storagedrawers.packs.bop.";
 
     public DataResolver resolver = new DataResolver(MOD_ID);
 
@@ -36,7 +36,7 @@ public class StorageDrawersPack {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isNaturaPackEnabled()) {
+        if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
             return;
         }
 
@@ -45,17 +45,16 @@ public class StorageDrawersPack {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isNaturaPackEnabled()) {
+        if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
             return;
         }
-
         RefinedRelocation.init();
         resolver.init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isNaturaPackEnabled()) {
+        if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
             return;
         }
 

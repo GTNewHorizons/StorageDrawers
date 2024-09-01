@@ -213,3 +213,7 @@ storageDrawers.config.integration.enableMineTweaker=Enable MineTweaker Integrati
 storageDrawers.config.integration.enableRefinedRelocation=Enable Refined Relocation Integration
 storageDrawers.config.integration.enableThermalExpansion=Enable Thermal Expansion Integration
 storageDrawers.config.integration.enableThermalFoundation=Enable Thermal Foundation Integration
+
+storageDrawers.config.packs=Packs
+storageDrawers.config.packs.enableNatura=Enable Natura Pack
+storageDrawers.config.packs.enableBop=Enable Biomes O' Plenty Pack

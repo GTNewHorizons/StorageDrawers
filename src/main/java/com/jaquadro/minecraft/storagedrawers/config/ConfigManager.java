@@ -83,6 +83,7 @@ public class ConfigManager {
         public boolean enableChiselIntegration;
         public boolean enableGTNHIntegration;
         public boolean enableNaturaPack;
+        public boolean enableBopPack;
         public boolean enableTape;
         public boolean enableFallbackRecipes;
         public boolean enableFramedDrawers;
@@ -187,6 +188,9 @@ public class ConfigManager {
 
         @Override
         public boolean isNaturaPackEnabled() { return cache.enableNaturaPack; }
+
+        @Override
+        public boolean isBopPackEnabled() { return cache.enableBopPack; }
     }
 
     private class UserConfig implements IUserConfig {
@@ -391,6 +395,8 @@ public class ConfigManager {
 
         cache.enableNaturaPack = config.get(sectionPacks.getQualifiedName(), "enableNatura", true)
                         .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
+        cache.enableBopPack = config.get(sectionPacks.getQualifiedName(), "enableBiomesOPlenty", true)
+                        .setLanguageKey(LANG_PREFIX + "packs.enableBop").setRequiresMcRestart(true).getBoolean();
 
         config.get(sectionBlocksFullDrawers1x1.getQualifiedName(), "enabled", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enabled").setRequiresMcRestart(true);
