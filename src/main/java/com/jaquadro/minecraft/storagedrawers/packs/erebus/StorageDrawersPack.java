@@ -4,16 +4,20 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.IStorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.api.StorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.packs.erebus.core.*;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
+@Mod(
+        modid = StorageDrawersPack.MOD_ID,
+        name = StorageDrawersPack.MOD_NAME,
+        version = StorageDrawers.MOD_VERSION,
+        dependencies = "required-after:StorageDrawers;")
+public class StorageDrawersPack {
 
-@Mod(modid = StorageDrawersPack.MOD_ID, name = StorageDrawersPack.MOD_NAME, version = StorageDrawers.MOD_VERSION, dependencies = "required-after:StorageDrawers;")
-public class StorageDrawersPack
-{
     public static final String MOD_ID = "StorageDrawersErebus";
     public static final String MOD_NAME = "Storage Drawers: Erebus Pack";
     public static final String SOURCE_PATH = "com.jaquadro.minecraft.storagedrawers.packs.erebus.";
@@ -29,7 +33,7 @@ public class StorageDrawersPack
     public static CommonProxy proxy;
 
     @Mod.EventHandler
-    public void preInit (FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) {
         if (!StorageDrawers.config.userConfig.packsConfig().isErebusPackEnabled()) {
             return;
         }
@@ -38,7 +42,7 @@ public class StorageDrawersPack
     }
 
     @Mod.EventHandler
-    public void init (FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event) {
         if (!StorageDrawers.config.userConfig.packsConfig().isErebusPackEnabled()) {
             return;
         }
@@ -48,7 +52,7 @@ public class StorageDrawersPack
     }
 
     @Mod.EventHandler
-    public void postInit (FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event) {
         if (!StorageDrawers.config.userConfig.packsConfig().isErebusPackEnabled()) {
             return;
         }

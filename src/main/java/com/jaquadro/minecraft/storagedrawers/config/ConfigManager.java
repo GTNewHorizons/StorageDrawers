@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
+
 import com.jaquadro.minecraft.storagedrawers.api.config.IAddonConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IBlockConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IIntegrationConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IPacksConfig;
 import com.jaquadro.minecraft.storagedrawers.api.config.IUserConfig;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-
 import com.jaquadro.minecraft.storagedrawers.api.pack.BlockConfiguration;
 
 public class ConfigManager {
@@ -190,19 +190,29 @@ public class ConfigManager {
     private class PacksConfig implements IPacksConfig {
 
         @Override
-        public boolean isNaturaPackEnabled() { return cache.enableNaturaPack; }
+        public boolean isNaturaPackEnabled() {
+            return cache.enableNaturaPack;
+        }
 
         @Override
-        public boolean isBopPackEnabled() { return cache.enableBopPack; }
+        public boolean isBopPackEnabled() {
+            return cache.enableBopPack;
+        }
 
         @Override
-        public boolean isForestryPackEnabled() { return cache.enableForestryPack; }
+        public boolean isForestryPackEnabled() {
+            return cache.enableForestryPack;
+        }
 
         @Override
-        public boolean isErebusPackEnabled() { return cache.enableErebusPack; }
+        public boolean isErebusPackEnabled() {
+            return cache.enableErebusPack;
+        }
 
         @Override
-        public boolean isMiscPackEnabled() { return cache.enableMiscPack; }
+        public boolean isMiscPackEnabled() {
+            return cache.enableMiscPack;
+        }
     }
 
     private class UserConfig implements IUserConfig {
@@ -223,7 +233,9 @@ public class ConfigManager {
         }
 
         @Override
-        public IPacksConfig packsConfig() { return packsConfig; }
+        public IPacksConfig packsConfig() {
+            return packsConfig;
+        }
     }
 
     private static final String LANG_PREFIX = "storageDrawers.config.";
@@ -406,15 +418,15 @@ public class ConfigManager {
                 .setLanguageKey(LANG_PREFIX + "integration.enableGTNH").setRequiresMcRestart(true).getBoolean();
 
         cache.enableNaturaPack = config.get(sectionPacks.getQualifiedName(), "enableNatura", true)
-                        .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
+                .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
         cache.enableBopPack = config.get(sectionPacks.getQualifiedName(), "enableBiomesOPlenty", true)
-                        .setLanguageKey(LANG_PREFIX + "packs.enableBop").setRequiresMcRestart(true).getBoolean();
+                .setLanguageKey(LANG_PREFIX + "packs.enableBop").setRequiresMcRestart(true).getBoolean();
         cache.enableForestryPack = config.get(sectionPacks.getQualifiedName(), "enableForestry", true)
-                        .setLanguageKey(LANG_PREFIX + "packs.enableForestry").setRequiresMcRestart(true).getBoolean();
+                .setLanguageKey(LANG_PREFIX + "packs.enableForestry").setRequiresMcRestart(true).getBoolean();
         cache.enableErebusPack = config.get(sectionPacks.getQualifiedName(), "enableErebus", true)
-                        .setLanguageKey(LANG_PREFIX + "packs.enableErebus").setRequiresMcRestart(true).getBoolean();
+                .setLanguageKey(LANG_PREFIX + "packs.enableErebus").setRequiresMcRestart(true).getBoolean();
         cache.enableMiscPack = config.get(sectionPacks.getQualifiedName(), "enableMisc", true)
-                        .setLanguageKey(LANG_PREFIX + "packs.enableMisc").setRequiresMcRestart(true).getBoolean();
+                .setLanguageKey(LANG_PREFIX + "packs.enableMisc").setRequiresMcRestart(true).getBoolean();
 
         config.get(sectionBlocksFullDrawers1x1.getQualifiedName(), "enabled", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enabled").setRequiresMcRestart(true);

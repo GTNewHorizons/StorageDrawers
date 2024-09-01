@@ -1,5 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.packs.erebus.core;
 
+import net.minecraft.block.Block;
+
 import com.jaquadro.minecraft.storagedrawers.api.IStorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.api.StorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.api.config.IBlockConfig;
@@ -8,11 +10,11 @@ import com.jaquadro.minecraft.storagedrawers.api.pack.BlockConfiguration;
 import com.jaquadro.minecraft.storagedrawers.api.pack.IPackBlockFactory;
 import com.jaquadro.minecraft.storagedrawers.api.pack.IPackDataResolver;
 import com.jaquadro.minecraft.storagedrawers.packs.erebus.StorageDrawersPack;
-import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.block.Block;
 
-public class ModBlocks
-{
+import cpw.mods.fml.common.registry.GameData;
+
+public class ModBlocks {
+
     public static Block fullDrawers1;
     public static Block fullDrawers2;
     public static Block fullDrawers4;
@@ -20,10 +22,9 @@ public class ModBlocks
     public static Block halfDrawers4;
     public static Block trim;
 
-    public void init () {
+    public void init() {
         IStorageDrawersApi api = StorageDrawersApi.instance();
-        if (api == null)
-            return;
+        if (api == null) return;
 
         IPackBlockFactory factory = api.packFactory();
         IPackDataResolver resolver = StorageDrawersPack.instance.resolver;
@@ -61,11 +62,11 @@ public class ModBlocks
         }
     }
 
-    public static String getQualifiedName (Block block) {
+    public static String getQualifiedName(Block block) {
         return GameData.getBlockRegistry().getNameForObject(block);
     }
 
-    public static String makeName (String name) {
+    public static String makeName(String name) {
         return StorageDrawersPack.MOD_ID.toLowerCase() + "." + name;
     }
 }
