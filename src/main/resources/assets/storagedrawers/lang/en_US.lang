@@ -217,3 +217,4 @@ storageDrawers.config.integration.enableThermalFoundation=Enable Thermal Foundat
 storageDrawers.config.packs=Packs
 storageDrawers.config.packs.enableNatura=Enable Natura Pack
 storageDrawers.config.packs.enableBop=Enable Biomes O' Plenty Pack
+storageDrawers.config.packs.enableForestry=Enable Forestry Pack

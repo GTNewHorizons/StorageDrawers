@@ -84,6 +84,7 @@ public class ConfigManager {
         public boolean enableGTNHIntegration;
         public boolean enableNaturaPack;
         public boolean enableBopPack;
+        public boolean enableForestryPack;
         public boolean enableTape;
         public boolean enableFallbackRecipes;
         public boolean enableFramedDrawers;
@@ -191,6 +192,9 @@ public class ConfigManager {
 
         @Override
         public boolean isBopPackEnabled() { return cache.enableBopPack; }
+
+        @Override
+        public boolean isForestryPackEnabled() { return cache.enableForestryPack; }
     }
 
     private class UserConfig implements IUserConfig {
@@ -397,6 +401,8 @@ public class ConfigManager {
                         .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
         cache.enableBopPack = config.get(sectionPacks.getQualifiedName(), "enableBiomesOPlenty", true)
                         .setLanguageKey(LANG_PREFIX + "packs.enableBop").setRequiresMcRestart(true).getBoolean();
+        cache.enableForestryPack = config.get(sectionPacks.getQualifiedName(), "enableForestry", true)
+                        .setLanguageKey(LANG_PREFIX + "packs.enableForestry").setRequiresMcRestart(true).getBoolean();
 
         config.get(sectionBlocksFullDrawers1x1.getQualifiedName(), "enabled", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enabled").setRequiresMcRestart(true);

@@ -6,4 +6,6 @@ public interface IPacksConfig {
 
     boolean isBopPackEnabled();
 
+    boolean isForestryPackEnabled();
+
 }
