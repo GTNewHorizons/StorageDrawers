@@ -8,4 +8,7 @@ public interface IPacksConfig {
 
     boolean isForestryPackEnabled();
 
+    boolean isErebusPackEnabled();
+
+    boolean isMiscPackEnabled();
 }

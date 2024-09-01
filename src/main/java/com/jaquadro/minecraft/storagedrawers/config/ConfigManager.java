@@ -85,6 +85,8 @@ public class ConfigManager {
         public boolean enableNaturaPack;
         public boolean enableBopPack;
         public boolean enableForestryPack;
+        public boolean enableErebusPack;
+        public boolean enableMiscPack;
         public boolean enableTape;
         public boolean enableFallbackRecipes;
         public boolean enableFramedDrawers;
@@ -195,6 +197,12 @@ public class ConfigManager {
 
         @Override
         public boolean isForestryPackEnabled() { return cache.enableForestryPack; }
+
+        @Override
+        public boolean isErebusPackEnabled() { return cache.enableErebusPack; }
+
+        @Override
+        public boolean isMiscPackEnabled() { return cache.enableMiscPack; }
     }
 
     private class UserConfig implements IUserConfig {
@@ -403,6 +411,10 @@ public class ConfigManager {
                         .setLanguageKey(LANG_PREFIX + "packs.enableBop").setRequiresMcRestart(true).getBoolean();
         cache.enableForestryPack = config.get(sectionPacks.getQualifiedName(), "enableForestry", true)
                         .setLanguageKey(LANG_PREFIX + "packs.enableForestry").setRequiresMcRestart(true).getBoolean();
+        cache.enableErebusPack = config.get(sectionPacks.getQualifiedName(), "enableErebus", true)
+                        .setLanguageKey(LANG_PREFIX + "packs.enableErebus").setRequiresMcRestart(true).getBoolean();
+        cache.enableMiscPack = config.get(sectionPacks.getQualifiedName(), "enableMisc", true)
+                        .setLanguageKey(LANG_PREFIX + "packs.enableMisc").setRequiresMcRestart(true).getBoolean();
 
         config.get(sectionBlocksFullDrawers1x1.getQualifiedName(), "enabled", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enabled").setRequiresMcRestart(true);
