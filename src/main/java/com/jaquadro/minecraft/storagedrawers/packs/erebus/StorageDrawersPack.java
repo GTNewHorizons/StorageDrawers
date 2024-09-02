@@ -3,7 +3,9 @@ package com.jaquadro.minecraft.storagedrawers.packs.erebus;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.IStorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.api.StorageDrawersApi;
-import com.jaquadro.minecraft.storagedrawers.packs.erebus.core.*;
+import com.jaquadro.minecraft.storagedrawers.packs.erebus.core.DataResolver;
+import com.jaquadro.minecraft.storagedrawers.packs.erebus.core.ModBlocks;
+import com.jaquadro.minecraft.storagedrawers.packs.erebus.core.RefinedRelocation;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
