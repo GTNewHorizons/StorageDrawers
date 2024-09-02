@@ -82,6 +82,7 @@ public class ConfigManager {
         public boolean enableThermalFoundationIntegration;
         public boolean enableChiselIntegration;
         public boolean enableGTNHIntegration;
+        public boolean autoEnablePacks;
         public boolean enableNaturaPack;
         public boolean enableBopPack;
         public boolean enableForestryPack;
@@ -188,6 +189,11 @@ public class ConfigManager {
     }
 
     private class PacksConfig implements IPacksConfig {
+
+        @Override
+        public boolean autoEnablePacks() {
+            return cache.autoEnablePacks;
+        }
 
         @Override
         public boolean isNaturaPackEnabled() {
@@ -417,15 +423,17 @@ public class ConfigManager {
         cache.enableGTNHIntegration = config.get(sectionIntegration.getQualifiedName(), "enableGTNH", true)
                 .setLanguageKey(LANG_PREFIX + "integration.enableGTNH").setRequiresMcRestart(true).getBoolean();
 
-        cache.enableNaturaPack = config.get(sectionPacks.getQualifiedName(), "enableNatura", true)
+        cache.autoEnablePacks = config.get(sectionPacks.getQualifiedName(), "autoEnablePacks", true, "If enabled, all explicit pack options will be ignored. Packs will be enabled if their corresponding mod is present (Not including misc pack)")
+                .setLanguageKey(LANG_PREFIX + "packs.autoEnable").setRequiresMcRestart(true).getBoolean();
+        cache.enableNaturaPack = config.get(sectionPacks.getQualifiedName(), "enableNatura", false)
                 .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
-        cache.enableBopPack = config.get(sectionPacks.getQualifiedName(), "enableBiomesOPlenty", true)
+        cache.enableBopPack = config.get(sectionPacks.getQualifiedName(), "enableBiomesOPlenty", false)
                 .setLanguageKey(LANG_PREFIX + "packs.enableBop").setRequiresMcRestart(true).getBoolean();
-        cache.enableForestryPack = config.get(sectionPacks.getQualifiedName(), "enableForestry", true)
+        cache.enableForestryPack = config.get(sectionPacks.getQualifiedName(), "enableForestry", false)
                 .setLanguageKey(LANG_PREFIX + "packs.enableForestry").setRequiresMcRestart(true).getBoolean();
-        cache.enableErebusPack = config.get(sectionPacks.getQualifiedName(), "enableErebus", true)
+        cache.enableErebusPack = config.get(sectionPacks.getQualifiedName(), "enableErebus", false)
                 .setLanguageKey(LANG_PREFIX + "packs.enableErebus").setRequiresMcRestart(true).getBoolean();
-        cache.enableMiscPack = config.get(sectionPacks.getQualifiedName(), "enableMisc", true)
+        cache.enableMiscPack = config.get(sectionPacks.getQualifiedName(), "enableMisc", false)
                 .setLanguageKey(LANG_PREFIX + "packs.enableMisc").setRequiresMcRestart(true).getBoolean();
 
         config.get(sectionBlocksFullDrawers1x1.getQualifiedName(), "enabled", true)

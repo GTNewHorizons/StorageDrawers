@@ -7,6 +7,7 @@ import com.jaquadro.minecraft.storagedrawers.packs.bop.core.DataResolver;
 import com.jaquadro.minecraft.storagedrawers.packs.bop.core.ModBlocks;
 import com.jaquadro.minecraft.storagedrawers.packs.bop.core.RefinedRelocation;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -34,29 +35,34 @@ public class StorageDrawersPack {
     @SidedProxy(clientSide = SOURCE_PATH + "CommonProxy", serverSide = SOURCE_PATH + "CommonProxy")
     public static CommonProxy proxy;
 
+    public static boolean LOAD = true;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
-            return;
+        if (StorageDrawers.config.userConfig.packsConfig().autoEnablePacks()) {
+            if (!Loader.isModLoaded("BiomesOPlenty")) {
+                LOAD = false;
+            }
+        } else if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
+            LOAD = false;
         }
+
+        if (!LOAD) return;
 
         blocks.init();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
-            return;
-        }
+        if (!LOAD) return;
+
         RefinedRelocation.init();
         resolver.init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isBopPackEnabled()) {
-            return;
-        }
+        if (!LOAD) return;
 
         IStorageDrawersApi api = StorageDrawersApi.instance();
         if (api != null) {
