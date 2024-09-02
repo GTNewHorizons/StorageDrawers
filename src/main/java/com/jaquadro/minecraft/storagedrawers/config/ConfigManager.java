@@ -423,7 +423,11 @@ public class ConfigManager {
         cache.enableGTNHIntegration = config.get(sectionIntegration.getQualifiedName(), "enableGTNH", true)
                 .setLanguageKey(LANG_PREFIX + "integration.enableGTNH").setRequiresMcRestart(true).getBoolean();
 
-        cache.autoEnablePacks = config.get(sectionPacks.getQualifiedName(), "autoEnablePacks", true, "If enabled, all explicit pack options will be ignored. Packs will be enabled if their corresponding mod is present (Not including misc pack)")
+        cache.autoEnablePacks = config.get(
+                sectionPacks.getQualifiedName(),
+                "autoEnablePacks",
+                true,
+                "If enabled, all explicit pack options will be ignored. Packs will be enabled if their corresponding mod is present (Not including misc pack)")
                 .setLanguageKey(LANG_PREFIX + "packs.autoEnable").setRequiresMcRestart(true).getBoolean();
         cache.enableNaturaPack = config.get(sectionPacks.getQualifiedName(), "enableNatura", false)
                 .setLanguageKey(LANG_PREFIX + "packs.enableNatura").setRequiresMcRestart(true).getBoolean();
