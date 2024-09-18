@@ -203,8 +203,16 @@ public class ModRecipes {
                         'w',
                         "ingotGold"));
 
-        // GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.upgradeTemplate, 2), "xxx", "xyx", "xxx",
-        // 'x', "stickWood", 'y', "drawerBasic"));
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(ModItems.upgradeTemplate, 2),
+                        "xxx",
+                        "xyx",
+                        "xxx",
+                        'x',
+                        "stickWood",
+                        'y',
+                        "drawerBasic"));
 
         if (config.cache.enableStorageUpgrades) {
             GameRegistry.addRecipe(
