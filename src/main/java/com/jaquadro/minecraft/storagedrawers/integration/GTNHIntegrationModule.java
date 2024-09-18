@@ -7,7 +7,7 @@ import cpw.mods.fml.common.Loader;
 
 public class GTNHIntegrationModule extends IntegrationModule {
 
-    private static final boolean GTNHEnabled = (Loader.isModLoaded("gregtech")
+    private static final boolean GTNHEnabled = (Loader.isModLoaded("dreamcraft")
             && StorageDrawers.config.integrationConfig.isGTNHEnabled());
 
     public static boolean isEnabled() {
