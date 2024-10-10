@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -245,21 +244,15 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTickTime) {
         TileEntityDrawers tileDrawers = (TileEntityDrawers) tile;
         if (tileDrawers == null) return;
-
         if (tileDrawers.isShrouded() || tileDrawers.isSealed()) return;
 
-        // Don't bother rendering anything that is (probably) facing away from the player.
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        Vec3 faceVector = dirVectors[tileDrawers.getDirection()];
-        float lookProduct = (float) player.getLook(partialTickTime).dotProduct(faceVector);
-
-        if (lookProduct > .75f) return;
-
         float depth;
-
         Block block = tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
-        if (block instanceof BlockDrawers) depth = ((BlockDrawers) block).halfDepth ? .5f : 1;
-        else return;
+        if (block instanceof BlockDrawers) {
+            depth = ((BlockDrawers) block).halfDepth ? .5f : 1;
+        } else {
+            return;
+        }
 
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
