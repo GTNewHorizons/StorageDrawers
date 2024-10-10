@@ -217,10 +217,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
     private float brightness;
 
-    private static final float unit = .0625f;
-
-    private static final int[] glStateRender = { GL11.GL_LIGHTING, GL11.GL_BLEND };
-    private final List<int[]> savedGLStateRender = GLUtil.makeGLState(glStateRender);
+    private static final float unit = 0.0625f;
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTickTime) {
@@ -261,9 +258,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         mc.gameSettings.fancyGraphics = true;
 
         try {
-            if (StorageDrawers.config.isFancyItemRenderEnabled())
-                renderFancyItemSet(tileDrawers, side, depth, partialTickTime);
-            else renderFastItemSet(tileDrawers, side, depth, partialTickTime);
+            if (StorageDrawers.config.isFancyItemRenderEnabled()) {
+                renderFancyItemSet(tileDrawers, side, depth);
+            } else {
+                renderFastItemSet(tileDrawers, side, depth, partialTickTime);
+            }
         } catch (Exception e) {
             // Swallow exception
         }
@@ -273,8 +272,10 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    private void renderFancyItemSet(TileEntityDrawers tile, ForgeDirection side, float depth, float partialTickTime) {
+    private void renderFancyItemSet(TileEntityDrawers tile, ForgeDirection side, float depth) {
         boolean restoreGLState = false;
+        boolean isLightingEnabled = false;
+        boolean isBlendEnabled = false;
         int drawerCount = tile.getDrawerCount();
 
         for (int i = 0; i < drawerCount; i++) {
@@ -286,13 +287,19 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
             if (!restoreGLState) {
                 restoreGLState = true;
-                GLUtil.saveGLState(savedGLStateRender, glStateRender);
+                isLightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
+                isBlendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
             }
 
-            renderFancyItem(itemStack, tile, i, side, depth, partialTickTime);
+            renderFancyItem(itemStack, tile, i, side, depth);
         }
 
-        if (restoreGLState) GLUtil.restoreGLState(savedGLStateRender);
+        if (restoreGLState) {
+            if (isLightingEnabled) GL11.glEnable(GL11.GL_LIGHTING);
+            else GL11.glDisable(GL11.GL_LIGHTING);
+            if (isBlendEnabled) GL11.glEnable(GL11.GL_BLEND);
+            else GL11.glDisable(GL11.GL_BLEND);
+        }
     }
 
     private final boolean[] renderAsBlock = new boolean[4];
@@ -343,7 +350,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     }
 
     private void renderFancyItem(ItemStack itemStack, TileEntityDrawers tile, int slot, ForgeDirection side,
-            float depth, float partialTickTime) {
+            float depth) {
         int drawerCount = tile.getDrawerCount();
         boolean isBlockType = isItemBlockType(itemStack);
 
