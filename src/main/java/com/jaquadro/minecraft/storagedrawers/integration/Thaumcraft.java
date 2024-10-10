@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 
@@ -100,7 +99,7 @@ public class Thaumcraft extends IntegrationModule {
         }
     }
 
-    private class WailaTooltipHandler implements IWailaTooltipHandler {
+    private static class WailaTooltipHandler implements IWailaTooltipHandler {
 
         @Override
         public String transformItemName(IDrawer drawer, String defaultName) {
@@ -117,7 +116,7 @@ public class Thaumcraft extends IntegrationModule {
         }
     }
 
-    private class LabelRenderHandler implements IRenderLabel {
+    private static class LabelRenderHandler implements IRenderLabel {
 
         @Override
         public void render(TileEntity tileEntity, IDrawerGroup drawerGroup, int slot, float brightness,
@@ -129,11 +128,11 @@ public class Thaumcraft extends IntegrationModule {
             if (!(aspectObj instanceof Aspect)) return;
 
             EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-            Vec3 blockPos = Vec3
-                    .createVectorHelper(tileEntity.xCoord + .5, tileEntity.yCoord + .5, tileEntity.zCoord + .5);
-            double distance = blockPos.distanceTo(player.getPosition(partialTickTime));
-
-            if (distance > 10) return;
+            final double distX = player.posX - (tileEntity.xCoord + .5);
+            final double distY = player.posY - (tileEntity.yCoord + .5);
+            final double distZ = player.posZ - (tileEntity.zCoord + .5);
+            final double distSq = distX * distX + distY * distY + distZ * distZ;
+            if (distSq > 100d) return;
 
             Aspect aspect = (Aspect) aspectObj;
             if (!ThaumcraftApiHelper.hasDiscoveredAspect(player.getDisplayName(), aspect)) return;
@@ -151,7 +150,9 @@ public class Thaumcraft extends IntegrationModule {
             }
 
             float alpha = 1;
-            if (distance > 3) alpha = 1f - (float) ((distance - 3) / 7);
+            if (distSq > 9) {
+                alpha = 1f - (float) ((Math.sqrt(distSq) - 3) / 7);
+            }
 
             int color = aspect.getColor();
             float r = (float) (color >> 16 & 255) / 255.0F;
