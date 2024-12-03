@@ -22,7 +22,6 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
 
-    public static int renderPass = 0;
     private DrawersItemRenderer itemRenderer = new DrawersItemRenderer();
     private TrimItemRender trimItemRenderer = new TrimItemRender();
 

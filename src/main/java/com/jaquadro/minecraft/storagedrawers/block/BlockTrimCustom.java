@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityTrim;
-import com.jaquadro.minecraft.storagedrawers.core.ClientProxy;
 import com.jaquadro.minecraft.storagedrawers.item.ItemCustomTrim;
 
 import cpw.mods.fml.relauncher.Side;
@@ -46,7 +45,6 @@ public class BlockTrimCustom extends BlockTrim implements ITileEntityProvider {
 
     @Override
     public boolean canRenderInPass(int pass) {
-        ClientProxy.renderPass = pass;
         return true;
     }
 

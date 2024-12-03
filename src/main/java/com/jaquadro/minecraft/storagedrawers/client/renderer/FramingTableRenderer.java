@@ -3,6 +3,7 @@ package com.jaquadro.minecraft.storagedrawers.client.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
 
@@ -10,7 +11,6 @@ import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockFramingTable;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonFramingRenderer;
-import com.jaquadro.minecraft.storagedrawers.core.ClientProxy;
 import com.jaquadro.minecraft.storagedrawers.util.RenderHelper;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -67,10 +67,10 @@ public class FramingTableRenderer implements ISimpleBlockRenderingHandler {
         renderHelper.state.setRotateTransform(side, RenderHelper.ZNEG);
         renderHelper.state.setUVRotation(RenderHelper.YPOS, renderHelper.state.rotateTransform);
 
-        if (ClientProxy.renderPass == 0) {
+        if (ForgeHooksClient.getWorldRenderPass() == 0) {
             if (right) framingRenderer.renderRight(world, x, y, z, framingTable);
             else framingRenderer.renderLeft(world, x, y, z, framingTable);
-        } else if (ClientProxy.renderPass == 1) {
+        } else if (ForgeHooksClient.getWorldRenderPass() == 1) {
             if (right) framingRenderer.renderOverlayRight(world, x, y, z, framingTable);
             else framingRenderer.renderOverlayLeft(world, x, y, z, framingTable);
         }

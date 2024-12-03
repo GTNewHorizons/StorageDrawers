@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityFramingTable;
-import com.jaquadro.minecraft.storagedrawers.core.ClientProxy;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.handlers.GuiHandler;
@@ -106,7 +105,6 @@ public class BlockFramingTable extends BlockContainer {
 
     @Override
     public boolean canRenderInPass(int pass) {
-        ClientProxy.renderPass = pass;
         return true;
     }
 

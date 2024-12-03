@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.pack.BlockType;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
-import com.jaquadro.minecraft.storagedrawers.core.ClientProxy;
 import com.jaquadro.minecraft.storagedrawers.item.ItemCustomDrawers;
 
 import cpw.mods.fml.relauncher.Side;
@@ -55,7 +54,6 @@ public class BlockDrawersCustom extends BlockDrawers {
 
     @Override
     public boolean canRenderInPass(int pass) {
-        ClientProxy.renderPass = pass;
         return true;
     }
 

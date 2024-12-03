@@ -5,17 +5,19 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.ForgeHooksClient;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawersCustom;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonDrawerRenderer;
-import com.jaquadro.minecraft.storagedrawers.core.ClientProxy;
 
+@ThreadSafeISBRH(perThread = true)
 public class DrawersCustomRenderer extends DrawersRenderer {
 
-    private CommonDrawerRenderer commonRender = new CommonDrawerRenderer();
+    private final CommonDrawerRenderer commonRender = new CommonDrawerRenderer();
 
     @Override
     protected void renderBaseBlock(IBlockAccess world, TileEntityDrawers tile, int x, int y, int z, BlockDrawers block,
@@ -39,9 +41,9 @@ public class DrawersCustomRenderer extends DrawersRenderer {
         if (panelIcon == null) panelIcon = custom.getDefaultFaceIcon();
         if (frontIcon == null) frontIcon = custom.getDefaultFaceIcon();
 
-        if (ClientProxy.renderPass == 0)
+        if (ForgeHooksClient.getWorldRenderPass() == 0)
             commonRender.renderBasePass(world, x, y, z, custom, tile.getDirection(), panelIcon, trimIcon, frontIcon);
-        else if (ClientProxy.renderPass == 1)
+        else if (ForgeHooksClient.getWorldRenderPass() == 1)
             commonRender.renderOverlayPass(world, x, y, z, custom, tile.getDirection(), trimIcon, frontIcon);
     }
 
