@@ -14,7 +14,7 @@ import com.jaquadro.minecraft.storagedrawers.client.renderer.common.CommonTrimRe
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
-@ThreadSafeISBRH(perThread = false)
+@ThreadSafeISBRH(perThread = true)
 public class TrimCustomRenderer implements ISimpleBlockRenderingHandler {
 
     private CommonTrimRenderer commonRender = new CommonTrimRenderer();
