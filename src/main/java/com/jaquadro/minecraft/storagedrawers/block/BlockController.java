@@ -142,6 +142,9 @@ public class BlockController extends BlockContainer implements INetworked {
                 }
 
                 return true;
+            } else if (item.getItem() == ModItems.quantifyKey) {
+                if (!world.isRemote) te.toggleQuantify(player.getGameProfile());
+                return true;
             }
         }
 

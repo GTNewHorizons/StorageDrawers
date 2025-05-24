@@ -36,6 +36,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IPriorityGroup;
 import com.jaquadro.minecraft.storagedrawers.api.storage.ISmartGroup;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ILockable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IProtectable;
+import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IQuantifiable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IShroudable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IVoidable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
@@ -296,6 +297,34 @@ public class TileEntityController extends TileEntity
                 }
 
                 shroudableStorage.setIsShrouded(state);
+            }
+        }
+    }
+
+    public void toggleQuantify(GameProfile profile) {
+        IQuantifiable template = null;
+        boolean state = false;
+
+        for (StorageRecord record : storage.values()) {
+            if (record.storage == null) continue;
+
+            if (record.storage instanceof IProtectable) {
+                if (!SecurityManager.hasAccess(profile, (IProtectable) record.storage)) continue;
+            }
+
+            for (int i = 0, n = record.storage.getDrawerCount(); i < n; i++) {
+                if (!record.storage.isDrawerEnabled(i)) continue;
+
+                IDrawer drawer = record.storage.getDrawer(i);
+                if (!(drawer instanceof IQuantifiable)) continue;
+
+                IQuantifiable quantifiableStorage = (IQuantifiable) drawer;
+                if (template == null) {
+                    template = quantifiableStorage;
+                    state = !template.isQuantified();
+                }
+
+                quantifiableStorage.setIsQuantified(state);
             }
         }
     }

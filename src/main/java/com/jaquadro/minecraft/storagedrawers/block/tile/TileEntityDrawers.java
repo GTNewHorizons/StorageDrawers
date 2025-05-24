@@ -49,6 +49,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private int direction;
     private int drawerCapacity = 1;
     private boolean shrouded = false;
+    private boolean quantified = false;
     private boolean taped = false;
     private boolean hideUpgrade = false;
     private boolean downgraded = false;
@@ -235,6 +236,23 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     public void setIsShrouded(boolean shrouded) {
         if (this.shrouded != shrouded) {
             this.shrouded = shrouded;
+
+            if (worldObj != null && !worldObj.isRemote) {
+                markDirty();
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            }
+        }
+    }
+
+    public boolean isQuantified() {
+        if (!StorageDrawers.config.cache.enableQuantifyUpgrades) return false;
+
+        return quantified;
+    }
+
+    public void setIsQuantified(boolean quantified) {
+        if (this.quantified != quantified) {
+            this.quantified = quantified;
 
             if (worldObj != null && !worldObj.isRemote) {
                 markDirty();
@@ -651,6 +669,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         shrouded = false;
         if (tag.hasKey("Shr")) shrouded = tag.getBoolean("Shr");
 
+        quantified = false;
+        if (tag.hasKey("Qua")) quantified = tag.getBoolean("Qua");
+
         owner = null;
         if (tag.hasKey("Own")) owner = UUID.fromString(tag.getString("Own"));
 
@@ -702,6 +723,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         if (lockAttributes != null) tag.setByte("Lock", (byte) LockAttribute.getBitfield(lockAttributes));
 
         if (shrouded) tag.setBoolean("Shr", shrouded);
+
+        if (quantified) tag.setBoolean("Qua", quantified);
 
         if (owner != null) tag.setString("Own", owner.toString());
 

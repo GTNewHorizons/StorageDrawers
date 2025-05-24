@@ -398,6 +398,11 @@ public class ModRecipes {
             GameRegistry.addShapelessRecipe(new ItemStack(ModItems.personalKey), ModItems.upgradeLock, Items.name_tag);
         }
 
+        if (config.cache.enableQuantifyUpgrades) {
+            GameRegistry
+                    .addShapelessRecipe(new ItemStack(ModItems.quantifyKey), ModItems.upgradeLock, Items.writable_book);
+        }
+
         if (config.cache.enableTape) {
             GameRegistry.addRecipe(
                     new ShapedOreRecipe(

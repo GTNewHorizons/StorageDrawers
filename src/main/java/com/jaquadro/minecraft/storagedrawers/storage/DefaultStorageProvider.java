@@ -64,6 +64,16 @@ public class DefaultStorageProvider implements IStorageProvider {
     }
 
     @Override
+    public boolean isQuantified(int slot) {
+        return false;
+    }
+
+    @Override
+    public boolean setIsQuantified(int slot, boolean state) {
+        return false;
+    }
+
+    @Override
     public boolean isStorageUnlimited(int slot) {
         return false;
     }

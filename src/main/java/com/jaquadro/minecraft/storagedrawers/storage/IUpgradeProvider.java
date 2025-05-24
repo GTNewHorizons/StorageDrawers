@@ -8,5 +8,7 @@ public interface IUpgradeProvider {
 
     boolean isShrouded();
 
+    boolean isQuantified();
+
     boolean isDowngraded();
 }

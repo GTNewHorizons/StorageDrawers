@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -32,6 +33,7 @@ import com.jaquadro.minecraft.storagedrawers.api.render.IRenderLabel;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.util.CountFormatter;
 
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
@@ -267,6 +269,27 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             // Swallow exception
         }
 
+        if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
+            EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+            double dx = tile.xCoord + 0.5 - player.posX;
+            double dy = tile.yCoord + 0.5 - player.posY;
+            double dz = tile.zCoord + 0.5 - player.posZ;
+            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            float alpha = 1.0f;
+            if (distance > 4.0) {
+                alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
+            }
+
+            if (distance < 10.0) {
+                for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
+                    if (!tileDrawers.isDrawerEnabled(i)) continue;
+
+                    drawDrawerTexts(tileDrawers, i, side, depth, alpha);
+                }
+            }
+        }
+
         mc.gameSettings.fancyGraphics = cache;
 
         GL11.glPopMatrix();
@@ -347,6 +370,83 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         if (restoreItemState || restoreBlockState) {
             GL11.glPopAttrib();
         }
+    }
+
+    private void drawDrawerTexts(TileEntityDrawers tile, int slot, ForgeDirection side, float depth, float alpha) {
+        BlockDrawers block = (BlockDrawers) tile.getBlockType();
+        int drawerCount = tile.getDrawerCount();
+
+        float offsetX = 8;
+        float offsetY = 14;
+
+        switch (drawerCount) {
+            case 1:
+                break;
+            case 2:
+                offsetY = (slot == 0) ? 6 : 14;
+                break;
+            case 3:
+                switch (slot) {
+                    case 0:
+                        offsetY = 7;
+                        break;
+                    case 1:
+                        offsetX = 4;
+                        break;
+                    case 2:
+                        offsetX = 12;
+                        break;
+                }
+                break;
+            case 4:
+                switch (slot) {
+                    case 0:
+                        offsetX = 4;
+                        offsetY = 6;
+                        break;
+                    case 1:
+                        offsetX = 4;
+                        break;
+                    case 2:
+                        offsetX = 12;
+                        offsetY = 6;
+                        break;
+                    case 3:
+                        offsetX = 12;
+                        break;
+                }
+                break;
+        }
+
+        renderText(
+                CountFormatter.format(this.func_147498_b(), tile.getDrawer(slot)),
+                side,
+                offsetX,
+                offsetY,
+                1f - depth + block.getTrimDepth() - 0.005f,
+                alpha);
+    }
+
+    private void renderText(String renderString, ForgeDirection side, float offsetX, float offsetY, float offsetZ,
+            float alpha) {
+        int stringWidth = this.func_147498_b().getStringWidth(renderString);
+
+        GL11.glPushMatrix();
+
+        this.alignRendering(side);
+        this.moveRendering(0.125f, offsetX, offsetY, offsetZ);
+
+        GL11.glDepthMask(false);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        this.func_147498_b()
+                .drawString(renderString, -stringWidth / 2, 0, (int) (255 * alpha) << 24 | 255 << 16 | 255 << 8 | 255);
+
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
+
+        GL11.glPopMatrix();
     }
 
     private void renderFancyItem(ItemStack itemStack, TileEntityDrawers tile, int slot, ForgeDirection side,
