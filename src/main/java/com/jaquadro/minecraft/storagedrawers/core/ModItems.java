@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.item.ItemPersonalKey;
+import com.jaquadro.minecraft.storagedrawers.item.ItemQuantifyKey;
 import com.jaquadro.minecraft.storagedrawers.item.ItemShroudKey;
 import com.jaquadro.minecraft.storagedrawers.item.ItemTape;
 import com.jaquadro.minecraft.storagedrawers.item.ItemUpgrade;
@@ -27,6 +28,7 @@ public class ModItems {
     public static ItemUpgradeRedstone upgradeRedstone;
     public static ItemShroudKey shroudKey;
     public static ItemPersonalKey personalKey;
+    public static ItemQuantifyKey quantifyKey;
     public static ItemTape tape;
     public static ItemUpgradeDowngrade upgradeDowngrade;
 
@@ -44,6 +46,7 @@ public class ModItems {
 
         shroudKey = new ItemShroudKey(makeName("shroudKey"));
         personalKey = new ItemPersonalKey(makeName("personalKey"));
+        quantifyKey = new ItemQuantifyKey(makeName("quantifyKey"));
         tape = new ItemTape(makeName("tape"));
 
         GameRegistry.registerItem(upgradeTemplate, "upgradeTemplate");
@@ -58,6 +61,7 @@ public class ModItems {
             GameRegistry.registerItem(upgradeRedstone, "upgradeRedstone");
         if (StorageDrawers.config.cache.enableLockUpgrades) GameRegistry.registerItem(upgradeLock, "upgradeLock");
         if (StorageDrawers.config.cache.enableShroudUpgrades) GameRegistry.registerItem(shroudKey, "shroudKey");
+        if (StorageDrawers.config.cache.enableQuantifyUpgrades) GameRegistry.registerItem(quantifyKey, "quantifyKey");
         if (StorageDrawers.config.cache.enablePersonalUpgrades) GameRegistry.registerItem(personalKey, "personalKey");
         if (StorageDrawers.config.cache.enableTape) GameRegistry.registerItem(tape, "tape");
         GameRegistry.registerItem(upgradeDowngrade, "upgradeDowngrade");

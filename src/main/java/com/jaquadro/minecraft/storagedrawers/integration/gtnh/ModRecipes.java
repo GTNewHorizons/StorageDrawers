@@ -200,6 +200,7 @@ public class ModRecipes {
         lockUpgradeRecipes(); // Drawer key
         shroudKeyUpgradeRecipes(); // Concealment Key
         personalKeyUpgradeRecipes(); // Personal Key
+        quantifyKeyUpgradeRecipes(); // Quantify Key
 
         // Packing Tape
         packingTapeRecipes(); // Packing Tape
@@ -472,6 +473,7 @@ public class ModRecipes {
                 || config.cache.enablePersonalUpgrades
                 || config.cache.enableRedstoneUpgrades
                 || config.cache.enableShroudUpgrades
+                || config.cache.enableQuantifyUpgrades
                 || config.cache.enableSortingUpgrades
                 || config.cache.enableStorageUpgrades
                 || config.cache.enableVoidUpgrades))
@@ -754,6 +756,15 @@ public class ModRecipes {
         // Storage Personal Key
         GTValues.RA.stdBuilder().itemInputs(upgradeLock, new ItemStack(Items.name_tag))
                 .itemOutputs(new ItemStack(ModItems.personalKey)).duration(5 * SECONDS).eut(TierEU.RECIPE_LV)
+                .addTo(assemblerRecipes);
+    }
+
+    private static void quantifyKeyUpgradeRecipes() {
+        if (!config.cache.enableQuantifyUpgrades) return;
+
+        // Quantify Key
+        GTValues.RA.stdBuilder().itemInputs(upgradeLock, new ItemStack(Items.writable_book))
+                .itemOutputs(new ItemStack(ModItems.quantifyKey)).duration(5 * SECONDS).eut(TierEU.RECIPE_LV)
                 .addTo(assemblerRecipes);
     }
 

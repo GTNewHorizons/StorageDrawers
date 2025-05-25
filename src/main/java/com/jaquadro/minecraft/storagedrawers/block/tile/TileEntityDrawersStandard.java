@@ -69,6 +69,17 @@ public class TileEntityDrawersStandard extends TileEntityDrawers {
         }
 
         @Override
+        public boolean isQuantified(int slot) {
+            return TileEntityDrawersStandard.this.isQuantified();
+        }
+
+        @Override
+        public boolean setIsQuantified(int slot, boolean state) {
+            TileEntityDrawersStandard.this.setIsQuantified(state);
+            return true;
+        }
+
+        @Override
         public boolean isStorageUnlimited(int slot) {
             return TileEntityDrawersStandard.this.isUnlimited();
         }

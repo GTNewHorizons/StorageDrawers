@@ -62,6 +62,7 @@ public class ConfigManager {
         public boolean enableVoidUpgrades;
         public boolean enableCreativeUpgrades;
         public boolean enableShroudUpgrades;
+        public boolean enableQuantifyUpgrades;
         public boolean enablePersonalUpgrades;
         public boolean enableSortingUpgrades;
         public boolean enableRedstoneUpgrades;
@@ -341,6 +342,8 @@ public class ConfigManager {
                 .setLanguageKey(LANG_PREFIX + "prop.enableCreativeUpgrades").setRequiresMcRestart(true).getBoolean();
         cache.enableShroudUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enableShroudUpgrades", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enableShroudUpgrades").setRequiresMcRestart(true).getBoolean();
+        cache.enableQuantifyUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enableQuantifyUpgrades", true)
+                .setLanguageKey(LANG_PREFIX + "prop.enableQuantifyUpgrades").setRequiresMcRestart(true).getBoolean();
         cache.enablePersonalUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enablePersonalUpgrades", true)
                 .setLanguageKey(LANG_PREFIX + "prop.enablePersonalUpgrades").setRequiresMcRestart(true).getBoolean();
         cache.enableSortingUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enableSortingUpgrades", true)
