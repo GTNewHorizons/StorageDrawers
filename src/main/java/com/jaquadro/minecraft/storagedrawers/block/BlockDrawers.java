@@ -697,10 +697,10 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     }
 
     /**
-     * Drops normal stacks but voids above 2048 items.
+     * Drops normal stacks but voids above 4096 items.
      */
     private static void dropStacksAndDestroyExcess(World world, int x, int y, int z, TileEntityDrawers tile) {
-        int maxDropNum = 2048 / tile.getDrawerCount();
+        int maxDropNum = 4096 / tile.getDrawerCount();
         for (int i = 0; i < tile.getDrawerCount(); i++) {
             if (!tile.isDrawerEnabled(i)) continue;
             IDrawer drawer = tile.getDrawer(i);
