@@ -613,14 +613,14 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             if (!tile.isVending()) {
                 switch (StorageDrawers.config.cache.breakDrawerDropMode) {
                     case "merge":
-                        dropMergedStacks(world, x, y, z, tile);
+                        dropMergedStacks(tile, world, x, y, z);
                         break;
                     case "destroy":
-                        dropStacksAndDestroyExcess(world, x, y, z, tile);
+                        dropStacksAndDestroyExcess(tile, world, x, y, z);
                         break;
                     case "cluster":
                         if (Loader.isModLoaded("Avaritia")) {
-                            dropAvaritiaClusters(world, x, y, z, tile);
+                            dropAvaritiaClusters(tile, world, x, y, z);
                         }
                     case "default":
                     default:
@@ -680,7 +680,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
      * save the size of the ItemStack correctly since the size is stored as a byte (max 255)
      * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
      */
-    private static void dropMergedStacks(World world, int x, int y, int z, TileEntityDrawers tile) {
+    private static void dropMergedStacks(TileEntityDrawers tile, World world, int x, int y, int z) {
         for (int i = 0; i < tile.getDrawerCount(); i++) {
             if (!tile.isDrawerEnabled(i)) continue;
             IDrawer drawer = tile.getDrawer(i);
@@ -697,7 +697,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     /**
      * Drops normal stacks but voids above 4096 items.
      */
-    private static void dropStacksAndDestroyExcess(World world, int x, int y, int z, TileEntityDrawers tile) {
+    private static void dropStacksAndDestroyExcess(TileEntityDrawers tile, World world, int x, int y, int z) {
         int maxDropNum = 4096 / tile.getDrawerCount();
         for (int i = 0; i < tile.getDrawerCount(); i++) {
             if (!tile.isDrawerEnabled(i)) continue;
@@ -711,7 +711,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
      * Drops Avaritia matter clusters with all the items.
      */
     @Optional.Method(modid = "Avaritia")
-    private static void dropAvaritiaClusters(World world, int x, int y, int z, TileEntityDrawers tile) {
+    private static void dropAvaritiaClusters(TileEntityDrawers tile, World world, int x, int y, int z) {
         for (int i = 0; i < tile.getDrawerCount(); i++) {
             List<ItemStack> stacks = new ArrayList<>();
             forEachSplitStackOfSubDrawer(tile, i, stacks::add);
