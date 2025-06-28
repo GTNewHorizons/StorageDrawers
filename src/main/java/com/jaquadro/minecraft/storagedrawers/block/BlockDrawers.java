@@ -583,20 +583,6 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         return super.removedByPlayer(world, player, x, y, z);
     }
 
-    private static void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0) return;
-        Random rand = world.rand;
-
-        float ex = rand.nextFloat() * .8f + .1f;
-        float ey = rand.nextFloat() * .8f + .1f;
-        float ez = rand.nextFloat() * .8f + .1f;
-
-        EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
-        if (stack.hasTagCompound())
-            entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
-        world.spawnEntityInWorld(entity);
-    }
-
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         TileEntityDrawers tile = getTileEntity(world, x, y, z);
@@ -695,6 +681,25 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                 forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
             }
         }
+    }
+
+    /**
+     * Drops an ItemStack with an "illegal" size that will contain all the items in one stack. The downside of this method is
+     * that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It will not
+     * save the size of the ItemStack correctly since the size is stored as a byte (max 255)
+     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     */
+    private static void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0) return;
+        Random rand = world.rand;
+        float ex = rand.nextFloat() * 0.8f + 0.1f;
+        float ey = rand.nextFloat() * 0.8f + 0.1f;
+        float ez = rand.nextFloat() * 0.8f + 0.1f;
+        EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
+        if (stack.hasTagCompound()) {
+            entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+        }
+        world.spawnEntityInWorld(entity);
     }
 
     /**
