@@ -648,33 +648,29 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         }
     }
 
-    private static void dropStackInBatches(World world, int x, int y, int z, ItemStack stack) {
-        Random rand = world.rand;
-
-        float ex = rand.nextFloat() * .8f + .1f;
-        float ey = rand.nextFloat() * .8f + .1f;
-        float ez = rand.nextFloat() * .8f + .1f;
-
-        EntityItem entity;
-        for (; stack.stackSize > 0; world.spawnEntityInWorld(entity)) {
-            int stackPartSize = rand.nextInt(21) + 10;
-            if (stackPartSize > stack.stackSize) stackPartSize = stack.stackSize;
-
-            stack.stackSize -= stackPartSize;
-            entity = new EntityItem(
+    /**
+     * Spawns a copy of the stack in the world, breaks it down in multiple stacks if the stack size exceeds the
+     * {@link ItemStack#getMaxStackSize()}
+     */
+    private static void spawnStackInWorld(World world, int x, int y, int z, ItemStack stack) {
+        final Random rand = world.rand;
+        while (stack.stackSize > 0) {
+            final int stackSize = Math.min(stack.stackSize, stack.getMaxStackSize());
+            stack.stackSize -= stackSize;
+            final ItemStack newStack = new ItemStack(stack.getItem(), stackSize, stack.getItemDamage());
+            if (stack.hasTagCompound()) {
+                newStack.setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+            }
+            final EntityItem entityItem = new EntityItem(
                     world,
-                    x + ex,
-                    y + ey,
-                    z + ez,
-                    new ItemStack(stack.getItem(), stackPartSize, stack.getItemDamage()));
-
-            float motionUnit = .05f;
-            entity.motionX = rand.nextGaussian() * motionUnit;
-            entity.motionY = rand.nextGaussian() * motionUnit + .2f;
-            entity.motionZ = rand.nextGaussian() * motionUnit;
-
-            if (stack.hasTagCompound())
-                entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+                    x + rand.nextFloat() * 0.8f + 0.1f,
+                    y + rand.nextFloat() * 0.8f + 0.1f,
+                    z + rand.nextFloat() * 0.8f + 0.1f,
+                    newStack);
+            entityItem.motionX = rand.nextGaussian() * 0.05f;
+            entityItem.motionY = rand.nextGaussian() * 0.05f + 0.2f;
+            entityItem.motionZ = rand.nextGaussian() * 0.05f;
+            world.spawnEntityInWorld(entityItem);
         }
     }
 
@@ -693,7 +689,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                 dropBigStackInWorld(world, x, y, z, drawer.getStoredItemCopy());
                 drawer.setStoredItemCount(0);
             } else {
-                forEachSplitStackOfSubDrawer(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
+                forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
             }
         }
     }
@@ -707,7 +703,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             if (!tile.isDrawerEnabled(i)) continue;
             IDrawer drawer = tile.getDrawer(i);
             if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
-            forEachSplitStackOfSubDrawer(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
+            forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
         }
     }
 
@@ -721,7 +717,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             forEachSplitStackOfSubDrawer(tile, i, stacks::add);
             List<ItemStack> clusters = ItemMatterCluster.makeClusters(stacks);
             for (ItemStack stack : clusters) {
-                dropStackInBatches(world, x, y, z, stack);
+                spawnStackInWorld(world, x, y, z, stack);
             }
         }
     }
@@ -731,7 +727,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
      */
     private static void dropAllStacksOfDrawer(TileEntityDrawers tile, World world, int x, int y, int z) {
         for (int i = 0; i < tile.getDrawerCount(); i++) {
-            forEachSplitStackOfSubDrawer(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
+            forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
         }
     }
 
