@@ -9,4 +9,5 @@ dependencies {
     compileOnly('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
     compileOnly('curse.maven:refined-relocation-75811:2262970')
     compileOnly('curse.maven:minetweaker3-224029:2255759')
+    compileOnly("com.github.GTNewHorizons:Avaritia:1.67:dev")
 }

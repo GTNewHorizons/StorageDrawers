@@ -518,6 +518,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         materialTrim = material;
     }
 
+    /**
+     * Returns an ItemStack that will have a maximum size of {@link ItemStack#getMaxStackSize()}
+     */
     public ItemStack takeItemsFromSlot(int slot, int count) {
         if (slot < 0 || slot >= getDrawerCount()) return null;
 
@@ -537,6 +540,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         return stack;
     }
 
+    /**
+     * Returns an ItemStack that will have a maximum size of {@link ItemStack#getMaxStackSize()}
+     */
     protected ItemStack getItemsFromSlot(int slot, int count) {
         if (drawers[slot].isEmpty()) return null;
 

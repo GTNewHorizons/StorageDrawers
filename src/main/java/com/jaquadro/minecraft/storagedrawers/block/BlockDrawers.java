@@ -3,8 +3,6 @@ package com.jaquadro.minecraft.storagedrawers.block;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -66,8 +64,11 @@ import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import fox.spiteful.avaritia.items.ItemMatterCluster;
 
 public class BlockDrawers extends BlockContainer implements IExtendedBlockClickHandler, INetworked {
 
@@ -322,7 +323,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
             float hitY, float hitZ) {
-        if (world.isRemote && Minecraft.getMinecraft().getSystemTime() == ignoreEventTime) {
+        if (world.isRemote && Minecraft.getSystemTime() == ignoreEventTime) {
             ignoreEventTime = 0;
             return false;
         }
@@ -334,24 +335,22 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         if (StorageDrawers.config.cache.debugTrace) {
             FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "BlockDrawers.onBlockActivated");
-            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item.toString());
+            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item);
         }
 
         if (item != null && item.getItem() != null) {
             if (item.getItem() instanceof ItemTrim && player.isSneaking()) {
                 if (!retrimBlock(world, x, y, z, item)) return false;
 
-                if (player != null && !player.capabilities.isCreativeMode) {
+                if (!player.capabilities.isCreativeMode) {
                     if (--item.stackSize <= 0)
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                 }
 
                 return true;
             }
-            /**
-             * Gee, it'd be nice if we could make all of these Items descend from one thing, almost like children and it
-             * would great if we could just find if it was an instance of said thing. Crazy concept!
-             */
+            // Gee, it'd be nice if we could make all of these Items descend from one thing, almost like children and it
+            // would great if we could just find if it was an instance of said thing. Crazy concept!
             else if (item.getItem() == ModItems.upgrade || item.getItem() == ModItems.upgradeStatus
                     || item.getItem() == ModItems.upgradeVoid
                     || item.getItem() == ModItems.upgradeCreative
@@ -364,7 +363,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
                         world.markBlockForUpdate(x, y, z);
 
-                        if (player != null && !player.capabilities.isCreativeMode) {
+                        if (!player.capabilities.isCreativeMode) {
                             if (--item.stackSize <= 0)
                                 player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         }
@@ -480,7 +479,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                             StorageDrawers.config.cache.invertShift));
 
             if (StorageDrawers.config.cache.debugTrace)
-                FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "BlockDrawers.onBlockClicked with " + posn.toString());
+                FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "BlockDrawers.onBlockClicked with " + posn);
         }
     }
 
@@ -506,19 +505,19 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         int slot = getDrawerSlot(side, hitX, hitY, hitZ);
         IDrawer drawer = tileDrawers.getDrawer(slot);
 
-        ItemStack item = null;
+        final ItemStack item;
         // if invertSHift is true this will happen when the player is not shifting
         if (player.isSneaking() != invertShift)
             item = tileDrawers.takeItemsFromSlot(slot, drawer.getStoredItemStackSize());
         else item = tileDrawers.takeItemsFromSlot(slot, 1);
 
         if (StorageDrawers.config.cache.debugTrace)
-            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item.toString());
+            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item);
 
         if (item != null && item.stackSize > 0) {
             if (!player.inventory.addItemStackToInventory(item)) {
                 ForgeDirection dir = ForgeDirection.getOrientation(side);
-                dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, player, item);
+                dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
                 world.markBlockForUpdate(x, y, z);
             } else world.playSoundEffect(
                     x + .5f,
@@ -547,7 +546,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         world.markBlockForUpdate(x, y, z);
 
-        if (world.isRemote) ignoreEventTime = Minecraft.getMinecraft().getSystemTime();
+        if (world.isRemote) ignoreEventTime = Minecraft.getSystemTime();
 
         return true;
     }
@@ -562,12 +561,10 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         }
 
         if (getTileEntity(world, x, y, z) == null) return true;
-        if (side.ordinal() != getTileEntity(world, x, y, z).getDirection()) return true;
-
-        return false;
+        return side.ordinal() != getTileEntity(world, x, y, z).getDirection();
     }
 
-    private void dropItemStack(World world, int x, int y, int z, EntityPlayer player, ItemStack stack) {
+    private void dropItemStack(World world, int x, int y, int z, ItemStack stack) {
         EntityItem entity = new EntityItem(world, x + .5f, y + .5f, z + .5f, stack);
         entity.addVelocity(-entity.motionX, -entity.motionY, -entity.motionZ);
         world.spawnEntityInWorld(entity);
@@ -578,28 +575,12 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         if (world.isRemote && player.capabilities.isCreativeMode) {
             TileEntityDrawers tile = getTileEntity(world, x, y, z);
             MovingObjectPosition posn = Minecraft.getMinecraft().objectMouseOver;
-
             if (tile.getDirection() == posn.sideHit) {
                 onBlockClicked(world, x, y, z, player);
                 return false;
             }
         }
-
         return super.removedByPlayer(world, player, x, y, z);
-    }
-
-    private void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0) return;
-        Random rand = world.rand;
-
-        float ex = rand.nextFloat() * .8f + .1f;
-        float ey = rand.nextFloat() * .8f + .1f;
-        float ez = rand.nextFloat() * .8f + .1f;
-
-        EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
-        if (stack.hasTagCompound())
-            entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
-        world.spawnEntityInWorld(entity);
     }
 
     @Override
@@ -618,67 +599,21 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             if (!tile.isVending()) {
                 switch (StorageDrawers.config.cache.breakDrawerDropMode) {
                     case "merge":
-                        /* Only a minimum number of ItemStack are dropped */
-                        for (int i = 0; i < tile.getDrawerCount(); i++) {
-                            if (!tile.isDrawerEnabled(i)) continue;
-                            IDrawer drawer = tile.getDrawer(i);
-
-                            final ItemStack rawStoredItem = drawer.getStoredItemPrototype();
-                            if (rawStoredItem != null && rawStoredItem.isStackable()) {
-                                dropBigStackInWorld(world, x, y, z, drawer.getStoredItemCopy());
-                                drawer.setStoredItemCount(0);
-                            } else {
-                                forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
-                            }
-                        }
+                        dropMergedStacks(tile, world, x, y, z);
                         break;
                     case "destroy":
-                        /* Destroy excess items */
-                        int maxDropNum = 2048 / tile.getDrawerCount();
-                        for (int i = 0; i < tile.getDrawerCount(); i++) {
-                            if (!tile.isDrawerEnabled(i)) continue;
-                            IDrawer drawer = tile.getDrawer(i);
-                            if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
-
-                            forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
-                        }
+                        dropStacksAndDestroyExcess(tile, world, x, y, z);
+                        break;
+                    case "mixed":
+                        dropStacksMixedBehavior(tile, world, x, y, z);
                         break;
                     case "cluster":
-                        /* System.out.println("hello"); */
-                        if (cpw.mods.fml.common.Loader.isModLoaded("Avaritia")) {
-                            try {
-                                Class<?> itemMatterClusterClass = Class
-                                        .forName("fox.spiteful.avaritia.items.ItemMatterCluster");
-                                Method method = itemMatterClusterClass.getMethod("makeClusters", List.class);
-                                /* May not be used */
-                                for (int i = 0; i < tile.getDrawerCount(); i++) {
-                                    List<ItemStack> stacks = new ArrayList<>();
-                                    forEachSplitStack(tile, i, stacks::add);
-
-                                    List<ItemStack> clusters = (List<ItemStack>) method
-                                            .invoke(itemMatterClusterClass, stacks);
-                                    for (ItemStack stack : clusters) {
-                                        dropStackInBatches(world, x, y, z, stack);
-                                    }
-                                }
-                                break; /* switch */
-                            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException
-                                    | ClassNotFoundException e) {
-                                StorageDrawers.config.cache.breakDrawerDropMode = "default";
-                                FMLLog.log(
-                                        StorageDrawers.MOD_ID,
-                                        Level.INFO,
-                                        "Avaritia does not exist or cannot build a cluster!");
-                                if (StorageDrawers.config.cache.debugTrace)
-                                    FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, e.getMessage());
-                                // :P
-                            }
+                        if (Loader.isModLoaded("Avaritia")) {
+                            dropAvaritiaClusters(tile, world, x, y, z);
                         }
                     case "default":
                     default:
-                        for (int i = 0; i < tile.getDrawerCount(); i++) {
-                            forEachSplitStack(tile, i, stack -> dropStackInBatches(world, x, y, z, stack));
-                        }
+                        dropAllStacksOfDrawer(tile, world, x, y, z);
                 }
             }
 
@@ -688,45 +623,148 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         super.breakBlock(world, x, y, z, block, meta);
     }
 
-    private void forEachSplitStack(TileEntityDrawers tile, int index, Consumer<ItemStack> forEachStack) {
-        if (!tile.isDrawerEnabled(index)) return;
-        IDrawer drawer = tile.getDrawer(index);
-
-        while (drawer.getStoredItemCount() > 0) {
-            ItemStack stack = tile.takeItemsFromSlot(index, drawer.getStoredItemStackSize());
+    /**
+     * Performs an action on the items stored in the sub-drawer at index drawerIndex until it is empty.
+     */
+    private static void forEachSplitStackOfSubDrawer(TileEntityDrawers drawer, int drawerIndex,
+            Consumer<ItemStack> action) {
+        if (!drawer.isDrawerEnabled(drawerIndex)) return;
+        IDrawer subDrawer = drawer.getDrawer(drawerIndex);
+        while (subDrawer.getStoredItemCount() > 0) {
+            ItemStack stack = drawer.takeItemsFromSlot(drawerIndex, subDrawer.getStoredItemStackSize());
             if (stack == null || stack.stackSize == 0) break;
-
-            forEachStack.accept(stack);
+            action.accept(stack);
         }
     }
 
-    private void dropStackInBatches(World world, int x, int y, int z, ItemStack stack) {
-        Random rand = world.rand;
-
-        float ex = rand.nextFloat() * .8f + .1f;
-        float ey = rand.nextFloat() * .8f + .1f;
-        float ez = rand.nextFloat() * .8f + .1f;
-
-        EntityItem entity;
-        for (; stack.stackSize > 0; world.spawnEntityInWorld(entity)) {
-            int stackPartSize = rand.nextInt(21) + 10;
-            if (stackPartSize > stack.stackSize) stackPartSize = stack.stackSize;
-
-            stack.stackSize -= stackPartSize;
-            entity = new EntityItem(
+    /**
+     * Spawns a copy of the stack in the world, breaks it down in multiple stacks if the stack size exceeds the
+     * {@link ItemStack#getMaxStackSize()}
+     */
+    private static void spawnStackInWorld(World world, int x, int y, int z, ItemStack stack) {
+        final Random rand = world.rand;
+        while (stack.stackSize > 0) {
+            final int stackSize = Math.min(stack.stackSize, stack.getMaxStackSize());
+            stack.stackSize -= stackSize;
+            final ItemStack newStack = new ItemStack(stack.getItem(), stackSize, stack.getItemDamage());
+            if (stack.hasTagCompound()) {
+                newStack.setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+            }
+            final EntityItem entityItem = new EntityItem(
                     world,
-                    x + ex,
-                    y + ey,
-                    z + ez,
-                    new ItemStack(stack.getItem(), stackPartSize, stack.getItemDamage()));
+                    x + rand.nextFloat() * 0.8f + 0.1f,
+                    y + rand.nextFloat() * 0.8f + 0.1f,
+                    z + rand.nextFloat() * 0.8f + 0.1f,
+                    newStack);
+            entityItem.motionX = rand.nextGaussian() * 0.05f;
+            entityItem.motionY = rand.nextGaussian() * 0.05f + 0.2f;
+            entityItem.motionZ = rand.nextGaussian() * 0.05f;
+            world.spawnEntityInWorld(entityItem);
+        }
+    }
 
-            float motionUnit = .05f;
-            entity.motionX = rand.nextGaussian() * motionUnit;
-            entity.motionY = rand.nextGaussian() * motionUnit + .2f;
-            entity.motionZ = rand.nextGaussian() * motionUnit;
+    /**
+     * Drops stacks with an "illegal" size that will contain all the items in one stack. The downside of this method is
+     * that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It will not
+     * save the size of the ItemStack correctly since the size is stored as a byte (max 255)
+     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     */
+    private static void dropMergedStacks(TileEntityDrawers tile, World world, int x, int y, int z) {
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            if (!tile.isDrawerEnabled(i)) continue;
+            IDrawer drawer = tile.getDrawer(i);
+            final ItemStack rawStoredItem = drawer.getStoredItemPrototype();
+            if (rawStoredItem != null && rawStoredItem.isStackable()) {
+                dropBigStackInWorld(world, x, y, z, drawer.getStoredItemCopy());
+                drawer.setStoredItemCount(0);
+            } else {
+                forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
+            }
+        }
+    }
 
-            if (stack.hasTagCompound())
-                entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+    /**
+     * Drops an ItemStack with an "illegal" size that will contain all the items in one stack. The downside of this
+     * method is that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It
+     * will not save the size of the ItemStack correctly since the size is stored as a byte (max 255)
+     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     */
+    private static void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0) return;
+        Random rand = world.rand;
+        float ex = rand.nextFloat() * 0.8f + 0.1f;
+        float ey = rand.nextFloat() * 0.8f + 0.1f;
+        float ez = rand.nextFloat() * 0.8f + 0.1f;
+        EntityItem entity = new EntityItem(world, x + ex, y + ey, z + ez, stack);
+        if (stack.hasTagCompound()) {
+            entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+        }
+        world.spawnEntityInWorld(entity);
+    }
+
+    /**
+     * Drops normal stacks but voids above 4096 items.
+     */
+    private static void dropStacksAndDestroyExcess(TileEntityDrawers tile, World world, int x, int y, int z) {
+        int maxDropNum = 4096 / tile.getDrawerCount();
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            if (!tile.isDrawerEnabled(i)) continue;
+            IDrawer drawer = tile.getDrawer(i);
+            if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
+        }
+        dropAllStacksOfDrawer(tile, world, x, y, z);
+    }
+
+    private static void dropStacksMixedBehavior(TileEntityDrawers tile, World world, int x, int y, int z) {
+        final int stacksToSpawn = countAmountOfStacksToSpawn(tile);
+        if (stacksToSpawn <= 64) {
+            dropAllStacksOfDrawer(tile, world, x, y, z);
+        } else if (Loader.isModLoaded("Avaritia")) {
+            dropAvaritiaClusters(tile, world, x, y, z);
+        } else {
+            dropMergedStacks(tile, world, x, y, z);
+        }
+    }
+
+    /**
+     * Counts the amount of stacks that would drop if we were to break this drawer.
+     */
+    private static int countAmountOfStacksToSpawn(TileEntityDrawers tile) {
+        int stackCount = 0;
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            if (!tile.isDrawerEnabled(i)) continue;
+            IDrawer drawer = tile.getDrawer(i);
+            final ItemStack storedItem = drawer.getStoredItemPrototype();
+            if (storedItem == null) continue;
+            final int maxStackSize = storedItem.getMaxStackSize();
+            final int storedItemCount = drawer.getStoredItemCount();
+            stackCount += storedItemCount / maxStackSize;
+            if (storedItemCount % maxStackSize != 0) stackCount++;
+        }
+        return stackCount;
+    }
+
+    /**
+     * Drops Avaritia matter clusters with all the items.
+     */
+    @Optional.Method(modid = "Avaritia")
+    private static void dropAvaritiaClusters(TileEntityDrawers tile, World world, int x, int y, int z) {
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            List<ItemStack> stacks = new ArrayList<>();
+            forEachSplitStackOfSubDrawer(tile, i, stacks::add);
+            List<ItemStack> clusters = ItemMatterCluster.makeClusters(stacks);
+            for (ItemStack stack : clusters) {
+                spawnStackInWorld(world, x, y, z, stack);
+            }
+        }
+    }
+
+    /**
+     * Drops all the stacks contained is this drawer.
+     */
+    private static void dropAllStacksOfDrawer(TileEntityDrawers tile, World world, int x, int y, int z) {
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
         }
     }
 
@@ -738,7 +776,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         if (willHarvest) return true;
-        return super.removedByPlayer(world, player, x, y, z, willHarvest);
+        return super.removedByPlayer(world, player, x, y, z, false);
     }
 
     @Override
@@ -751,7 +789,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
         ItemStack dropStack = getMainDrop(world, x, y, z, metadata);
 
-        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> drops = new ArrayList<>();
         drops.add(dropStack);
 
         TileEntityDrawers tile = getTileEntity(world, x, y, z);
@@ -794,7 +832,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         return new TileEntityDrawersStandard();
     }
 
-    public TileEntityDrawers getTileEntity(IBlockAccess blockAccess, int x, int y, int z) {
+    public static TileEntityDrawers getTileEntity(IBlockAccess blockAccess, int x, int y, int z) {
         TileEntity tile = blockAccess.getTileEntity(x, y, z);
         return (tile instanceof TileEntityDrawers) ? (TileEntityDrawers) tile : null;
     }
