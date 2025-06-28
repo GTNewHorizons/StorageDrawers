@@ -322,7 +322,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
             float hitY, float hitZ) {
-        if (world.isRemote && Minecraft.getMinecraft().getSystemTime() == ignoreEventTime) {
+        if (world.isRemote && Minecraft.getSystemTime() == ignoreEventTime) {
             ignoreEventTime = 0;
             return false;
         }
@@ -334,24 +334,22 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         if (StorageDrawers.config.cache.debugTrace) {
             FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "BlockDrawers.onBlockActivated");
-            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item.toString());
+            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item);
         }
 
         if (item != null && item.getItem() != null) {
             if (item.getItem() instanceof ItemTrim && player.isSneaking()) {
                 if (!retrimBlock(world, x, y, z, item)) return false;
 
-                if (player != null && !player.capabilities.isCreativeMode) {
+                if (!player.capabilities.isCreativeMode) {
                     if (--item.stackSize <= 0)
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                 }
 
                 return true;
             }
-            /**
-             * Gee, it'd be nice if we could make all of these Items descend from one thing, almost like children and it
-             * would great if we could just find if it was an instance of said thing. Crazy concept!
-             */
+            // Gee, it'd be nice if we could make all of these Items descend from one thing, almost like children and it
+            // would great if we could just find if it was an instance of said thing. Crazy concept!
             else if (item.getItem() == ModItems.upgrade || item.getItem() == ModItems.upgradeStatus
                     || item.getItem() == ModItems.upgradeVoid
                     || item.getItem() == ModItems.upgradeCreative
@@ -364,7 +362,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
                         world.markBlockForUpdate(x, y, z);
 
-                        if (player != null && !player.capabilities.isCreativeMode) {
+                        if (!player.capabilities.isCreativeMode) {
                             if (--item.stackSize <= 0)
                                 player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         }
@@ -480,7 +478,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                             StorageDrawers.config.cache.invertShift));
 
             if (StorageDrawers.config.cache.debugTrace)
-                FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "BlockDrawers.onBlockClicked with " + posn.toString());
+                FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "BlockDrawers.onBlockClicked with " + posn);
         }
     }
 
@@ -506,19 +504,19 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         int slot = getDrawerSlot(side, hitX, hitY, hitZ);
         IDrawer drawer = tileDrawers.getDrawer(slot);
 
-        ItemStack item = null;
+        final ItemStack item;
         // if invertSHift is true this will happen when the player is not shifting
         if (player.isSneaking() != invertShift)
             item = tileDrawers.takeItemsFromSlot(slot, drawer.getStoredItemStackSize());
         else item = tileDrawers.takeItemsFromSlot(slot, 1);
 
         if (StorageDrawers.config.cache.debugTrace)
-            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item.toString());
+            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item);
 
         if (item != null && item.stackSize > 0) {
             if (!player.inventory.addItemStackToInventory(item)) {
                 ForgeDirection dir = ForgeDirection.getOrientation(side);
-                dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, player, item);
+                dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
                 world.markBlockForUpdate(x, y, z);
             } else world.playSoundEffect(
                     x + .5f,
@@ -547,7 +545,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         world.markBlockForUpdate(x, y, z);
 
-        if (world.isRemote) ignoreEventTime = Minecraft.getMinecraft().getSystemTime();
+        if (world.isRemote) ignoreEventTime = Minecraft.getSystemTime();
 
         return true;
     }
@@ -562,12 +560,10 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         }
 
         if (getTileEntity(world, x, y, z) == null) return true;
-        if (side.ordinal() != getTileEntity(world, x, y, z).getDirection()) return true;
-
-        return false;
+        return side.ordinal() != getTileEntity(world, x, y, z).getDirection();
     }
 
-    private void dropItemStack(World world, int x, int y, int z, EntityPlayer player, ItemStack stack) {
+    private void dropItemStack(World world, int x, int y, int z, ItemStack stack) {
         EntityItem entity = new EntityItem(world, x + .5f, y + .5f, z + .5f, stack);
         entity.addVelocity(-entity.motionX, -entity.motionY, -entity.motionZ);
         world.spawnEntityInWorld(entity);
@@ -578,13 +574,11 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         if (world.isRemote && player.capabilities.isCreativeMode) {
             TileEntityDrawers tile = getTileEntity(world, x, y, z);
             MovingObjectPosition posn = Minecraft.getMinecraft().objectMouseOver;
-
             if (tile.getDirection() == posn.sideHit) {
                 onBlockClicked(world, x, y, z, player);
                 return false;
             }
         }
-
         return super.removedByPlayer(world, player, x, y, z);
     }
 
@@ -738,7 +732,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         if (willHarvest) return true;
-        return super.removedByPlayer(world, player, x, y, z, willHarvest);
+        return super.removedByPlayer(world, player, x, y, z, false);
     }
 
     @Override
@@ -751,7 +745,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
         ItemStack dropStack = getMainDrop(world, x, y, z, metadata);
 
-        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> drops = new ArrayList<>();
         drops.add(dropStack);
 
         TileEntityDrawers tile = getTileEntity(world, x, y, z);
