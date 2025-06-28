@@ -703,8 +703,8 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             if (!tile.isDrawerEnabled(i)) continue;
             IDrawer drawer = tile.getDrawer(i);
             if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
-            forEachSplitStackOfSubDrawer(tile, i, stack -> spawnStackInWorld(world, x, y, z, stack));
         }
+        dropAllStacksOfDrawer(tile, world, x, y, z);
     }
 
     /**
