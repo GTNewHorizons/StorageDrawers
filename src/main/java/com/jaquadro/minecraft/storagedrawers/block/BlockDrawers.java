@@ -3,8 +3,6 @@ package com.jaquadro.minecraft.storagedrawers.block;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -67,8 +65,10 @@ import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import fox.spiteful.avaritia.items.ItemMatterCluster;
 
 public class BlockDrawers extends BlockContainer implements IExtendedBlockClickHandler, INetworked {
 
@@ -620,9 +620,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                         break;
                     case "cluster":
                         if (Loader.isModLoaded("Avaritia")) {
-                            if (dropAvaritiaClusters(world, x, y, z, tile)) {
-                                break;
-                            }
+                            dropAvaritiaClusters(world, x, y, z, tile);
                         }
                     case "default":
                     default:
@@ -712,29 +710,16 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     /**
      * Drops Avaritia matter clusters with all the items.
      */
-    private static boolean dropAvaritiaClusters(World world, int x, int y, int z, TileEntityDrawers tile) {
-        try {
-            Class<?> itemMatterClusterClass = Class.forName("fox.spiteful.avaritia.items.ItemMatterCluster");
-            Method method = itemMatterClusterClass.getMethod("makeClusters", List.class);
-            /* May not be used */
-            for (int i = 0; i < tile.getDrawerCount(); i++) {
-                List<ItemStack> stacks = new ArrayList<>();
-                forEachSplitStack(tile, i, stacks::add);
-
-                List<ItemStack> clusters = (List<ItemStack>) method.invoke(itemMatterClusterClass, stacks);
-                for (ItemStack stack : clusters) {
-                    dropStackInBatches(world, x, y, z, stack);
-                }
+    @Optional.Method(modid = "Avaritia")
+    private static void dropAvaritiaClusters(World world, int x, int y, int z, TileEntityDrawers tile) {
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            List<ItemStack> stacks = new ArrayList<>();
+            forEachSplitStack(tile, i, stacks::add);
+            List<ItemStack> clusters = ItemMatterCluster.makeClusters(stacks);
+            for (ItemStack stack : clusters) {
+                dropStackInBatches(world, x, y, z, stack);
             }
-            return true;
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException
-                | ClassNotFoundException e) {
-            StorageDrawers.config.cache.breakDrawerDropMode = "default";
-            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, "Avaritia does not exist or cannot build a cluster!");
-            if (StorageDrawers.config.cache.debugTrace) FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, e.getMessage());
-            // :P
         }
-        return false;
     }
 
     /**
