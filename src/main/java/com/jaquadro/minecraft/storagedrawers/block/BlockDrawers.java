@@ -684,9 +684,9 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
     }
 
     /**
-     * Drops an ItemStack with an "illegal" size that will contain all the items in one stack. The downside of this method is
-     * that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It will not
-     * save the size of the ItemStack correctly since the size is stored as a byte (max 255)
+     * Drops an ItemStack with an "illegal" size that will contain all the items in one stack. The downside of this
+     * method is that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It
+     * will not save the size of the ItemStack correctly since the size is stored as a byte (max 255)
      * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
      */
     private static void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
