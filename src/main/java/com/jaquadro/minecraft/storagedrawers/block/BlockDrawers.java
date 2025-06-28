@@ -618,6 +618,9 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                     case "destroy":
                         dropStacksAndDestroyExcess(tile, world, x, y, z);
                         break;
+                    case "mixed":
+                        dropStacksMixedBehavior(tile, world, x, y, z);
+                        break;
                     case "cluster":
                         if (Loader.isModLoaded("Avaritia")) {
                             dropAvaritiaClusters(tile, world, x, y, z);
@@ -705,6 +708,35 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
             if (drawer.getStoredItemCount() > maxDropNum) drawer.setStoredItemCount(maxDropNum);
         }
         dropAllStacksOfDrawer(tile, world, x, y, z);
+    }
+
+    private static void dropStacksMixedBehavior(TileEntityDrawers tile, World world, int x, int y, int z) {
+        final int stacksToSpawn = countAmountOfStacksToSpawn(tile);
+        if (stacksToSpawn <= 64) {
+            dropAllStacksOfDrawer(tile, world, x, y, z);
+        } else if (Loader.isModLoaded("Avaritia")) {
+            dropAvaritiaClusters(tile, world, x, y, z);
+        } else {
+            dropMergedStacks(tile, world, x, y, z);
+        }
+    }
+
+    /**
+     * Counts the amount of stacks that would drop if we were to break this drawer.
+     */
+    private static int countAmountOfStacksToSpawn(TileEntityDrawers tile) {
+        int stackCount = 0;
+        for (int i = 0; i < tile.getDrawerCount(); i++) {
+            if (!tile.isDrawerEnabled(i)) continue;
+            IDrawer drawer = tile.getDrawer(i);
+            final ItemStack storedItem = drawer.getStoredItemPrototype();
+            if (storedItem == null) continue;
+            final int maxStackSize = storedItem.getMaxStackSize();
+            final int storedItemCount = drawer.getStoredItemCount();
+            stackCount += storedItemCount / maxStackSize;
+            if (storedItemCount % maxStackSize != 0) stackCount++;
+        }
+        return stackCount;
     }
 
     /**

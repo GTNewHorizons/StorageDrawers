@@ -395,9 +395,9 @@ public class ConfigManager {
                 .get(
                         Configuration.CATEGORY_GENERAL,
                         "breakDrawerDropMode",
-                        "merge",
-                        "Select: default, merge, destroy and cluster. ",
-                        new String[] { "default", "destroy", "merge", "cluster" })
+                        "mixed",
+                        "Select: default, mixed, merge, destroy and cluster. ",
+                        new String[] { "default", "mixed", "merge", "destroy", "cluster" })
                 .setLanguageKey(LANG_PREFIX + "prop.breakDrawerDropMode").getString();
 
         cache.enableAE2Integration = config.get(sectionIntegration.getQualifiedName(), "enableAE2", true)
