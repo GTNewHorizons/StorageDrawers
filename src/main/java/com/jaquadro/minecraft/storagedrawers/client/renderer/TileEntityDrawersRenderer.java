@@ -513,11 +513,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
 
+        IDrawer drawer = tile.getDrawer(slot);
         try {
-            EntityItem itemEnt = new EntityItem(null, 0, 0, 0, itemStack);
-            itemEnt.hoverStart = 0;
+            EntityItem itemEnt = drawer.getEntityItemForRender(itemStack);
             itemRenderer.doRender(itemEnt, 0, 0, 0, 0, 0);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
 
         GL11.glPopMatrix();
     }

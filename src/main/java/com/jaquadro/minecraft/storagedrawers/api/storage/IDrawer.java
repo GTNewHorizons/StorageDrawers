@@ -1,7 +1,13 @@
 package com.jaquadro.minecraft.storagedrawers.api.storage;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public interface IDrawer {
 
@@ -118,4 +124,17 @@ public interface IDrawer {
     void writeToNBT(NBTTagCompound tag);
 
     void readFromNBT(NBTTagCompound tag);
+
+    /**
+     * Spawns a World-less {@link EntityItem} intended for client-side rendering on Drawer
+     *
+     * @param itemStack The {@link ItemStack} for the {@link EntityItem}
+     * @return The {@link EntityItem} instance (Implementations might cache it)
+     */
+    @SideOnly(Side.CLIENT)
+    default EntityItem getEntityItemForRender(@Nonnull ItemStack itemStack) {
+        EntityItem newEntityItem = new EntityItem(null, 0, 0, 0, itemStack);
+        newEntityItem.hoverStart = 0;
+        return newEntityItem;
+    }
 }

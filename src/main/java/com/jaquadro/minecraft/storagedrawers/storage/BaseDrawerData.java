@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -14,11 +17,18 @@ import com.jaquadro.minecraft.storagedrawers.api.inventory.SlotType;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.inventory.InventoryStack;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
 
     protected InventoryStack inventoryStack;
     private List<ItemStack> oreDictMatches;
     private Map<String, Object> auxData;
+    @SideOnly(Side.CLIENT)
+    private ItemStack itemStackForRender;
+    @SideOnly(Side.CLIENT)
+    private EntityItem entityItemForRender;
 
     protected BaseDrawerData() {
         inventoryStack = new DrawerInventoryStack();
@@ -175,6 +185,20 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
         }
 
         return ItemStack.areItemStackTagsEqual(stack1, stack2);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @SideOnly(Side.CLIENT)
+    public EntityItem getEntityItemForRender(@Nonnull ItemStack itemStack) {
+        if (entityItemForRender == null || itemStackForRender != itemStack) {
+            itemStackForRender = itemStack;
+            entityItemForRender = new EntityItem(null, 0, 0, 0, itemStack);
+            entityItemForRender.hoverStart = 0;
+        }
+        return entityItemForRender;
     }
 
     class DrawerInventoryStack extends InventoryStack {
