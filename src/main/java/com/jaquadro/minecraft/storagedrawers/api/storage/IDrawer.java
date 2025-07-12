@@ -132,7 +132,7 @@ public interface IDrawer {
      * @return The {@link EntityItem} instance (Implementations might cache it)
      */
     @SideOnly(Side.CLIENT)
-    default EntityItem getEntityItem(@Nonnull ItemStack itemStack) {
+    default EntityItem getEntityItemForRender(@Nonnull ItemStack itemStack) {
         EntityItem newEntityItem = new EntityItem(null, 0, 0, 0, itemStack);
         newEntityItem.hoverStart = 0;
         return newEntityItem;

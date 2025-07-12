@@ -515,7 +515,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         IDrawer drawer = tile.getDrawer(slot);
         try {
-            EntityItem itemEnt = drawer.getEntityItem(itemStack);
+            EntityItem itemEnt = drawer.getEntityItemForRender(itemStack);
             itemRenderer.doRender(itemEnt, 0, 0, 0, 0, 0);
         } catch (Exception ignored) {}
 

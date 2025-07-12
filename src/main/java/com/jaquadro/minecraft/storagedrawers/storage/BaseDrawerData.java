@@ -192,7 +192,7 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public EntityItem getEntityItem(@Nonnull ItemStack itemStack) {
+    public EntityItem getEntityItemForRender(@Nonnull ItemStack itemStack) {
         if (entityItemForRender == null || itemStackForRender != itemStack) {
             itemStackForRender = itemStack;
             entityItemForRender = new EntityItem(null, 0, 0, 0, itemStack);
