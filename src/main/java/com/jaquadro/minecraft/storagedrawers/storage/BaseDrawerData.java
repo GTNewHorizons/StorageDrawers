@@ -25,7 +25,9 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
     protected InventoryStack inventoryStack;
     private List<ItemStack> oreDictMatches;
     private Map<String, Object> auxData;
+    @SideOnly(Side.CLIENT)
     private ItemStack itemStackForRender;
+    @SideOnly(Side.CLIENT)
     private EntityItem entityItemForRender;
 
     protected BaseDrawerData() {
