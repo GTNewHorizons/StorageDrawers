@@ -45,8 +45,6 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation(
             "textures/misc/enchanted_item_glint.png");
 
-    private static final String ENT_ITEM_CACHE_KEY = "entItemCache";
-
     private final RenderItem itemRenderer = new RenderItem() {
 
         private final RenderBlocks renderBlocksRi = new RenderBlocks();
@@ -517,23 +515,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         IDrawer drawer = tile.getDrawer(slot);
         try {
-            EntityItem itemEnt = getCachedEntityItem(drawer, itemStack);
+            EntityItem itemEnt = drawer.getEntityItem(itemStack);
             itemRenderer.doRender(itemEnt, 0, 0, 0, 0, 0);
         } catch (Exception ignored) {}
 
         GL11.glPopMatrix();
-    }
-
-    private EntityItem getCachedEntityItem(IDrawer drawer, ItemStack itemStack) {
-        EntityItem cachedEntityItem, newEntityItem;
-        cachedEntityItem = (EntityItem) drawer.getExtendedData(ENT_ITEM_CACHE_KEY);
-        if (cachedEntityItem != null && ItemStack.areItemStacksEqual(cachedEntityItem.getEntityItem(), itemStack)) {
-            return cachedEntityItem;
-        }
-        newEntityItem = new EntityItem(null, 0, 0, 0, itemStack);
-        newEntityItem.hoverStart = 0;
-        drawer.setExtendedData(ENT_ITEM_CACHE_KEY, newEntityItem);
-        return newEntityItem;
     }
 
     private void renderFastItem(ItemStack itemStack, TileEntityDrawers tile, int slot, ForgeDirection side, float depth,
