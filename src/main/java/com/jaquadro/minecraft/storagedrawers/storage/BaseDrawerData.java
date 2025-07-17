@@ -188,15 +188,16 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * 
+     * @implNote The generated entity is cached for improved performance on repeated calls.
      */
     @Override
     @SideOnly(Side.CLIENT)
     public EntityItem getEntityItemForRender(@Nonnull ItemStack itemStack) {
-        if (entityItemForRender == null || itemStackForRender != itemStack) {
+        if (itemStackForRender != itemStack || entityItemForRender == null) {
             itemStackForRender = itemStack;
-            entityItemForRender = new EntityItem(null, 0, 0, 0, itemStack);
-            entityItemForRender.hoverStart = 0;
+            entityItemForRender = IDrawer.super.getEntityItemForRender(itemStack);
         }
         return entityItemForRender;
     }
