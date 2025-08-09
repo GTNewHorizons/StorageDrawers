@@ -7,4 +7,6 @@ public interface IIntegrationConfig {
     boolean isChiselEnabled();
 
     boolean isGTNHEnabled();
+
+    boolean isBackhandEnabled();
 }

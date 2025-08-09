@@ -10,4 +10,5 @@ dependencies {
     compileOnly('curse.maven:refined-relocation-75811:2262970')
     compileOnly('curse.maven:minetweaker3-224029:2255759')
     compileOnly("com.github.GTNewHorizons:Avaritia:1.69:dev")
+    compileOnly("com.github.GTNewHorizons:Backhand:1.6.39:dev")
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import com.jaquadro.minecraft.storagedrawers.integration.BackhandIntegrationModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockContainer;
@@ -69,6 +70,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import fox.spiteful.avaritia.items.ItemMatterCluster;
+import xonin.backhand.api.core.BackhandUtils;
 
 public class BlockDrawers extends BlockContainer implements IExtendedBlockClickHandler, INetworked {
 
@@ -314,6 +316,11 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         if (itemStack.hasDisplayName()) tile.setInventoryName(itemStack.getDisplayName());
 
+        if (BackhandIntegrationModule.isEnabled() && entity instanceof EntityPlayer) {
+            ItemStack offhandItem = BackhandUtils.getOffhandItem((EntityPlayer) entity);
+            useKey(tile, (EntityPlayer) entity, offhandItem, 0, 0, 0, 0);
+        }
+
         if (world.isRemote) {
             tile.invalidate();
             world.markBlockForUpdate(x, y, z);
@@ -330,6 +337,10 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         TileEntityDrawers tileDrawers = getTileEntitySafe(world, x, y, z);
         ItemStack item = player.inventory.getCurrentItem();
+
+        if (BackhandIntegrationModule.isEnabled() && BackhandUtils.getOffhandItem(player) != null && item == null) {
+            if((BackhandUtils.useOffhandItem(player, () -> true))) return false;
+        }
 
         if (!SecurityManager.hasAccess(player.getGameProfile(), tileDrawers)) return false;
 
@@ -369,45 +380,9 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                         }
 
                         return true;
-                    } else
-                if (item.getItem() == ModItems.upgradeLock) {
-                    boolean locked = tileDrawers.isLocked(LockAttribute.LOCK_POPULATED);
-
-                    if (locked) {
-                        int slot = getDrawerSlot(side, hitX, hitY, hitZ);
-                        IDrawer drawer = tileDrawers.getDrawer(slot);
-                        ItemStack stack = drawer.getStoredItemPrototype();
-                        int count = drawer.getStoredItemCount();
-
-                        if (stack != null && count == 0) {
-                            drawer.setStoredItemRedir(null, 0);
-                            return true;
-                        }
-                    }
-                    tileDrawers.setLocked(LockAttribute.LOCK_POPULATED, !locked);
-                    tileDrawers.setLocked(LockAttribute.LOCK_EMPTY, !locked);
-
-                    return true;
-                } else if (item.getItem() == ModItems.shroudKey) {
-                    tileDrawers.setIsShrouded(!tileDrawers.isShrouded());
-                    return true;
-                } else if (item.getItem() == ModItems.quantifyKey) {
-                    tileDrawers.setIsQuantified(!tileDrawers.isQuantified());
-                    return true;
-                } else if (item.getItem() instanceof ItemPersonalKey) {
-                    String securityKey = ((ItemPersonalKey) item.getItem())
-                            .getSecurityProviderKey(item.getItemDamage());
-                    ISecurityProvider provider = StorageDrawers.securityRegistry.getProvider(securityKey);
-
-                    if (tileDrawers.getOwner() == null) {
-                        tileDrawers.setOwner(player.getPersistentID());
-                        tileDrawers.setSecurityProvider(provider);
-                    } else if (SecurityManager.hasOwnership(player.getGameProfile(), tileDrawers)) {
-                        tileDrawers.setOwner(null);
-                        tileDrawers.setSecurityProvider(null);
-                    } else return false;
-                    return true;
-                } else if (item.getItem() == ModItems.tape) return false;
+                    } else {
+                if (useKey(tileDrawers, player, item, side, hitX, hitY, hitZ)) return true;
+            }
         } else if (item == null && player.isSneaking()) {
             if (tileDrawers.isSealed()) {
                 tileDrawers.setIsSealed(false);
@@ -430,6 +405,51 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         if (countAdded > 0 && currentStack != null) world.markBlockForUpdate(x, y, z);
 
         return true;
+    }
+
+    private boolean useKey(TileEntityDrawers tileDrawers, EntityPlayer player,
+                           ItemStack item, int side, float hitX, float hitY, float hitZ) {
+        if (item != null && item.getItem() != null) {
+            if (item.getItem() == ModItems.upgradeLock) {
+                boolean locked = tileDrawers.isLocked(LockAttribute.LOCK_POPULATED);
+
+                if (locked) {
+                    int slot = getDrawerSlot(side, hitX, hitY, hitZ);
+                    IDrawer drawer = tileDrawers.getDrawer(slot);
+                    ItemStack stack = drawer.getStoredItemPrototype();
+                    int count = drawer.getStoredItemCount();
+
+                    if (stack != null && count == 0) {
+                        drawer.setStoredItemRedir(null, 0);
+                        return true;
+                    }
+                }
+                tileDrawers.setLocked(LockAttribute.LOCK_POPULATED, !locked);
+                tileDrawers.setLocked(LockAttribute.LOCK_EMPTY, !locked);
+
+                return true;
+            } else if (item.getItem() == ModItems.shroudKey) {
+                tileDrawers.setIsShrouded(!tileDrawers.isShrouded());
+                return true;
+            } else if (item.getItem() == ModItems.quantifyKey) {
+                tileDrawers.setIsQuantified(!tileDrawers.isQuantified());
+                return true;
+            } else if (item.getItem() instanceof ItemPersonalKey) {
+                String securityKey = ((ItemPersonalKey) item.getItem())
+                        .getSecurityProviderKey(item.getItemDamage());
+                ISecurityProvider provider = StorageDrawers.securityRegistry.getProvider(securityKey);
+
+                if (tileDrawers.getOwner() == null) {
+                    tileDrawers.setOwner(player.getPersistentID());
+                    tileDrawers.setSecurityProvider(provider);
+                } else if (SecurityManager.hasOwnership(player.getGameProfile(), tileDrawers)) {
+                    tileDrawers.setOwner(null);
+                    tileDrawers.setSecurityProvider(null);
+                } else return false;
+                return true;
+            } else if (item.getItem() == ModItems.tape) return false;
+        }
+        return false;
     }
 
     protected int getDrawerSlot(int side, float hitX, float hitY, float hitZ) {
