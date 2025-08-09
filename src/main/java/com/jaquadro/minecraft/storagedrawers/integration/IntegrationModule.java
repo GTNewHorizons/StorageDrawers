@@ -17,10 +17,12 @@ public abstract class IntegrationModule {
         String pattern = versionPattern();
         if (pattern == null) return true;
 
-        List<ModContainer> modList = Loader.instance().getModList();
+        List<ModContainer> modList = Loader.instance()
+            .getModList();
         for (int i = 0, n = modList.size(); i < n; i++) {
             ModContainer mod = modList.get(i);
-            if (mod.getModId().equals(getModID())) {
+            if (mod.getModId()
+                .equals(getModID())) {
                 try {
                     VersionRange validVersions = VersionRange.createFromVersionSpec(pattern);
                     ArtifactVersion version = new DefaultArtifactVersion(mod.getVersion());

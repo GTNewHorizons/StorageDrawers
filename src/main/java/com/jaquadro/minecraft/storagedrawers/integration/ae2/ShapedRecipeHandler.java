@@ -19,7 +19,8 @@ public class ShapedRecipeHandler implements IRecipeHandler {
             classShapedRecipe = Class.forName("appeng.recipes.game.ShapedRecipe");
             methodGetInput = classShapedRecipe.getMethod("getInput");
 
-            if (!methodGetInput.getReturnType().isArray()) valid = false;
+            if (!methodGetInput.getReturnType()
+                .isArray()) valid = false;
         } catch (Throwable t) {
             valid = false;
         }

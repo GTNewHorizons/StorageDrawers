@@ -28,9 +28,9 @@ public class BlockDrawersPack extends BlockDrawers implements IPackBlock {
 
     public BlockDrawersPack(IPackDataResolver resolver, int drawerCount, boolean halfDepth) {
         super(
-                resolver.getBlockName(BlockConfiguration.by(BlockType.Drawers, drawerCount, halfDepth)),
-                drawerCount,
-                halfDepth);
+            resolver.getBlockName(BlockConfiguration.by(BlockType.Drawers, drawerCount, halfDepth)),
+            drawerCount,
+            halfDepth);
 
         this.resolver = resolver;
 

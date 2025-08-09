@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemUpgrade extends Item {
 
     public static final String[] iconNames = new String[] { null, null, "iron", "gold", "obsidian", "diamond",
-            "emerald", "ruby", "tanzanite" };
+        "emerald", "ruby", "tanzanite" };
 
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;

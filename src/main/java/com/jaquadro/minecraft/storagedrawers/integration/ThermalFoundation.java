@@ -32,7 +32,7 @@ public class ThermalFoundation extends IntegrationModule {
         }
 
         methodPlayerHasAccess = classRegistrySocial
-                .getDeclaredMethod("playerHasAccess", String.class, GameProfile.class);
+            .getDeclaredMethod("playerHasAccess", String.class, GameProfile.class);
     }
 
     @Override
@@ -41,15 +41,15 @@ public class ThermalFoundation extends IntegrationModule {
 
         if (StorageDrawers.config.cache.enablePersonalUpgrades) {
             GameRegistry.addRecipe(
-                    new ShapedOreRecipe(
-                            new ItemStack(ModItems.personalKey, 1, 1),
-                            "xxx",
-                            "xyx",
-                            "xxx",
-                            'x',
-                            "nuggetSignalum",
-                            'y',
-                            ModItems.personalKey));
+                new ShapedOreRecipe(
+                    new ItemStack(ModItems.personalKey, 1, 1),
+                    "xxx",
+                    "xyx",
+                    "xxx",
+                    'x',
+                    "nuggetSignalum",
+                    'y',
+                    ModItems.personalKey));
         }
     }
 

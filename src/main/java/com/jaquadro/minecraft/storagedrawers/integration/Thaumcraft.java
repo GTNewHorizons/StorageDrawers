@@ -42,13 +42,17 @@ public class Thaumcraft extends IntegrationModule {
         MinecraftForge.EVENT_BUS.register(this);
 
         aspectItems = new Item[] { GameRegistry.findItem(getModID(), "ItemResource"),
-                GameRegistry.findItem(getModID(), "ItemEssence"), GameRegistry.findItem(getModID(), "ItemWispEssence"),
-                GameRegistry.findItem(getModID(), "ItemCrystalEssence"),
-                GameRegistry.findItem(getModID(), "BlockJarFilledItem"),
-                GameRegistry.findItem(getModID(), "ItemManaBean"), };
+            GameRegistry.findItem(getModID(), "ItemEssence"), GameRegistry.findItem(getModID(), "ItemWispEssence"),
+            GameRegistry.findItem(getModID(), "ItemCrystalEssence"),
+            GameRegistry.findItem(getModID(), "BlockJarFilledItem"),
+            GameRegistry.findItem(getModID(), "ItemManaBean"), };
 
-        StorageDrawersApi.instance().renderRegistry().registerPreLabelRenderHandler(new LabelRenderHandler());
-        StorageDrawersApi.instance().wailaRegistry().registerTooltipHandler(new WailaTooltipHandler());
+        StorageDrawersApi.instance()
+            .renderRegistry()
+            .registerPreLabelRenderHandler(new LabelRenderHandler());
+        StorageDrawersApi.instance()
+            .wailaRegistry()
+            .registerTooltipHandler(new WailaTooltipHandler());
     }
 
     @Override
@@ -92,7 +96,8 @@ public class Thaumcraft extends IntegrationModule {
     private void setDrawerAspectName(IDrawer drawer, String aspectName) {
         AspectList allAspects = ThaumcraftApiHelper.getAllAspects(1);
         for (Aspect a : allAspects.aspects.keySet()) {
-            if (a.getTag().equals(aspectName)) {
+            if (a.getTag()
+                .equals(aspectName)) {
                 drawer.setExtendedData("aspect", a);
                 return;
             }
@@ -120,7 +125,7 @@ public class Thaumcraft extends IntegrationModule {
 
         @Override
         public void render(TileEntity tileEntity, IDrawerGroup drawerGroup, int slot, float brightness,
-                float partialTickTime) {
+            float partialTickTime) {
             IDrawer drawer = drawerGroup.getDrawer(slot);
             if (drawer == null) return;
 

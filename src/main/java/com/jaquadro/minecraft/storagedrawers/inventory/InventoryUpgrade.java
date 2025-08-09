@@ -86,8 +86,7 @@ public class InventoryUpgrade implements IInventory {
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack item) {
         if (item.getItem() instanceof ItemUpgrade || item.getItem() instanceof ItemUpgradeStatus
-                || item.getItem() instanceof ItemUpgradeVoid)
-            return true;
+            || item.getItem() instanceof ItemUpgradeVoid) return true;
 
         return false;
     }

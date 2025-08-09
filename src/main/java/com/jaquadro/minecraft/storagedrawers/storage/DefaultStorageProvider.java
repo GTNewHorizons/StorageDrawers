@@ -92,23 +92,26 @@ public class DefaultStorageProvider implements IStorageProvider {
     public void markAmountDirty(int slot) {
         if (tile.getWorldObj().isRemote) return;
 
-        int count = group.getDrawer(slot).getStoredItemCount();
+        int count = group.getDrawer(slot)
+            .getStoredItemCount();
 
         IMessage message = new CountUpdateMessage(tile.xCoord, tile.yCoord, tile.zCoord, slot, count);
         NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(
-                tile.getWorldObj().provider.dimensionId,
-                tile.xCoord,
-                tile.yCoord,
-                tile.zCoord,
-                500);
+            tile.getWorldObj().provider.dimensionId,
+            tile.xCoord,
+            tile.yCoord,
+            tile.zCoord,
+            500);
 
         StorageDrawers.network.sendToAllAround(message, targetPoint);
 
-        tile.getWorldObj().markTileEntityChunkModified(tile.xCoord, tile.yCoord, tile.zCoord, tile);
+        tile.getWorldObj()
+            .markTileEntityChunkModified(tile.xCoord, tile.yCoord, tile.zCoord, tile);
         if (isRedstone(slot)) {
-            tile.getWorldObj().notifyBlocksOfNeighborChange(tile.xCoord, tile.yCoord, tile.zCoord, tile.getBlockType());
             tile.getWorldObj()
-                    .notifyBlocksOfNeighborChange(tile.xCoord, tile.yCoord - 1, tile.zCoord, tile.getBlockType());
+                .notifyBlocksOfNeighborChange(tile.xCoord, tile.yCoord, tile.zCoord, tile.getBlockType());
+            tile.getWorldObj()
+                .notifyBlocksOfNeighborChange(tile.xCoord, tile.yCoord - 1, tile.zCoord, tile.getBlockType());
         }
     }
 
@@ -116,7 +119,9 @@ public class DefaultStorageProvider implements IStorageProvider {
     public void markDirty(int slot) {
         if (tile.getWorldObj().isRemote) return;
 
-        tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
-        tile.getWorldObj().markTileEntityChunkModified(tile.xCoord, tile.yCoord, tile.zCoord, tile);
+        tile.getWorldObj()
+            .markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+        tile.getWorldObj()
+            .markTileEntityChunkModified(tile.xCoord, tile.yCoord, tile.zCoord, tile);
     }
 }

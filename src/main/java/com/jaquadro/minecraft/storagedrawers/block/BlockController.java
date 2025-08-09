@@ -120,12 +120,12 @@ public class BlockController extends BlockContainer implements INetworked {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
-            float hitY, float hitZ) {
+        float hitY, float hitZ) {
         TileEntityController te = getTileEntitySafe(world, x, y, z);
         ItemStack item = player.inventory.getCurrentItem();
 
         if (BackhandIntegrationModule.isEnabled() && BackhandUtils.getOffhandItem(player) != null && item == null) {
-            if((BackhandUtils.useOffhandItem(player, () -> true))) return false;
+            if ((BackhandUtils.useOffhandItem(player, () -> true))) return false;
         }
 
         if (item != null && item.getItem() != null) {
@@ -134,14 +134,14 @@ public class BlockController extends BlockContainer implements INetworked {
                 return true;
             } else if (item.getItem() == ModItems.upgradeLock) {
                 if (!world.isRemote) te.toggleLock(
-                        EnumSet.allOf(LockAttribute.class),
-                        LockAttribute.LOCK_POPULATED,
-                        player.getGameProfile());
+                    EnumSet.allOf(LockAttribute.class),
+                    LockAttribute.LOCK_POPULATED,
+                    player.getGameProfile());
                 return true;
             } else if (item.getItem() == ModItems.personalKey) {
                 if (!world.isRemote) {
                     String securityKey = ((ItemPersonalKey) item.getItem())
-                            .getSecurityProviderKey(item.getItemDamage());
+                        .getSecurityProviderKey(item.getItemDamage());
                     ISecurityProvider provider = StorageDrawers.securityRegistry.getProvider(securityKey);
 
                     te.toggleProtection(player.getGameProfile(), provider);

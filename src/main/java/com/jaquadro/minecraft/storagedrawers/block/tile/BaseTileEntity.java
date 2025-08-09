@@ -60,10 +60,14 @@ public class BaseTileEntity extends TileEntity {
     }
 
     protected void restoreLoadFailure(NBTTagCompound tag) {
-        Iterator<String> iter = failureSnapshot.func_150296_c().iterator();
+        Iterator<String> iter = failureSnapshot.func_150296_c()
+            .iterator();
         while (iter.hasNext()) {
             String key = iter.next();
-            if (!tag.hasKey(key)) tag.setTag(key, failureSnapshot.getTag(key).copy());
+            if (!tag.hasKey(key)) tag.setTag(
+                key,
+                failureSnapshot.getTag(key)
+                    .copy());
         }
     }
 

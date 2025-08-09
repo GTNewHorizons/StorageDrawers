@@ -22,7 +22,7 @@ public class ItemController extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ, int metadata) {
+        float hitX, float hitY, float hitZ, int metadata) {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityController tile = (TileEntityController) world.getTileEntity(x, y, z);

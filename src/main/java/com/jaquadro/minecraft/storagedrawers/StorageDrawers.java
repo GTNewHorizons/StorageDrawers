@@ -37,11 +37,11 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(
-        modid = StorageDrawers.MOD_ID,
-        name = StorageDrawers.MOD_NAME,
-        version = StorageDrawers.MOD_VERSION,
-        dependencies = "after:waila;",
-        guiFactory = StorageDrawers.SOURCE_PATH + "core.ModGuiFactory")
+    modid = StorageDrawers.MOD_ID,
+    name = StorageDrawers.MOD_NAME,
+    version = StorageDrawers.MOD_VERSION,
+    dependencies = "after:waila;",
+    guiFactory = StorageDrawers.SOURCE_PATH + "core.ModGuiFactory")
 public class StorageDrawers {
 
     public static final String MOD_ID = "StorageDrawers";
@@ -79,7 +79,8 @@ public class StorageDrawers {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
         network.registerMessage(BlockClickMessage.Handler.class, BlockClickMessage.class, 0, Side.SERVER);
 
-        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance()
+            .getSide() == Side.CLIENT) {
             network.registerMessage(CountUpdateMessage.Handler.class, CountUpdateMessage.class, 1, Side.CLIENT);
         } else {
             network.registerMessage(CountUpdateMessage.HandlerStub.class, CountUpdateMessage.class, 1, Side.CLIENT);
@@ -102,19 +103,25 @@ public class StorageDrawers {
         proxy.registerRenderers();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-        FMLCommonHandler.instance().bus().register(instance);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(instance);
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
 
-        IntegrationRegistry.instance().init();
+        IntegrationRegistry.instance()
+            .init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         recipes.init();
 
-        IntegrationRegistry.instance().postInit();
+        IntegrationRegistry.instance()
+            .postInit();
 
-        StorageDrawersApi.instance().packFactory().registerResolver(ModBlocks.resolver);
+        StorageDrawersApi.instance()
+            .packFactory()
+            .registerResolver(ModBlocks.resolver);
     }
 
     @SubscribeEvent

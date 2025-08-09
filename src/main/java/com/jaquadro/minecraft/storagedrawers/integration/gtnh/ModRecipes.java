@@ -86,32 +86,32 @@ public class ModRecipes {
 
     // Ingredients for Framed Drawers recipes
     private static final ItemStack carpentersBlock8 = GameRegistry
-            .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 8);
+        .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 8);
     private static final ItemStack carpentersBlock7 = GameRegistry
-            .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 7);
+        .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 7);
     private static final ItemStack carpentersBlock5 = GameRegistry
-            .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 5);
+        .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 5);
     private static final ItemStack carpentersBlock4 = GameRegistry
-            .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 4);
+        .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 4);
     private static final ItemStack carpentersBlock1 = GameRegistry
-            .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 1);
+        .findItemStack(MOD_ID_CB, NAME_blockCarpentersBlock, 1);
 
     // Ingredients for Trims
     private static final ItemStack stick4 = new ItemStack(Items.stick, 4);
 
     // Ingredients for Controller
     private static final ItemStack comparatorGate = makeItemStack(
-            "ProjRed|Integration:projectred.integration.gate",
-            26,
-            1,
-            null);
+        "ProjRed|Integration:projectred.integration.gate",
+        26,
+        1,
+        null);
 
     // Ingredients for Upgrades recipes
     private static final ItemStack redAlloyWire = makeItemStack(
-            "ProjRed|Transmission:projectred.transmission.wire",
-            0,
-            1,
-            null);
+        "ProjRed|Transmission:projectred.transmission.wire",
+        0,
+        1,
+        null);
     private static final ItemStack upgradeLock = new ItemStack(ModItems.upgradeLock);
     private static final ItemStack piston = new ItemStack(Blocks.piston, 1);
     private static final ItemStack upgradeTemplate = new ItemStack(ModItems.upgradeTemplate);
@@ -126,7 +126,9 @@ public class ModRecipes {
 
         // Build a list of unique slabWood Items's Registry Names ("MOD_ID:ItemName")
         for (ItemStack slabWood : OreDictionary.getOres(ORE_slabWood)) {
-            slabWoodRegistryNameListBuilder.add(GameRegistry.findUniqueIdentifierFor(slabWood.getItem()).toString());
+            slabWoodRegistryNameListBuilder.add(
+                GameRegistry.findUniqueIdentifierFor(slabWood.getItem())
+                    .toString());
         }
 
         // Build lists of unique slabWood ItemStacks of different size with Wildcard Meta from the RegistryNames list
@@ -215,13 +217,16 @@ public class ModRecipes {
 
         // Oak Drawer Full 1x1 Workbench recipe
         final ItemStack fullDrawer1 = new ItemStack(ModBlocks.fullDrawers1, recipeOutput, 0);
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(fullDrawer1, "sss", "scs", "sss", 's', ORE_slabWood, 'c', ORE_chestWood));
+        GameRegistry
+            .addRecipe(new ShapedOreRecipe(fullDrawer1, "sss", "scs", "sss", 's', ORE_slabWood, 'c', ORE_chestWood));
 
         // Oak Drawer Full 1x1 Gregtech Assembler recipes
-        for (ItemStack slabWood8W : slabWood8WList)
-            GTValues.RA.stdBuilder().itemInputs(slabWood8W, chest1, integratedCircuit1).itemOutputs(fullDrawer1)
-                    .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        for (ItemStack slabWood8W : slabWood8WList) GTValues.RA.stdBuilder()
+            .itemInputs(slabWood8W, chest1, integratedCircuit1)
+            .itemOutputs(fullDrawer1)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
 
         // Framed Drawer Full 1x1
 
@@ -230,11 +235,15 @@ public class ModRecipes {
         // Framed Drawer Full 1x1 Workbench recipe
         final ItemStack fullCustom1 = new ItemStack(ModBlocks.fullCustom1, recipeOutput, 0);
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(fullCustom1, "bbb", "bcb", "bbb", 'b', carpentersBlock1, 'c', ORE_chestWood));
+            new ShapedOreRecipe(fullCustom1, "bbb", "bcb", "bbb", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Full 1x1 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock8, chest1, integratedCircuit1).itemOutputs(fullCustom1)
-                .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(carpentersBlock8, chest1, integratedCircuit1)
+            .itemOutputs(fullCustom1)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void fullDrawers2Recipes() {
@@ -246,13 +255,16 @@ public class ModRecipes {
 
         // Oak Drawer Full 1x2 Workbench recipe
         final ItemStack fullDrawers2 = new ItemStack(ModBlocks.fullDrawers2, recipeOutput, 0);
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(fullDrawers2, "scs", "sss", "scs", 's', ORE_slabWood, 'c', ORE_chestWood));
+        GameRegistry
+            .addRecipe(new ShapedOreRecipe(fullDrawers2, "scs", "sss", "scs", 's', ORE_slabWood, 'c', ORE_chestWood));
 
         // Oak Drawer Full 1x2 Gregtech Assembler recipes
-        for (ItemStack slabWood7W : slabWood7WList)
-            GTValues.RA.stdBuilder().itemInputs(slabWood7W, chest2, integratedCircuit2).itemOutputs(fullDrawers2)
-                    .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        for (ItemStack slabWood7W : slabWood7WList) GTValues.RA.stdBuilder()
+            .itemInputs(slabWood7W, chest2, integratedCircuit2)
+            .itemOutputs(fullDrawers2)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
 
         // Framed Drawer Full 1x2
 
@@ -261,11 +273,15 @@ public class ModRecipes {
         // Framed Drawer Full 1x2 Workbench recipe
         final ItemStack fullCustom2 = new ItemStack(ModBlocks.fullCustom2, recipeOutput, 0);
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(fullCustom2, "bcb", "bbb", "bcb", 'b', carpentersBlock1, 'c', ORE_chestWood));
+            new ShapedOreRecipe(fullCustom2, "bcb", "bbb", "bcb", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Full 1x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock7, chest2, integratedCircuit2).itemOutputs(fullCustom2)
-                .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(carpentersBlock7, chest2, integratedCircuit2)
+            .itemOutputs(fullCustom2)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void fullDrawers4Recipes() {
@@ -277,13 +293,16 @@ public class ModRecipes {
 
         // Oak Drawer Full 2x2 Workbench recipe
         final ItemStack fullDrawers4 = new ItemStack(ModBlocks.fullDrawers4, recipeOutput, 0);
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(fullDrawers4, "csc", "sss", "csc", 's', ORE_slabWood, 'c', ORE_chestWood));
+        GameRegistry
+            .addRecipe(new ShapedOreRecipe(fullDrawers4, "csc", "sss", "csc", 's', ORE_slabWood, 'c', ORE_chestWood));
 
         // Oak Drawer Full 2x2 Gregtech Assembler recipes
-        for (ItemStack slabWood5W : slabWood5WList)
-            GTValues.RA.stdBuilder().itemInputs(slabWood5W, chest4, integratedCircuit4).itemOutputs(fullDrawers4)
-                    .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        for (ItemStack slabWood5W : slabWood5WList) GTValues.RA.stdBuilder()
+            .itemInputs(slabWood5W, chest4, integratedCircuit4)
+            .itemOutputs(fullDrawers4)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
 
         // Framed Drawer Full 2x2
 
@@ -292,11 +311,15 @@ public class ModRecipes {
         // Framed Drawer Full 2x2 Workbench recipe
         final ItemStack fullCustom4 = new ItemStack(ModBlocks.fullCustom4, recipeOutput, 0);
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(fullCustom4, "cbc", "bbb", "cbc", 'b', carpentersBlock1, 'c', ORE_chestWood));
+            new ShapedOreRecipe(fullCustom4, "cbc", "bbb", "cbc", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Full 2x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock5, chest4, integratedCircuit4).itemOutputs(fullCustom4)
-                .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(carpentersBlock5, chest4, integratedCircuit4)
+            .itemOutputs(fullCustom4)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void halfDrawers2Recipes() {
@@ -308,13 +331,16 @@ public class ModRecipes {
 
         // Oak Drawer Half 1x2 Workbench recipe
         final ItemStack halfDrawers2 = new ItemStack(ModBlocks.halfDrawers2, recipeOutput, 0);
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(halfDrawers2, "sss", "csc", "sss", 's', ORE_slabWood, 'c', ORE_chestWood));
+        GameRegistry
+            .addRecipe(new ShapedOreRecipe(halfDrawers2, "sss", "csc", "sss", 's', ORE_slabWood, 'c', ORE_chestWood));
 
         // Oak Drawer Half 1x2 Gregtech Assembler recipes
-        for (ItemStack slabWood7W : slabWood7WList)
-            GTValues.RA.stdBuilder().itemInputs(slabWood7W, chest2, integratedCircuit12).itemOutputs(halfDrawers2)
-                    .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        for (ItemStack slabWood7W : slabWood7WList) GTValues.RA.stdBuilder()
+            .itemInputs(slabWood7W, chest2, integratedCircuit12)
+            .itemOutputs(halfDrawers2)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
 
         // Framed Drawer Half 1x2
 
@@ -323,11 +349,15 @@ public class ModRecipes {
         // Framed Drawer Half 1x2 Workbench recipe
         final ItemStack halfCustom2 = new ItemStack(ModBlocks.halfCustom2, recipeOutput, 0);
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(halfCustom2, "bbb", "cbc", "bbb", 'b', carpentersBlock1, 'c', ORE_chestWood));
+            new ShapedOreRecipe(halfCustom2, "bbb", "cbc", "bbb", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Half 1x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock7, chest2, integratedCircuit12).itemOutputs(halfCustom2)
-                .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(carpentersBlock7, chest2, integratedCircuit12)
+            .itemOutputs(halfCustom2)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void halfDrawers4Recipes() {
@@ -339,12 +369,15 @@ public class ModRecipes {
 
         // Oak Drawer Half 2x2 Workbench recipe
         final ItemStack halfDrawers4 = new ItemStack(ModBlocks.halfDrawers4, recipeOutput, 0);
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(halfDrawers4, "csc", "scs", "csc", 's', ORE_slabWood, 'c', ORE_chestWood));
+        GameRegistry
+            .addRecipe(new ShapedOreRecipe(halfDrawers4, "csc", "scs", "csc", 's', ORE_slabWood, 'c', ORE_chestWood));
 
-        for (ItemStack slabWood4W : slabWood4WList)
-            GTValues.RA.stdBuilder().itemInputs(slabWood4W, chest5, integratedCircuit14).itemOutputs(halfDrawers4)
-                    .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        for (ItemStack slabWood4W : slabWood4WList) GTValues.RA.stdBuilder()
+            .itemInputs(slabWood4W, chest5, integratedCircuit14)
+            .itemOutputs(halfDrawers4)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
 
         // Framed Drawer Half 2x2
 
@@ -353,11 +386,15 @@ public class ModRecipes {
         // Framed Drawer Half 2x2 Workbench recipe
         final ItemStack halfCustom4 = new ItemStack(ModBlocks.halfCustom4, recipeOutput, 0);
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(halfCustom4, "cbc", "bcb", "cbc", 'b', carpentersBlock1, 'c', ORE_chestWood));
+            new ShapedOreRecipe(halfCustom4, "cbc", "bcb", "cbc", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Half 2x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock4, chest5, integratedCircuit14).itemOutputs(halfCustom4)
-                .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(carpentersBlock4, chest5, integratedCircuit14)
+            .itemOutputs(halfCustom4)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void trimRecipes() {
@@ -372,9 +409,12 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ShapedOreRecipe(trim, "tst", "sss", "tst", 't', ORE_stickWood, 's', ORE_slabWood));
 
         // Oak Trim Gregtech Assembler recipe
-        for (ItemStack slabWood5W : slabWood5WList)
-            GTValues.RA.stdBuilder().itemInputs(slabWood5W, stick4, integratedCircuit1).itemOutputs(trim)
-                    .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        for (ItemStack slabWood5W : slabWood5WList) GTValues.RA.stdBuilder()
+            .itemInputs(slabWood5W, stick4, integratedCircuit1)
+            .itemOutputs(trim)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
 
         // Framed Trim
 
@@ -382,118 +422,125 @@ public class ModRecipes {
 
         // Framed Trim Workbench recipe
         final ItemStack trimCustom = new ItemStack(ModBlocks.trimCustom, recipeOutput, 0);
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(trimCustom, "tbt", "bbb", "tbt", 'b', carpentersBlock1, 't', ORE_stickWood));
+        GameRegistry
+            .addRecipe(new ShapedOreRecipe(trimCustom, "tbt", "bbb", "tbt", 'b', carpentersBlock1, 't', ORE_stickWood));
 
         // Framed Trim Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock5, stick4, integratedCircuit1).itemOutputs(trimCustom)
-                .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(carpentersBlock5, stick4, integratedCircuit1)
+            .itemOutputs(trimCustom)
+            .duration(10 * SECONDS)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void compDrawersRecipes() {
         if (!config.isBlockEnabled("compdrawers")) return;
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModBlocks.compDrawers, 1),
-                        new String[] { "sss", "pdp", "oio" },
-                        's',
-                        ORE_stoneConcrete,
-                        'p',
-                        piston,
-                        'd',
-                        ORE_drawerBasic,
-                        'o',
-                        ORE_plateObsidian,
-                        'i',
-                        ORE_plateIron));
+            new ShapedOreRecipe(
+                new ItemStack(ModBlocks.compDrawers, 1),
+                new String[] { "sss", "pdp", "oio" },
+                's',
+                ORE_stoneConcrete,
+                'p',
+                piston,
+                'd',
+                ORE_drawerBasic,
+                'o',
+                ORE_plateObsidian,
+                'i',
+                ORE_plateIron));
     }
 
     private static void controllerRecipes() {
         if (!config.isBlockEnabled("controller")) return;
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModBlocks.controller),
-                        new String[] { "scs", "gbg", "odo" },
-                        's',
-                        ORE_plateStainlessSteel,
-                        'c',
-                        ORE_circuitGood,
-                        'g',
-                        comparatorGate,
-                        'b',
-                        ORE_drawerBasic,
-                        'o',
-                        ORE_plateObsidian,
-                        'd',
-                        ORE_plateDiamond));
+            new ShapedOreRecipe(
+                new ItemStack(ModBlocks.controller),
+                new String[] { "scs", "gbg", "odo" },
+                's',
+                ORE_plateStainlessSteel,
+                'c',
+                ORE_circuitGood,
+                'g',
+                comparatorGate,
+                'b',
+                ORE_drawerBasic,
+                'o',
+                ORE_plateObsidian,
+                'd',
+                ORE_plateDiamond));
     }
 
     private static void controllerSlaveRecipes() {
         if (!config.isBlockEnabled("controllerSlave")) return;
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModBlocks.controllerSlave),
-                        "scs",
-                        "gbg",
-                        "oeo",
-                        's',
-                        ORE_plateStainlessSteel,
-                        'c',
-                        ORE_circuitGood,
-                        'g',
-                        comparatorGate,
-                        'b',
-                        ORE_drawerBasic,
-                        'o',
-                        ORE_plateObsidian,
-                        'e',
-                        ORE_plateEnderEye));
+            new ShapedOreRecipe(
+                new ItemStack(ModBlocks.controllerSlave),
+                "scs",
+                "gbg",
+                "oeo",
+                's',
+                ORE_plateStainlessSteel,
+                'c',
+                ORE_circuitGood,
+                'g',
+                comparatorGate,
+                'b',
+                ORE_drawerBasic,
+                'o',
+                ORE_plateObsidian,
+                'e',
+                ORE_plateEnderEye));
     }
 
     private static void framingTableRecipes() {
         if (!config.cache.enableFramedDrawers) return;
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModBlocks.framingTable),
-                        "ttt",
-                        "fsf",
-                        "fdf",
-                        't',
-                        ModBlocks.trim,
-                        'f',
-                        ORE_fenceWood,
-                        's',
-                        ORE_stickWood,
-                        'd',
-                        ORE_craftingToolScrewdriver));
+            new ShapedOreRecipe(
+                new ItemStack(ModBlocks.framingTable),
+                "ttt",
+                "fsf",
+                "fdf",
+                't',
+                ModBlocks.trim,
+                'f',
+                ORE_fenceWood,
+                's',
+                ORE_stickWood,
+                'd',
+                ORE_craftingToolScrewdriver));
     }
 
     private static void upgradeTemplateRecipes() {
         if (!(config.cache.enableIndicatorUpgrades || config.cache.enableLockUpgrades
-                || config.cache.enablePersonalUpgrades
-                || config.cache.enableRedstoneUpgrades
-                || config.cache.enableShroudUpgrades
-                || config.cache.enableQuantifyUpgrades
-                || config.cache.enableSortingUpgrades
-                || config.cache.enableStorageUpgrades
-                || config.cache.enableVoidUpgrades))
-            return;
+            || config.cache.enablePersonalUpgrades
+            || config.cache.enableRedstoneUpgrades
+            || config.cache.enableShroudUpgrades
+            || config.cache.enableQuantifyUpgrades
+            || config.cache.enableSortingUpgrades
+            || config.cache.enableStorageUpgrades
+            || config.cache.enableVoidUpgrades)) return;
 
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        upgradeTemplate,
-                        new String[] { "sps", "sds", " t " },
-                        's',
-                        ORE_screwSteel,
-                        'p',
-                        piston,
-                        'd',
-                        ORE_drawerBasic,
-                        't',
-                        ORE_craftingToolScrewdriver));
+            new ShapedOreRecipe(
+                upgradeTemplate,
+                new String[] { "sps", "sds", " t " },
+                's',
+                ORE_screwSteel,
+                'p',
+                piston,
+                'd',
+                ORE_drawerBasic,
+                't',
+                ORE_craftingToolScrewdriver));
 
-        for (ItemStack drawer : drawerBasicW) GTValues.RA.stdBuilder().itemInputs(drawer, piston)
-                .itemOutputs(upgradeTemplate).duration(1 * MINUTES).eut(16).addTo(assemblerRecipes);
+        for (ItemStack drawer : drawerBasicW) GTValues.RA.stdBuilder()
+            .itemInputs(drawer, piston)
+            .itemOutputs(upgradeTemplate)
+            .duration(1 * MINUTES)
+            .eut(16)
+            .addTo(assemblerRecipes);
     }
 
     private static void storageUpgradeRecipes() {
@@ -501,112 +548,112 @@ public class ModRecipes {
 
         // Upgarde Iron
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 2),
-                        new String[] { "pup", "upu", "psp" },
-                        'p',
-                        ORE_plateIron,
-                        's',
-                        ORE_stickIron,
-                        'u',
-                        upgradeTemplate));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 2),
+                new String[] { "pup", "upu", "psp" },
+                'p',
+                ORE_plateIron,
+                's',
+                ORE_stickIron,
+                'u',
+                upgradeTemplate));
 
         // Upgarde Gold
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 3),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateGold,
-                        's',
-                        ORE_stickGold,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        ORE_plateBronze));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 3),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateGold,
+                's',
+                ORE_stickGold,
+                'u',
+                upgradeTemplate,
+                't',
+                ORE_plateBronze));
 
         // Upgarde Obsidian
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 4),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateObsidian,
-                        's',
-                        ORE_stickObsidian,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        ORE_plateSteel));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 4),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateObsidian,
+                's',
+                ORE_stickObsidian,
+                'u',
+                upgradeTemplate,
+                't',
+                ORE_plateSteel));
 
         // Upgarde Diamond
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 5),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateDiamond,
-                        's',
-                        ORE_stickDiamond,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        ORE_plateAluminium));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 5),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateDiamond,
+                's',
+                ORE_stickDiamond,
+                'u',
+                upgradeTemplate,
+                't',
+                ORE_plateAluminium));
 
         // Upgarde Emerald
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 6),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateEmerald,
-                        's',
-                        ORE_stickEmerald,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        ORE_plateTantalum));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 6),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateEmerald,
+                's',
+                ORE_stickEmerald,
+                'u',
+                upgradeTemplate,
+                't',
+                ORE_plateTantalum));
 
         // Upgarde Ruby
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 7),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateRuby,
-                        's',
-                        ORE_stickRuby,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        ORE_plateStainlessSteel));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 7),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateRuby,
+                's',
+                ORE_stickRuby,
+                'u',
+                upgradeTemplate,
+                't',
+                ORE_plateStainlessSteel));
 
         // Upgarde Tanzanite
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgrade, 1, 8),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateTanzanite,
-                        's',
-                        ORE_stickTanzanite,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        ORE_plateTitanium));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgrade, 1, 8),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateTanzanite,
+                's',
+                ORE_stickTanzanite,
+                'u',
+                upgradeTemplate,
+                't',
+                ORE_plateTitanium));
 
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeDowngrade, 1, 0),
-                        new String[] { "pup", "utu", "psp" },
-                        'p',
-                        ORE_plateRubber,
-                        's',
-                        ORE_stickRubber,
-                        'u',
-                        upgradeTemplate,
-                        't',
-                        new ItemStack(Blocks.soul_sand)));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeDowngrade, 1, 0),
+                new String[] { "pup", "utu", "psp" },
+                'p',
+                ORE_plateRubber,
+                's',
+                ORE_stickRubber,
+                'u',
+                upgradeTemplate,
+                't',
+                new ItemStack(Blocks.soul_sand)));
     }
 
     private static void statusUpgradeRecipes() {
@@ -614,35 +661,35 @@ public class ModRecipes {
 
         // Status Upgrade I recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeStatus, 1, 1),
-                        "twt",
-                        "wuw",
-                        "rwr",
-                        't',
-                        new ItemStack(Blocks.redstone_torch),
-                        'w',
-                        redAlloyWire,
-                        'u',
-                        upgradeTemplate,
-                        'r',
-                        ORE_plateRedstone));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeStatus, 1, 1),
+                "twt",
+                "wuw",
+                "rwr",
+                't',
+                new ItemStack(Blocks.redstone_torch),
+                'w',
+                redAlloyWire,
+                'u',
+                upgradeTemplate,
+                'r',
+                ORE_plateRedstone));
 
         // Status Upgrade II recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeStatus, 1, 2),
-                        "gwg",
-                        "wuw",
-                        "rwr",
-                        'g',
-                        comparatorGate,
-                        'w',
-                        redAlloyWire,
-                        'u',
-                        upgradeTemplate,
-                        'r',
-                        ORE_plateRedstone));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeStatus, 1, 2),
+                "gwg",
+                "wuw",
+                "rwr",
+                'g',
+                comparatorGate,
+                'w',
+                redAlloyWire,
+                'u',
+                upgradeTemplate,
+                'r',
+                ORE_plateRedstone));
     }
 
     private static void redstoneUpgradeRecipes() {
@@ -650,51 +697,51 @@ public class ModRecipes {
 
         // Redstone Upgrade recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeRedstone, 1, 0),
-                        "rsr",
-                        "sus",
-                        "rwr",
-                        'r',
-                        ORE_plateRedstone,
-                        's',
-                        ORE_stickWood,
-                        'u',
-                        upgradeTemplate,
-                        'w',
-                        redAlloyWire));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeRedstone, 1, 0),
+                "rsr",
+                "sus",
+                "rwr",
+                'r',
+                ORE_plateRedstone,
+                's',
+                ORE_stickWood,
+                'u',
+                upgradeTemplate,
+                'w',
+                redAlloyWire));
 
         // Redstone Max Upgrade recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeRedstone, 1, 1),
-                        "rrr",
-                        "sus",
-                        "sws",
-                        'r',
-                        ORE_plateRedstone,
-                        's',
-                        ORE_stickWood,
-                        'u',
-                        upgradeTemplate,
-                        'w',
-                        redAlloyWire));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeRedstone, 1, 1),
+                "rrr",
+                "sus",
+                "sws",
+                'r',
+                ORE_plateRedstone,
+                's',
+                ORE_stickWood,
+                'u',
+                upgradeTemplate,
+                'w',
+                redAlloyWire));
 
         // Redstone Min recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeRedstone, 1, 2),
-                        "sws",
-                        "sus",
-                        "rrr",
-                        'r',
-                        ORE_plateRedstone,
-                        's',
-                        ORE_stickWood,
-                        'u',
-                        upgradeTemplate,
-                        'w',
-                        redAlloyWire));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeRedstone, 1, 2),
+                "sws",
+                "sus",
+                "rrr",
+                'r',
+                ORE_plateRedstone,
+                's',
+                ORE_stickWood,
+                'u',
+                upgradeTemplate,
+                'w',
+                redAlloyWire));
     }
 
     private static void voidUpgradeRecipes() {
@@ -702,19 +749,19 @@ public class ModRecipes {
 
         // Upgrade Void recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeVoid),
-                        "sws",
-                        "ouo",
-                        "sws",
-                        's',
-                        ORE_stickWood,
-                        'w',
-                        redAlloyWire,
-                        'o',
-                        ORE_plateDenseObsidian,
-                        'u',
-                        upgradeTemplate));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeVoid),
+                "sws",
+                "ouo",
+                "sws",
+                's',
+                ORE_stickWood,
+                'w',
+                redAlloyWire,
+                'o',
+                ORE_plateDenseObsidian,
+                'u',
+                upgradeTemplate));
     }
 
     private static void lockUpgradeRecipes() {
@@ -722,63 +769,80 @@ public class ModRecipes {
 
         // Drawer Key recipe
         GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(ModItems.upgradeLock),
-                        " bs",
-                        "uso",
-                        "gt ",
-                        'b',
-                        ORE_boltGold,
-                        's',
-                        ORE_plateSteel,
-                        'u',
-                        upgradeTemplate,
-                        'o',
-                        ORE_stickGold,
-                        'g',
-                        ORE_plateGold,
-                        't',
-                        ORE_craftingToolSaw));
+            new ShapedOreRecipe(
+                new ItemStack(ModItems.upgradeLock),
+                " bs",
+                "uso",
+                "gt ",
+                'b',
+                ORE_boltGold,
+                's',
+                ORE_plateSteel,
+                'u',
+                upgradeTemplate,
+                'o',
+                ORE_stickGold,
+                'g',
+                ORE_plateGold,
+                't',
+                ORE_craftingToolSaw));
     }
 
     private static void shroudKeyUpgradeRecipes() {
         if (!config.cache.enableShroudUpgrades) return;
 
         // Concealment Key
-        GTValues.RA.stdBuilder().itemInputs(upgradeLock, new ItemStack(Items.ender_eye))
-                .itemOutputs(new ItemStack(ModItems.shroudKey)).duration(5 * SECONDS).eut(TierEU.RECIPE_LV)
-                .addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(upgradeLock, new ItemStack(Items.ender_eye))
+            .itemOutputs(new ItemStack(ModItems.shroudKey))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(assemblerRecipes);
     }
 
     private static void personalKeyUpgradeRecipes() {
         if (!config.cache.enablePersonalUpgrades) return;
 
         // Storage Personal Key
-        GTValues.RA.stdBuilder().itemInputs(upgradeLock, new ItemStack(Items.name_tag))
-                .itemOutputs(new ItemStack(ModItems.personalKey)).duration(5 * SECONDS).eut(TierEU.RECIPE_LV)
-                .addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(upgradeLock, new ItemStack(Items.name_tag))
+            .itemOutputs(new ItemStack(ModItems.personalKey))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(assemblerRecipes);
     }
 
     private static void quantifyKeyUpgradeRecipes() {
         if (!config.cache.enableQuantifyUpgrades) return;
 
         // Quantify Key
-        GTValues.RA.stdBuilder().itemInputs(upgradeLock, new ItemStack(Items.writable_book))
-                .itemOutputs(new ItemStack(ModItems.quantifyKey)).duration(5 * SECONDS).eut(TierEU.RECIPE_LV)
-                .addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(upgradeLock, new ItemStack(Items.writable_book))
+            .itemOutputs(new ItemStack(ModItems.quantifyKey))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(assemblerRecipes);
     }
 
     private static void packingTapeRecipes() {
         if (!config.cache.enableTape) return;
 
         // Packing Tape
-        GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper), integratedCircuit1)
-                .fluidInputs(getFluidStack("glue", 144)).itemOutputs(new ItemStack(ModItems.tape))
-                .duration(10 * SECONDS).eut(TierEU.RECIPE_LV).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(new ItemStack(Items.paper), integratedCircuit1)
+            .fluidInputs(getFluidStack("glue", 144))
+            .itemOutputs(new ItemStack(ModItems.tape))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(assemblerRecipes);
 
-        GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper), integratedCircuit1)
-                .fluidInputs(Materials.Glue.getFluid(144)).itemOutputs(new ItemStack(ModItems.tape))
-                .duration(10 * SECONDS).eut(TierEU.RECIPE_LV).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder()
+            .itemInputs(new ItemStack(Items.paper), integratedCircuit1)
+            .fluidInputs(Materials.Glue.getFluid(144))
+            .itemOutputs(new ItemStack(ModItems.tape))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(assemblerRecipes);
     }
 
     /*

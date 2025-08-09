@@ -17,54 +17,54 @@ public class CommonFramingRenderer {
     private static double[][] baseBoundsLeftY = new double[][] { { unit, 1 - unit2, unit, 1, 1, 1 - unit } };
 
     private static double[][] trimBoundsLeftY = new double[][] { { 0, 1 - unit2, unit, unit, 1, 1 - unit },
-            { 0, 1 - unit2, 0, unit, 1, unit }, { 0, 1 - unit2, 1 - unit, unit, 1, 1 },
-            { unit, 1 - unit2, 0, 1, 1, unit }, { unit, 1 - unit2, 1 - unit, 1, 1, 1 }, };
+        { 0, 1 - unit2, 0, unit, 1, unit }, { 0, 1 - unit2, 1 - unit, unit, 1, 1 }, { unit, 1 - unit2, 0, 1, 1, unit },
+        { unit, 1 - unit2, 1 - unit, 1, 1, 1 }, };
 
     private static double[][] trimBoundsLeftZ = new double[][] { { 0, 1 - unit2, 0, unit, 1, 1 },
-            { unit, 1 - unit2, 0, 1, 1, 1 }, };
+        { unit, 1 - unit2, 0, 1, 1, 1 }, };
 
     private static double[][] trimBoundsLeftX = new double[][] { { 0, 1 - unit2, 0, 1, 1, unit },
-            { 0, 1 - unit2, unit, 1, 1, 1 - unit }, { 0, 1 - unit2, 1 - unit, 1, 1, 1 }, };
+        { 0, 1 - unit2, unit, 1, 1, 1 - unit }, { 0, 1 - unit2, 1 - unit, 1, 1, 1 }, };
 
     private static double[][] baseBoundsRightY = new double[][] { { 0, 1 - unit2, unit, 1 - unit, 1, 1 - unit } };
 
     private static double[][] trimBoundsRightY = new double[][] { { 1 - unit, 1 - unit2, unit, 1, 1, 1 - unit },
-            { 1 - unit, 1 - unit2, 0, 1, 1, unit }, { 1 - unit, 1 - unit2, 1 - unit, 1, 1, 1 },
-            { 0, 1 - unit2, 0, 1 - unit, 1, unit }, { 0, 1 - unit2, 1 - unit, 1 - unit, 1, 1 }, };
+        { 1 - unit, 1 - unit2, 0, 1, 1, unit }, { 1 - unit, 1 - unit2, 1 - unit, 1, 1, 1 },
+        { 0, 1 - unit2, 0, 1 - unit, 1, unit }, { 0, 1 - unit2, 1 - unit, 1 - unit, 1, 1 }, };
 
     private static double[][] trimBoundsRightZ = new double[][] { { 1 - unit, 1 - unit2, 0, 1, 1, 1 },
-            { 0, 1 - unit2, 0, 1 - unit, 1, 1 }, };
+        { 0, 1 - unit2, 0, 1 - unit, 1, 1 }, };
 
     private static double[][] trimBoundsRightX = new double[][] { { 0, 1 - unit2, 0, 1, 1, unit },
-            { 0, 1 - unit2, unit, 1, 1, 1 - unit }, { 0, 1 - unit2, 1 - unit, 1, 1, 1 }, };
+        { 0, 1 - unit2, unit, 1, 1, 1 - unit }, { 0, 1 - unit2, 1 - unit, 1, 1, 1 }, };
 
     public void renderLeft(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block) {
         renderTableBox(
-                blockAccess,
-                x,
-                y,
-                z,
-                block,
-                baseBoundsLeftY,
-                trimBoundsLeftY,
-                trimBoundsLeftZ,
-                trimBoundsLeftX,
-                true);
+            blockAccess,
+            x,
+            y,
+            z,
+            block,
+            baseBoundsLeftY,
+            trimBoundsLeftY,
+            trimBoundsLeftZ,
+            trimBoundsLeftX,
+            true);
         renderStructure(blockAccess, x, y, z, block, true);
     }
 
     public void renderRight(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block) {
         renderTableBox(
-                blockAccess,
-                x,
-                y,
-                z,
-                block,
-                baseBoundsRightY,
-                trimBoundsRightY,
-                trimBoundsRightZ,
-                trimBoundsRightX,
-                false);
+            blockAccess,
+            x,
+            y,
+            z,
+            block,
+            baseBoundsRightY,
+            trimBoundsRightY,
+            trimBoundsRightZ,
+            trimBoundsRightX,
+            false);
         renderStructure(blockAccess, x, y, z, block, false);
     }
 
@@ -77,7 +77,7 @@ public class CommonFramingRenderer {
     }
 
     public void renderOverlay(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block,
-            double[][] baseBoundsY, boolean left) {
+        double[][] baseBoundsY, boolean left) {
         IIcon iconOverlay = block.getIconOverlay(left);
 
         RenderHelper renderer = RenderHelper.instances.get();
@@ -97,8 +97,7 @@ public class CommonFramingRenderer {
     }
 
     private void renderTableBox(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block,
-            double[][] baseBoundsY, double[][] trimBoundsY, double[][] trimBoundsZ, double[][] trimBoundsX,
-            boolean left) {
+        double[][] baseBoundsY, double[][] trimBoundsY, double[][] trimBoundsZ, double[][] trimBoundsX, boolean left) {
         RenderHelper renderer = RenderHelper.instances.get();
 
         IIcon iconSurface = block.getIconBase();
@@ -131,7 +130,7 @@ public class CommonFramingRenderer {
     }
 
     private void renderFoot(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block, IIcon icon,
-            boolean left) {
+        boolean left) {
         RenderHelper renderer = RenderHelper.instances.get();
 
         float oldColor = renderer.state.colorMultYPos;
@@ -151,7 +150,7 @@ public class CommonFramingRenderer {
     }
 
     private void renderLegs(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block, IIcon icon,
-            boolean left) {
+        boolean left) {
         RenderHelper renderer = RenderHelper.instances.get();
 
         for (int i = 2; i < 6; i++) renderer.state.setUVRotation(i, RenderHelperState.ROTATE90);
@@ -168,7 +167,7 @@ public class CommonFramingRenderer {
     }
 
     private void renderBraces(IBlockAccess blockAccess, int x, int y, int z, BlockFramingTable block, IIcon icon,
-            boolean left) {
+        boolean left) {
         RenderHelper renderer = RenderHelper.instances.get();
 
         float oldColor = renderer.state.colorMultYPos;

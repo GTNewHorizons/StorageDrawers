@@ -98,21 +98,24 @@ public final class UniqueMetaIdentifier {
     public static UniqueMetaIdentifier createFor(ItemStack itemStack) {
         if (itemStack.getItem() == null) return null;
 
-        String name = GameData.getItemRegistry().getNameForObject(itemStack.getItem());
+        String name = GameData.getItemRegistry()
+            .getNameForObject(itemStack.getItem());
         return new UniqueMetaIdentifier(name, itemStack.getItemDamage());
     }
 
     public static UniqueMetaIdentifier createFor(Block block, int meta) {
         if (block == null) return null;
 
-        String name = GameData.getBlockRegistry().getNameForObject(block);
+        String name = GameData.getBlockRegistry()
+            .getNameForObject(block);
         return new UniqueMetaIdentifier(name, meta);
     }
 
     public static UniqueMetaIdentifier createFor(Block block) {
         if (block == null) return null;
 
-        String name = GameData.getBlockRegistry().getNameForObject(block);
+        String name = GameData.getBlockRegistry()
+            .getNameForObject(block);
         return new UniqueMetaIdentifier(name);
     }
 }

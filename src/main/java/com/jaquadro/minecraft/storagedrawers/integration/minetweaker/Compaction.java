@@ -55,14 +55,14 @@ public class Compaction {
         @Override
         public String describe() {
             if (added) return "Adding compacting tier: 1 '" + upper
-                    .getDisplayName() + "' = " + conversionRate + " '" + lower.getDisplayName() + "'.";
+                .getDisplayName() + "' = " + conversionRate + " '" + lower.getDisplayName() + "'.";
             else return "Failed to add compacting tier.";
         }
 
         @Override
         public String describeUndo() {
             if (added) return "Removing previously added compacting tier: 1 '" + upper
-                    .getDisplayName() + "' = " + conversionRate + " '" + lower.getDisplayName() + "'.";
+                .getDisplayName() + "' = " + conversionRate + " '" + lower.getDisplayName() + "'.";
             else return "";
         }
 

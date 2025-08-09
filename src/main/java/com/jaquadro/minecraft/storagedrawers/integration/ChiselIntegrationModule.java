@@ -22,7 +22,7 @@ public class ChiselIntegrationModule extends IntegrationModule {
     private static final String addVariation = "variation:add";
 
     private static final boolean chiselEnabled = (Loader.isModLoaded(chiselModID)
-            && StorageDrawers.config.integrationConfig.isChiselEnabled());
+        && StorageDrawers.config.integrationConfig.isChiselEnabled());
 
     public static boolean isEnabled() {
         return chiselEnabled;
@@ -71,13 +71,14 @@ public class ChiselIntegrationModule extends IntegrationModule {
 
     public static void registerBlock(final Block block, final int meta, final String blockGroupName) {
         FMLInterModComms.sendMessage(
-                chiselModID,
-                addVariation,
-                String.join(
-                        "|",
-                        "StorageDrawers_" + blockGroupName,
-                        GameRegistry.findUniqueIdentifierFor(block).toString(),
-                        Integer.toString(meta)));
+            chiselModID,
+            addVariation,
+            String.join(
+                "|",
+                "StorageDrawers_" + blockGroupName,
+                GameRegistry.findUniqueIdentifierFor(block)
+                    .toString(),
+                Integer.toString(meta)));
     }
 
     @Override

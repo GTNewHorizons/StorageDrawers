@@ -26,7 +26,7 @@ public class DrawerSortingInventory {
     private boolean isAttached;
 
     public DrawerSortingInventory(TileEntity tileEntity, IDrawerGroup group, IInventory inventory,
-            IUpgradeProvider upgrade) {
+        IUpgradeProvider upgrade) {
         parent = (ISpecialSortingInventory) tileEntity;
         this.group = group;
         this.inventory = inventory;
@@ -67,7 +67,7 @@ public class DrawerSortingInventory {
             if (drawer.isEmpty() || !drawer.canItemBeStored(itemStack)) continue;
 
             int added = upgrade.isVoid() ? itemStack.stackSize
-                    : Math.min(drawer.getRemainingCapacity(), itemStack.stackSize);
+                : Math.min(drawer.getRemainingCapacity(), itemStack.stackSize);
             if (!simulate) drawer.setStoredItemCount(drawer.getStoredItemCount() + added);
 
             itemStack.stackSize -= added;
@@ -80,7 +80,8 @@ public class DrawerSortingInventory {
     public SpecialLocalizedStack getLocalizedStackInSlot(int slot) {
         ItemStack itemStack = inventory.getStackInSlot(slot);
         if (itemStack != null) {
-            int drawerSlot = group.getDrawerInventory().getDrawerSlot(slot);
+            int drawerSlot = group.getDrawerInventory()
+                .getDrawerSlot(slot);
             if (!group.isDrawerEnabled(drawerSlot)) return null;
 
             IDrawer drawer = group.getDrawer(drawerSlot);
@@ -91,7 +92,8 @@ public class DrawerSortingInventory {
     }
 
     public void alterStackSize(int slot, int alteration) {
-        int drawerSlot = group.getDrawerInventory().getDrawerSlot(slot);
+        int drawerSlot = group.getDrawerInventory()
+            .getDrawerSlot(slot);
         if (!group.isDrawerEnabled(drawerSlot)) return;
 
         IDrawer drawer = group.getDrawer(drawerSlot);

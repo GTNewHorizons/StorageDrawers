@@ -69,7 +69,8 @@ public class ModBlocks {
             for (int i = 0; i < resolvers.length; i++) factory.registerBlock(trim[i], "trim_" + i);
         }
 
-        if (!config.addonConfig().showAddonItemsNEI()) {
+        if (!config.addonConfig()
+            .showAddonItemsNEI()) {
             for (int i = 0; i < resolvers.length; i++) {
                 factory.hideBlock(getQualifiedName(fullDrawers1[i]));
                 factory.hideBlock(getQualifiedName(fullDrawers2[i]));
@@ -82,6 +83,7 @@ public class ModBlocks {
     }
 
     public static String getQualifiedName(Block block) {
-        return GameData.getBlockRegistry().getNameForObject(block);
+        return GameData.getBlockRegistry()
+            .getNameForObject(block);
     }
 }

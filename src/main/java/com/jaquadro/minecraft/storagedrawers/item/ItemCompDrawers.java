@@ -25,7 +25,7 @@ public class ItemCompDrawers extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ, int metadata) {
+        float hitX, float hitY, float hitZ, int metadata) {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityDrawers tile = (TileEntityDrawers) world.getTileEntity(x, y, z);
@@ -33,8 +33,11 @@ public class ItemCompDrawers extends ItemBlock {
             int initCapacity = StorageDrawers.config.getBlockBaseStorage("compdrawers");
             tile.setDrawerCapacity(initCapacity);
 
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("tile"))
-                tile.readFromPortableNBT(stack.getTagCompound().getCompoundTag("tile"));
+            if (stack.hasTagCompound() && stack.getTagCompound()
+                .hasKey("tile"))
+                tile.readFromPortableNBT(
+                    stack.getTagCompound()
+                        .getCompoundTag("tile"));
 
             if (side > 1) tile.setDirection(side);
 
@@ -52,10 +55,10 @@ public class ItemCompDrawers extends ItemBlock {
         int count = config.getBlockBaseStorage("compdrawers");
         list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", count));
 
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound()
+            .hasKey("tile")) {
             list.add(
-                    EnumChatFormatting.YELLOW
-                            + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
+                EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
         }
     }
 }

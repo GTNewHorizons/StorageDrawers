@@ -55,15 +55,15 @@ public class TileEntityFramingRenderer extends TileEntitySpecialRenderer {
             Block block = Block.getBlockFromItem(target.getItem());
             if (block instanceof BlockDrawersCustom) {
                 ItemStack result = ItemCustomDrawers.makeItemStack(
-                        block,
-                        1,
-                        tileTable.getStackInSlot(1),
-                        tileTable.getStackInSlot(2),
-                        tileTable.getStackInSlot(3));
+                    block,
+                    1,
+                    tileTable.getStackInSlot(1),
+                    tileTable.getStackInSlot(2),
+                    tileTable.getStackInSlot(3));
                 renderSlot(tileTable, x, y, z, result, 2f, 0f, .25f, 0f);
             } else if (block instanceof BlockTrimCustom) {
                 ItemStack result = ItemCustomTrim
-                        .makeItemStack(block, 1, tileTable.getStackInSlot(1), tileTable.getStackInSlot(2));
+                    .makeItemStack(block, 1, tileTable.getStackInSlot(1), tileTable.getStackInSlot(2));
                 renderSlot(tileTable, x, y, z, result, 2f, 0f, .25f, 0f);
             }
         }
@@ -74,7 +74,7 @@ public class TileEntityFramingRenderer extends TileEntitySpecialRenderer {
     }
 
     private void renderSlot(TileEntityFramingTable tileTable, double x, double y, double z, ItemStack item, float scale,
-            float tx, float ty, float tz) {
+        float tx, float ty, float tz) {
         if (item == null) return;
 
         Block itemBlock = Block.getBlockFromItem(item.getItem());

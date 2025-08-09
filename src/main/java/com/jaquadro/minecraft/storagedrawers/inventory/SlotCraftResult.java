@@ -17,7 +17,7 @@ public class SlotCraftResult extends Slot {
     private int amountCrafted;
 
     public SlotCraftResult(EntityPlayer player, IInventory inputInventory, IInventory inventory, int[] inputSlots,
-            int slot, int x, int y) {
+        int slot, int x, int y) {
         super(inventory, slot, x, y);
 
         this.player = player;
@@ -51,7 +51,8 @@ public class SlotCraftResult extends Slot {
 
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack itemStack) {
-        FMLCommonHandler.instance().firePlayerCraftingEvent(player, itemStack, inputInventory);
+        FMLCommonHandler.instance()
+            .firePlayerCraftingEvent(player, itemStack, inputInventory);
         onCrafting(itemStack);
 
         for (int slot : inputSlots) {
@@ -59,16 +60,19 @@ public class SlotCraftResult extends Slot {
             if (itemTarget != null) {
                 inputInventory.decrStackSize(slot, 1);
 
-                if (itemTarget.getItem().hasContainerItem(itemTarget)) {
-                    ItemStack itemContainer = itemTarget.getItem().getContainerItem(itemTarget);
+                if (itemTarget.getItem()
+                    .hasContainerItem(itemTarget)) {
+                    ItemStack itemContainer = itemTarget.getItem()
+                        .getContainerItem(itemTarget);
                     if (itemContainer != null && itemContainer.isItemStackDamageable()
-                            && itemContainer.getItemDamage() > itemContainer.getMaxDamage()) {
+                        && itemContainer.getItemDamage() > itemContainer.getMaxDamage()) {
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(this.player, itemContainer));
                         continue;
                     }
 
-                    if (!itemTarget.getItem().doesContainerItemLeaveCraftingGrid(itemTarget)
-                            || !this.player.inventory.addItemStackToInventory(itemContainer)) {
+                    if (!itemTarget.getItem()
+                        .doesContainerItemLeaveCraftingGrid(itemTarget)
+                        || !this.player.inventory.addItemStackToInventory(itemContainer)) {
                         if (inputInventory.getStackInSlot(slot) == null)
                             inputInventory.setInventorySlotContents(slot, itemContainer);
                         else this.player.dropPlayerItemWithRandomChoice(itemContainer, false);

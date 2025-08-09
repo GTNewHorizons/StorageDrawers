@@ -87,8 +87,7 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
                 ItemStack itemProto = drawer.getStoredItemPrototype();
 
                 if (itemProto == null && drawer instanceof ILockable
-                        && ((ILockable) drawer).isLocked(LockAttribute.LOCK_EMPTY))
-                    continue;
+                    && ((ILockable) drawer).isLocked(LockAttribute.LOCK_EMPTY)) continue;
 
                 if (itemProto == null) {
                     itemProto = input.getItemStack();
@@ -103,7 +102,9 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
         }
 
         if (itemsLeft > 0) {
-            IAEItemStack overflow = AEApi.instance().storage().createItemStack(input.getItemStack());
+            IAEItemStack overflow = AEApi.instance()
+                .storage()
+                .createItemStack(input.getItemStack());
             overflow.setStackSize(itemsLeft);
             return overflow;
         }
@@ -173,9 +174,12 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
         }
 
         if (itemsLeft < request.getStackSize()) {
-            ItemStack fulfillment = request.getItemStack().copy();
+            ItemStack fulfillment = request.getItemStack()
+                .copy();
             fulfillment.stackSize -= itemsLeft;
-            return AEApi.instance().storage().createItemStack(fulfillment);
+            return AEApi.instance()
+                .storage()
+                .createItemStack(fulfillment);
         }
 
         return null;
@@ -191,7 +195,10 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
             if (!group.isDrawerEnabled(slot)) continue;
 
             IDrawer drawer = group.getDrawer(slot);
-            if (!drawer.isEmpty()) out.add(AEApi.instance().storage().createItemStack(drawer.getStoredItemCopy()));
+            if (!drawer.isEmpty()) out.add(
+                AEApi.instance()
+                    .storage()
+                    .createItemStack(drawer.getStoredItemCopy()));
         }
 
         return out;

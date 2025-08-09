@@ -47,7 +47,7 @@ import com.jaquadro.minecraft.storagedrawers.util.ItemMetaListRegistry;
 import com.mojang.authlib.GameProfile;
 
 public class TileEntityController extends TileEntity
-        implements IDrawerGroup, IPriorityGroup, ISmartGroup, ISidedInventory {
+    implements IDrawerGroup, IPriorityGroup, ISmartGroup, ISidedInventory {
 
     private static final int PRI_VOID = 0;
     private static final int PRI_LOCKED = 1;
@@ -104,7 +104,8 @@ public class TileEntityController extends TileEntity
             return PRI_DISABLED;
         }
 
-        int drawerSlot = (invBased) ? group.getDrawerInventory().getDrawerSlot(record.slot) : record.slot;
+        int drawerSlot = (invBased) ? group.getDrawerInventory()
+            .getDrawerSlot(record.slot) : record.slot;
         if (!group.isDrawerEnabled(drawerSlot)) {
             return PRI_DISABLED;
         }
@@ -112,18 +113,18 @@ public class TileEntityController extends TileEntity
         IDrawer drawer = group.getDrawer(drawerSlot);
         if (drawer.isEmpty()) {
             if ((drawer instanceof ILockable && ((ILockable) drawer).isLocked(LockAttribute.LOCK_EMPTY))
-                    || (group instanceof ILockable && ((ILockable) group).isLocked(LockAttribute.LOCK_EMPTY))) {
+                || (group instanceof ILockable && ((ILockable) group).isLocked(LockAttribute.LOCK_EMPTY))) {
                 return PRI_LOCKED_EMPTY;
             } else return PRI_EMPTY;
         }
 
         if ((drawer instanceof IVoidable && ((IVoidable) drawer).isVoid())
-                || (group instanceof IVoidable && ((IVoidable) group).isVoid())) {
+            || (group instanceof IVoidable && ((IVoidable) group).isVoid())) {
             return PRI_VOID;
         }
 
         if ((drawer instanceof ILockable && ((ILockable) drawer).isLocked(LockAttribute.LOCK_POPULATED))
-                || (group instanceof ILockable && ((ILockable) group).isLocked(LockAttribute.LOCK_POPULATED))) {
+            || (group instanceof ILockable && ((ILockable) group).isLocked(LockAttribute.LOCK_POPULATED))) {
             return PRI_LOCKED;
         }
 
@@ -173,8 +174,8 @@ public class TileEntityController extends TileEntity
     public int interactPutItemsIntoInventory(EntityPlayer player) {
         if (inventorySlots.length == 0) updateCache();
 
-        boolean dumpInventory = worldObj.getTotalWorldTime() - lastClickTime < 10
-                && player.getPersistentID().equals(lastClickUUID);
+        boolean dumpInventory = worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID()
+            .equals(lastClickUUID);
         int count = 0;
 
         if (!dumpInventory) {
@@ -423,14 +424,15 @@ public class TileEntityController extends TileEntity
     }
 
     private void rebuildPrimaryLookup(ItemMetaListRegistry<SlotRecord> lookup, List<SlotRecord> records,
-            boolean invBased) {
+        boolean invBased) {
         lookup.clear();
 
         for (SlotRecord record : records) {
             IDrawerGroup group = getGroupForCoord(record.coord);
             if (group == null) continue;
 
-            int drawerSlot = (invBased) ? group.getDrawerInventory().getDrawerSlot(record.slot) : record.slot;
+            int drawerSlot = (invBased) ? group.getDrawerInventory()
+                .getDrawerSlot(record.slot) : record.slot;
             if (!group.isDrawerEnabled(drawerSlot)) continue;
 
             IDrawer drawer = group.getDrawer(drawerSlot);
@@ -572,11 +574,11 @@ public class TileEntityController extends TileEntity
             record.distance = depth;
 
             BlockCoord[] neighbors = new BlockCoord[] { new BlockCoord(coord.x() + 1, coord.y(), coord.z()),
-                    new BlockCoord(coord.x() - 1, coord.y(), coord.z()),
-                    new BlockCoord(coord.x(), coord.y(), coord.z() + 1),
-                    new BlockCoord(coord.x(), coord.y(), coord.z() - 1),
-                    new BlockCoord(coord.x(), coord.y() + 1, coord.z()),
-                    new BlockCoord(coord.x(), coord.y() - 1, coord.z()), };
+                new BlockCoord(coord.x() - 1, coord.y(), coord.z()),
+                new BlockCoord(coord.x(), coord.y(), coord.z() + 1),
+                new BlockCoord(coord.x(), coord.y(), coord.z() - 1),
+                new BlockCoord(coord.x(), coord.y() + 1, coord.z()),
+                new BlockCoord(coord.x(), coord.y() - 1, coord.z()), };
 
             for (BlockCoord n : neighbors) {
                 if (!searchDiscovered.contains(n)) {
@@ -892,7 +894,7 @@ public class TileEntityController extends TileEntity
             return new Iterator<Integer>() {
 
                 List<SlotRecord> primaryRecords = drawerPrimaryLookup
-                        .getEntries(stack.getItem(), stack.getItemDamage());
+                    .getEntries(stack.getItem(), stack.getItemDamage());
                 Iterator<SlotRecord> iter1;
                 int index2;
                 Integer nextSlot = null;
@@ -927,8 +929,7 @@ public class TileEntityController extends TileEntity
                             if (insert) {
                                 boolean voiding = (drawer instanceof IVoidable) ? ((IVoidable) drawer).isVoid() : false;
                                 if (!(drawer.canItemBeStored(stack)
-                                        && (drawer.isEmpty() || drawer.getRemainingCapacity() > 0 || voiding)))
-                                    continue;
+                                    && (drawer.isEmpty() || drawer.getRemainingCapacity() > 0 || voiding))) continue;
                             } else {
                                 if (!(drawer.canItemBeExtracted(stack) && drawer.getStoredItemCount() > 0)) continue;
                             }
@@ -954,8 +955,7 @@ public class TileEntityController extends TileEntity
                         if (insert) {
                             boolean voiding = (drawer instanceof IVoidable) ? ((IVoidable) drawer).isVoid() : false;
                             if (!(drawer.canItemBeStored(stack)
-                                    && (drawer.isEmpty() || drawer.getRemainingCapacity() > 0 || voiding)))
-                                continue;
+                                && (drawer.isEmpty() || drawer.getRemainingCapacity() > 0 || voiding))) continue;
                         } else {
                             if (!(drawer.canItemBeExtracted(stack) && drawer.getStoredItemCount() > 0)) continue;
                         }

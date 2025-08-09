@@ -54,19 +54,19 @@ public class ContainerFramingTable extends Container {
         materialTrimSlot = addSlotToContainer(new SlotRestricted(tableInventory, 2, MaterialTrimX, MaterialTrimY));
         materialFrontSlot = addSlotToContainer(new SlotRestricted(tableInventory, 3, MaterialFrontX, MaterialFrontY));
         outputSlot = addSlotToContainer(
-                new SlotCraftResult(
-                        inventory.player,
-                        tableInventory,
-                        craftResult,
-                        new int[] { 0, 1, 2, 3 },
-                        4,
-                        OutputX,
-                        OutputY));
+            new SlotCraftResult(
+                inventory.player,
+                tableInventory,
+                craftResult,
+                new int[] { 0, 1, 2, 3 },
+                4,
+                OutputX,
+                OutputY));
 
         playerSlots = new ArrayList<Slot>();
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) playerSlots.add(
-                    addSlotToContainer(new Slot(inventory, j + i * 9 + 9, InventoryX + j * 18, InventoryY + i * 18)));
+            for (int j = 0; j < 9; j++) playerSlots
+                .add(addSlotToContainer(new Slot(inventory, j + i * 9 + 9, InventoryX + j * 18, InventoryY + i * 18)));
         }
 
         hotbarSlots = new ArrayList<Slot>();
@@ -93,8 +93,8 @@ public class ContainerFramingTable extends Container {
             if (block instanceof BlockDrawersCustom) {
                 if (matSide != null) {
                     craftResult.setInventorySlotContents(
-                            0,
-                            ItemCustomDrawers.makeItemStack(block, 1, matSide, matTrim, matFront));
+                        0,
+                        ItemCustomDrawers.makeItemStack(block, 1, matSide, matTrim, matFront));
                     return;
                 }
             } else if (block instanceof BlockTrimCustom) {
@@ -134,17 +134,16 @@ public class ContainerFramingTable extends Container {
                 if (TileEntityFramingTable.isItemValidDrawer(slotStack))
                     merged = mergeItemStack(slotStack, inputSlot.slotNumber, inputSlot.slotNumber + 1, false);
                 if (TileEntityFramingTable.isItemValidMaterial(slotStack)) merged = mergeItemStack(
-                        slotStack,
-                        materialSideSlot.slotNumber,
-                        materialFrontSlot.slotNumber + 1,
-                        false);
+                    slotStack,
+                    materialSideSlot.slotNumber,
+                    materialFrontSlot.slotNumber + 1,
+                    false);
 
                 if (!merged) {
                     if (slotIndex >= inventoryStart && slotIndex < hotbarStart) {
                         if (!mergeItemStack(slotStack, hotbarStart, hotbarEnd, false)) return null;
                     } else if (slotIndex >= hotbarStart && slotIndex < hotbarEnd
-                            && !this.mergeItemStack(slotStack, inventoryStart, hotbarStart, false))
-                        return null;
+                        && !this.mergeItemStack(slotStack, inventoryStart, hotbarStart, false)) return null;
                 }
             }
 

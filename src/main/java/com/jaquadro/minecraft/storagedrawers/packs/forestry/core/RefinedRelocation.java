@@ -26,9 +26,9 @@ public class RefinedRelocation {
         IStorageDrawersApi api = StorageDrawersApi.instance();
         if (api == null) return;
 
-        if (!Loader.isModLoaded("RefinedRelocation")
-                || !api.userConfig().integrationConfig().isRefinedRelocationEnabled())
-            return;
+        if (!Loader.isModLoaded("RefinedRelocation") || !api.userConfig()
+            .integrationConfig()
+            .isRefinedRelocationEnabled()) return;
 
         IPackBlockFactory factory = api.packFactory();
         IPackDataResolver[] resolvers = StorageDrawersPack.instance.resolvers;
@@ -87,7 +87,8 @@ public class RefinedRelocation {
             for (int i = 0; i < resolvers.length; i++) factory.registerBlock(trim[i], "trimSort" + tail[i]);
         }
 
-        if (!config.addonConfig().showAddonItemsNEI()) {
+        if (!config.addonConfig()
+            .showAddonItemsNEI()) {
             for (int i = 0; i < resolvers.length; i++) {
                 factory.hideBlock(ModBlocks.getQualifiedName(fullDrawers1[i]));
                 factory.hideBlock(ModBlocks.getQualifiedName(fullDrawers2[i]));

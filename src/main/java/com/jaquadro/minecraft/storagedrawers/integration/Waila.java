@@ -39,7 +39,7 @@ public class Waila extends IntegrationModule {
     @Override
     public void init() throws Throwable {
         FMLInterModComms
-                .sendMessage("Waila", "register", StorageDrawers.SOURCE_PATH + "integration.Waila.registerProvider");
+            .sendMessage("Waila", "register", StorageDrawers.SOURCE_PATH + "integration.Waila.registerProvider");
     }
 
     @Override
@@ -58,13 +58,13 @@ public class Waila extends IntegrationModule {
 
         @Override
         public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-                IWailaConfigHandler config) {
+            IWailaConfigHandler config) {
             return currenttip;
         }
 
         @Override
         public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-                IWailaConfigHandler config) {
+            IWailaConfigHandler config) {
             TileEntityDrawers tile = (TileEntityDrawers) accessor.getTileEntity();
 
             if (SecurityManager.hasAccess(Minecraft.getMinecraft().thePlayer.getGameProfile(), tile)) {
@@ -78,25 +78,25 @@ public class Waila extends IntegrationModule {
                     if (stack != null && stack.getItem() != null) {
                         String stackName = stack.getDisplayName();
                         List<IWailaTooltipHandler> handlers = StorageDrawers.wailaRegistry.getTooltipHandlers();
-                        for (int j = 0, n = handlers.size(); j < n; j++)
-                            stackName = handlers.get(j).transformItemName(drawer, stackName);
+                        for (int j = 0, n = handlers.size(); j < n; j++) stackName = handlers.get(j)
+                            .transformItemName(drawer, stackName);
 
                         if (drawer.getStoredItemCount() == Integer.MAX_VALUE) name = stackName + " [\u221E]";
                         else if (drawer instanceof IFractionalDrawer
-                                && ((IFractionalDrawer) drawer).getConversionRate() > 1)
+                            && ((IFractionalDrawer) drawer).getConversionRate() > 1)
                             name = stackName + ((i == 0) ? " [" : " [+")
-                                    + ((IFractionalDrawer) drawer).getStoredItemRemainder()
-                                    + "]";
+                                + ((IFractionalDrawer) drawer).getStoredItemRemainder()
+                                + "]";
                         else if (StorageDrawers.config.cache.stackRemainderWaila) {
                             int stacks = drawer.getStoredItemCount() / drawer.getStoredItemStackSize();
                             int remainder = drawer.getStoredItemCount() - (stacks * drawer.getStoredItemStackSize());
                             if (stacks > 0 && remainder > 0) name = stackName + " ["
-                                    + stacks
-                                    + "x"
-                                    + drawer.getStoredItemStackSize()
-                                    + " + "
-                                    + remainder
-                                    + "]";
+                                + stacks
+                                + "x"
+                                + drawer.getStoredItemStackSize()
+                                + " + "
+                                + remainder
+                                + "]";
                             else if (stacks > 0)
                                 name = stackName + " [" + stacks + "x" + drawer.getStoredItemStackSize() + "]";
                             else name = stackName + " [" + remainder + "]";
@@ -110,22 +110,22 @@ public class Waila extends IntegrationModule {
                 else {
                     int limit = tile.getDrawerCapacity() * tile.getEffectiveStorageMultiplier();
                     currenttip.add(
-                            StatCollector.translateToLocalFormatted(
-                                    "storageDrawers.waila.limit",
-                                    limit,
-                                    tile.getEffectiveStorageMultiplier()));
+                        StatCollector.translateToLocalFormatted(
+                            "storageDrawers.waila.limit",
+                            limit,
+                            tile.getEffectiveStorageMultiplier()));
                 }
             }
 
             String attrib = "";
             if (tile.isLocked(LockAttribute.LOCK_POPULATED)) attrib += (attrib.isEmpty() ? "" : ", ")
-                    + StatCollector.translateToLocal("storageDrawers.waila.locked");
+                + StatCollector.translateToLocal("storageDrawers.waila.locked");
             if (tile.isVoid())
                 attrib += (attrib.isEmpty() ? "" : ", ") + StatCollector.translateToLocal("storageDrawers.waila.void");
             if (tile.isSorting()) attrib += (attrib.isEmpty() ? "" : ", ")
-                    + StatCollector.translateToLocal("storageDrawers.waila.sorting");
+                + StatCollector.translateToLocal("storageDrawers.waila.sorting");
             if (tile.getOwner() != null) attrib += (attrib.isEmpty() ? "" : ", ")
-                    + StatCollector.translateToLocal("storageDrawers.waila.protected");
+                + StatCollector.translateToLocal("storageDrawers.waila.protected");
 
             if (!attrib.isEmpty()) currenttip.add(attrib);
 
@@ -134,13 +134,13 @@ public class Waila extends IntegrationModule {
 
         @Override
         public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-                IWailaConfigHandler config) {
+            IWailaConfigHandler config) {
             return currenttip;
         }
 
         @Override
         public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x,
-                int y, int z) {
+            int y, int z) {
             return null;
         }
     }

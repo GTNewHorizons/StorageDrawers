@@ -15,10 +15,10 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(
-        modid = StorageDrawersPack.MOD_ID,
-        name = StorageDrawersPack.MOD_NAME,
-        version = StorageDrawers.MOD_VERSION,
-        dependencies = "required-after:StorageDrawers;")
+    modid = StorageDrawersPack.MOD_ID,
+    name = StorageDrawersPack.MOD_NAME,
+    version = StorageDrawers.MOD_VERSION,
+    dependencies = "required-after:StorageDrawers;")
 public class StorageDrawersPack {
 
     public static final String MOD_ID = "StorageDrawersMisc";
@@ -37,7 +37,8 @@ public class StorageDrawersPack {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isMiscPackEnabled()) {
+        if (!StorageDrawers.config.userConfig.packsConfig()
+            .isMiscPackEnabled()) {
             return;
         }
 
@@ -46,7 +47,8 @@ public class StorageDrawersPack {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isMiscPackEnabled()) {
+        if (!StorageDrawers.config.userConfig.packsConfig()
+            .isMiscPackEnabled()) {
             return;
         }
 
@@ -56,7 +58,8 @@ public class StorageDrawersPack {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (!StorageDrawers.config.userConfig.packsConfig().isMiscPackEnabled()) {
+        if (!StorageDrawers.config.userConfig.packsConfig()
+            .isMiscPackEnabled()) {
             return;
         }
 
@@ -64,7 +67,8 @@ public class StorageDrawersPack {
         if (api != null) {
             for (IExtendedDataResolver resolver : resolvers) {
                 api.registerStandardPackRecipes(resolver);
-                api.packFactory().registerResolver(resolver);
+                api.packFactory()
+                    .registerResolver(resolver);
             }
         }
     }

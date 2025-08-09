@@ -12,10 +12,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class DataResolver extends ExtendedDataResolver {
 
     public static String[][] textureBank = new String[][] {
-            new String[] { "larch", "teak", "acacia", "lime", "chestnut", "wenge", "baobab", "sequoia", "kapok",
-                    "ebony", "mahogany", "balsa", "willow", "walnut", "greenheart", "cherry" },
-            new String[] { "mahoe", "poplar", "palm", "papaya", "pine", "plum", "maple", "citrus", "giganteum", "ipe",
-                    "padauk", "cocobolo", "zebrawood" } };
+        new String[] { "larch", "teak", "acacia", "lime", "chestnut", "wenge", "baobab", "sequoia", "kapok", "ebony",
+            "mahogany", "balsa", "willow", "walnut", "greenheart", "cherry" },
+        new String[] { "mahoe", "poplar", "palm", "papaya", "pine", "plum", "maple", "citrus", "giganteum", "ipe",
+            "padauk", "cocobolo", "zebrawood" } };
 
     private int bank;
 
@@ -48,17 +48,13 @@ public class DataResolver extends ExtendedDataResolver {
                 if (blockConfig.getDrawerCount() == 1 && RefinedRelocation.fullDrawers1 != null)
                     return RefinedRelocation.fullDrawers1[bank];
                 if (blockConfig.getDrawerCount() == 2 && !blockConfig.isHalfDepth()
-                        && RefinedRelocation.fullDrawers2 != null)
-                    return RefinedRelocation.fullDrawers2[bank];
+                    && RefinedRelocation.fullDrawers2 != null) return RefinedRelocation.fullDrawers2[bank];
                 if (blockConfig.getDrawerCount() == 4 && !blockConfig.isHalfDepth()
-                        && RefinedRelocation.fullDrawers4 != null)
-                    return RefinedRelocation.fullDrawers4[bank];
+                    && RefinedRelocation.fullDrawers4 != null) return RefinedRelocation.fullDrawers4[bank];
                 if (blockConfig.getDrawerCount() == 2 && blockConfig.isHalfDepth()
-                        && RefinedRelocation.halfDrawers2 != null)
-                    return RefinedRelocation.halfDrawers2[bank];
+                    && RefinedRelocation.halfDrawers2 != null) return RefinedRelocation.halfDrawers2[bank];
                 if (blockConfig.getDrawerCount() == 4 && blockConfig.isHalfDepth()
-                        && RefinedRelocation.halfDrawers4 != null)
-                    return RefinedRelocation.halfDrawers4[bank];
+                    && RefinedRelocation.halfDrawers4 != null) return RefinedRelocation.halfDrawers4[bank];
                 break;
             case Trim:
                 if (ModBlocks.trim != null) return ModBlocks.trim[bank];
@@ -78,11 +74,11 @@ public class DataResolver extends ExtendedDataResolver {
 
         for (int meta = 0, plankMeta = startingOffset; meta < textureBank[bank].length; meta++, plankMeta++) {
             setPlankSlab(
-                    meta,
-                    GameRegistry.findBlock("Forestry", "planks"),
-                    plankMeta,
-                    GameRegistry.findBlock("Forestry", "slabs"),
-                    plankMeta);
+                meta,
+                GameRegistry.findBlock("Forestry", "planks"),
+                plankMeta,
+                GameRegistry.findBlock("Forestry", "slabs"),
+                plankMeta);
         }
     }
 }

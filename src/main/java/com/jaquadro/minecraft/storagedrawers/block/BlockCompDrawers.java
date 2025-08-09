@@ -96,8 +96,10 @@ public class BlockCompDrawers extends BlockDrawers implements INetworked {
 
         if (side == tile.getDirection()) {
             if (tile.getEffectiveStatusLevel() == 0) {
-                if (tile.isDrawerEnabled(2) && tile.getDrawer(2).getStoredItemStackSize() > 0) return iconFront[2];
-                else if (tile.isDrawerEnabled(1) && tile.getDrawer(1).getStoredItemStackSize() > 0) return iconFront[1];
+                if (tile.isDrawerEnabled(2) && tile.getDrawer(2)
+                    .getStoredItemStackSize() > 0) return iconFront[2];
+                else if (tile.isDrawerEnabled(1) && tile.getDrawer(1)
+                    .getStoredItemStackSize() > 0) return iconFront[1];
                 else return iconFront[0];
             } else {
                 IDrawer main = tile.getDrawer(0);
@@ -110,10 +112,10 @@ public class BlockCompDrawers extends BlockDrawers implements INetworked {
                     plev = MathHelper.clamp_int((int) (pfull * 6.99), 0, 6);
                 }
 
-                if (tile.isDrawerEnabled(2) && tile.getDrawer(2).getStoredItemStackSize() > 0)
-                    return iconFrontInd[2][plev];
-                else if (tile.isDrawerEnabled(1) && tile.getDrawer(1).getStoredItemStackSize() > 0)
-                    return iconFrontInd[1][plev];
+                if (tile.isDrawerEnabled(2) && tile.getDrawer(2)
+                    .getStoredItemStackSize() > 0) return iconFrontInd[2][plev];
+                else if (tile.isDrawerEnabled(1) && tile.getDrawer(1)
+                    .getStoredItemStackSize() > 0) return iconFrontInd[1][plev];
                 else return iconFrontInd[0][plev];
             }
         }
@@ -138,7 +140,7 @@ public class BlockCompDrawers extends BlockDrawers implements INetworked {
             iconFront[i] = register.registerIcon(StorageDrawers.MOD_ID + ":drawers_comp_front_" + i);
             iconFrontInd[i][0] = register.registerIcon(StorageDrawers.MOD_ID + ":drawers_comp_front_" + i + "_ind");
             for (int j = 1; j <= 6; j++) iconFrontInd[i][j] = register
-                    .registerIcon(StorageDrawers.MOD_ID + ":drawers_comp_front_" + i + "_ind" + j);
+                .registerIcon(StorageDrawers.MOD_ID + ":drawers_comp_front_" + i + "_ind" + j);
         }
 
         iconTrim = register.registerIcon(StorageDrawers.MOD_ID + ":drawers_comp_trim");

@@ -12,7 +12,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class DataResolver extends ExtendedDataResolver {
 
     private static String[] textureNames = new String[] { "eucalyptus", "sakura", "ghostwood", "redwood", "bloodwood",
-            "hopseed", "maple", "silverbell", "purpleheart", "tigerwood", "willow", "darkwood", "fusewood" };
+        "hopseed", "maple", "silverbell", "purpleheart", "tigerwood", "willow", "darkwood", "fusewood" };
 
     public DataResolver(String modID) {
         super(modID, textureNames);
@@ -55,16 +55,16 @@ public class DataResolver extends ExtendedDataResolver {
     @Override
     public void init() {
         for (int i = 0, p = 0, m = 0; i < 8; i++, p++, m++) setPlankSlab(
-                i,
-                GameRegistry.findBlock("Natura", "planks"),
-                p,
-                GameRegistry.findBlock("Natura", "plankSlab1"),
-                m);
+            i,
+            GameRegistry.findBlock("Natura", "planks"),
+            p,
+            GameRegistry.findBlock("Natura", "plankSlab1"),
+            m);
         for (int i = 8, p = 8, m = 0; i < textureNames.length; i++, p++, m++) setPlankSlab(
-                i,
-                GameRegistry.findBlock("Natura", "planks"),
-                p,
-                GameRegistry.findBlock("Natura", "plankSlab2"),
-                m);
+            i,
+            GameRegistry.findBlock("Natura", "planks"),
+            p,
+            GameRegistry.findBlock("Natura", "plankSlab2"),
+            m);
     }
 }

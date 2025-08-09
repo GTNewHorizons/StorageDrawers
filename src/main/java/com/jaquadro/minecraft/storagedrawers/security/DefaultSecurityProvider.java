@@ -15,7 +15,8 @@ public class DefaultSecurityProvider implements ISecurityProvider {
     public boolean hasOwnership(GameProfile profile, IProtectable target) {
         if (target == null || profile == null) return false;
 
-        return target.getOwner() == null || target.getOwner().equals(profile.getId());
+        return target.getOwner() == null || target.getOwner()
+            .equals(profile.getId());
     }
 
     @Override

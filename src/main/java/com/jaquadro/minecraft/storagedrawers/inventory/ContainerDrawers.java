@@ -36,7 +36,7 @@ public class ContainerDrawers extends Container {
 
         storageSlots = new ArrayList<Slot>();
         for (int i = 0; i < tileEntity.getDrawerCount(); i++) storageSlots
-                .add(addSlotToContainer(new SlotStorage(storageInventory, i, getStorageSlotX(i), getStorageSlotY(i))));
+            .add(addSlotToContainer(new SlotStorage(storageInventory, i, getStorageSlotX(i), getStorageSlotY(i))));
 
         upgradeSlots = new ArrayList<Slot>();
         for (int i = 0; i < 5; i++)
@@ -45,8 +45,7 @@ public class ContainerDrawers extends Container {
         playerSlots = new ArrayList<Slot>();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) playerSlots.add(
-                    addSlotToContainer(
-                            new Slot(playerInventory, j + i * 9 + 9, InventoryX + j * 18, InventoryY + i * 18)));
+                addSlotToContainer(new Slot(playerInventory, j + i * 9 + 9, InventoryX + j * 18, InventoryY + i * 18)));
         }
 
         hotbarSlots = new ArrayList<Slot>();
@@ -119,8 +118,7 @@ public class ContainerDrawers extends Container {
                 if (slotIndex >= inventoryStart && slotIndex < hotbarStart) {
                     if (!mergeItemStack(slotStack, hotbarStart, hotbarEnd, false)) return null;
                 } else if (slotIndex >= hotbarStart && slotIndex < hotbarEnd
-                        && !mergeItemStack(slotStack, inventoryStart, hotbarStart, false))
-                    return null;
+                    && !mergeItemStack(slotStack, inventoryStart, hotbarStart, false)) return null;
             }
 
             // Try merge stack into inventory

@@ -56,8 +56,10 @@ public class TrimItemRender implements IItemRenderer {
         if (materialSide == null) materialSide = new ItemStack(block);
         if (materialTrim == null) materialTrim = materialSide;
 
-        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem()).getIcon(4, materialTrim.getItemDamage());
-        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem()).getIcon(4, materialSide.getItemDamage());
+        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem())
+            .getIcon(4, materialTrim.getItemDamage());
+        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem())
+            .getIcon(4, materialSide.getItemDamage());
 
         if (trimIcon == null) trimIcon = block.getDefaultTrimIcon();
         if (panelIcon == null) panelIcon = block.getDefaultFaceIcon();

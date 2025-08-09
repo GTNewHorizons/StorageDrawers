@@ -28,7 +28,7 @@ public class ItemDrawers extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ, int metadata) {
+        float hitX, float hitY, float hitZ, int metadata) {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityDrawers tile = (TileEntityDrawers) world.getTileEntity(x, y, z);
@@ -39,8 +39,11 @@ public class ItemDrawers extends ItemBlock {
 
             tile.setDrawerCapacity(getCapacityForBlock(block));
 
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("tile"))
-                tile.readFromPortableNBT(stack.getTagCompound().getCompoundTag("tile"));
+            if (stack.hasTagCompound() && stack.getTagCompound()
+                .hasKey("tile"))
+                tile.readFromPortableNBT(
+                    stack.getTagCompound()
+                        .getCompoundTag("tile"));
 
             if (side > 1) tile.setDirection(side);
 
@@ -55,13 +58,12 @@ public class ItemDrawers extends ItemBlock {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         Block block = Block.getBlockFromItem(itemStack.getItem());
         list.add(
-                StatCollector
-                        .translateToLocalFormatted("storageDrawers.drawers.description", getCapacityForBlock(block)));
+            StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", getCapacityForBlock(block)));
 
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound()
+            .hasKey("tile")) {
             list.add(
-                    EnumChatFormatting.YELLOW
-                            + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
+                EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
         }
     }
 

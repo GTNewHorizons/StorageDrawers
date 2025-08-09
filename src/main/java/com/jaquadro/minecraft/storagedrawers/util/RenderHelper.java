@@ -23,7 +23,7 @@ public class RenderHelper {
     public static final int FULL_BRIGHTNESS = 15728880;
 
     private static final float normMap[][] = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 },
-            { 1, 0, 0 }, };
+        { 1, 0, 0 }, };
 
     public RenderHelperState state = new RenderHelperState();
 
@@ -78,12 +78,12 @@ public class RenderHelper {
 
     public void setRenderBounds(Block block) {
         setRenderBounds(
-                block.getBlockBoundsMinX(),
-                block.getBlockBoundsMinY(),
-                block.getBlockBoundsMinZ(),
-                block.getBlockBoundsMaxX(),
-                block.getBlockBoundsMaxY(),
-                block.getBlockBoundsMaxZ());
+            block.getBlockBoundsMinX(),
+            block.getBlockBoundsMinY(),
+            block.getBlockBoundsMinZ(),
+            block.getBlockBoundsMaxX(),
+            block.getBlockBoundsMaxY(),
+            block.getBlockBoundsMaxZ());
     }
 
     public void setColorAndBrightness(IBlockAccess blockAccess, Block block, int x, int y, int z) {
@@ -137,15 +137,15 @@ public class RenderHelper {
     }
 
     public void renderFace(int face, IBlockAccess blockAccess, Block block, int x, int y, int z, IIcon icon, float r,
-            float g, float b) {
+        float g, float b) {
         if (Minecraft.isAmbientOcclusionEnabled() && blockAccess != null
-                && block.getLightValue(blockAccess, x, y, z) == 0)
+            && block.getLightValue(blockAccess, x, y, z) == 0)
             renderFaceAOPartial(face, blockAccess, block, x, y, z, icon, r, g, b);
         else renderFaceColorMult(face, blockAccess, block, x, y, z, icon, r, g, b);
     }
 
     public void renderFaceColorMult(int face, IBlockAccess blockAccess, Block block, int x, int y, int z, IIcon icon,
-            float r, float g, float b) {
+        float r, float g, float b) {
         setupColorMult(face, blockAccess, block, x, y, z, r, g, b);
 
         face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
@@ -155,7 +155,7 @@ public class RenderHelper {
     }
 
     public void renderFaceAOPartial(int face, IBlockAccess blockAccess, Block block, int x, int y, int z, IIcon icon,
-            float r, float g, float b) {
+        float r, float g, float b) {
         state.enableAO = true;
 
         face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
@@ -187,35 +187,35 @@ public class RenderHelper {
     }
 
     public void renderPartialFace(int face, IBlockAccess blockAccess, Block block, int x, int y, int z, IIcon icon,
-            double uMin, double vMin, double uMax, double vMax) {
+        double uMin, double vMin, double uMax, double vMax) {
         calculateBaseColor(colorScratch, block.colorMultiplier(blockAccess, x, y, z));
         renderPartialFace(
-                face,
-                blockAccess,
-                block,
-                x,
-                y,
-                z,
-                icon,
-                uMin,
-                vMin,
-                uMax,
-                vMax,
-                colorScratch[0],
-                colorScratch[1],
-                colorScratch[2]);
+            face,
+            blockAccess,
+            block,
+            x,
+            y,
+            z,
+            icon,
+            uMin,
+            vMin,
+            uMax,
+            vMax,
+            colorScratch[0],
+            colorScratch[1],
+            colorScratch[2]);
     }
 
     public void renderPartialFace(int face, IBlockAccess blockAccess, Block block, int x, int y, int z, IIcon icon,
-            double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
+        double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
         if (Minecraft.isAmbientOcclusionEnabled() && blockAccess != null
-                && block.getLightValue(blockAccess, x, y, z) == 0)
+            && block.getLightValue(blockAccess, x, y, z) == 0)
             renderPartialFaceAOPartial(face, blockAccess, block, x, y, z, icon, uMin, vMin, uMax, vMax, r, g, b);
         else renderPartialFaceColorMult(face, blockAccess, block, x, y, z, icon, uMin, vMin, uMax, vMax, r, g, b);
     }
 
     public void renderPartialFaceColorMult(int face, IIcon icon, double uMin, double vMin, double uMax, double vMax,
-            float r, float g, float b) {
+        float r, float g, float b) {
         setupColorMult(face, r, g, b);
         renderPartialFace(face, icon, uMin, vMin, uMax, vMax);
 
@@ -223,7 +223,7 @@ public class RenderHelper {
     }
 
     public void renderPartialFaceColorMult(int face, IBlockAccess blockAccess, Block block, int x, int y, int z,
-            IIcon icon, double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
+        IIcon icon, double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
         setupColorMult(face, blockAccess, block, x, y, z, r, g, b);
         renderPartialFace(face, x, y, z, icon, uMin, vMin, uMax, vMax);
 
@@ -231,7 +231,7 @@ public class RenderHelper {
     }
 
     public void renderPartialFaceAOPartial(int face, IBlockAccess blockAccess, Block block, int x, int y, int z,
-            IIcon icon, double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
+        IIcon icon, double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
         state.enableAO = true;
 
         switch (RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform]) {
@@ -266,7 +266,7 @@ public class RenderHelper {
     }
 
     public void renderPartialFace(int face, double x, double y, double z, IIcon icon, double uMin, double vMin,
-            double uMax, double vMax) {
+        double uMax, double vMax) {
         face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
         llHelper.drawPartialFace(face, x, y, z, icon, uMin, vMin, uMax, vMax);
     }
@@ -296,12 +296,12 @@ public class RenderHelper {
 
     public void renderCrossedSquares(IBlockAccess blockAccess, Block block, int x, int y, int z) {
         renderCrossedSquares(
-                blockAccess,
-                block,
-                x,
-                y,
-                z,
-                getBlockIconFromSideAndMetadata(block, 0, blockAccess.getBlockMetadata(x, y, z)));
+            blockAccess,
+            block,
+            x,
+            y,
+            z,
+            getBlockIconFromSideAndMetadata(block, 0, blockAccess.getBlockMetadata(x, y, z)));
     }
 
     public void renderCrossedSquares(IBlockAccess blockAccess, Block block, int x, int y, int z, IIcon icon) {
@@ -424,7 +424,7 @@ public class RenderHelper {
     }
 
     private void setupColorMult(int face, IBlockAccess blockAccess, Block block, int x, int y, int z, float r, float g,
-            float b) {
+        float b) {
         Tessellator tessellator = Tessellator.instance;
         float[] norm = normMap[face];
         float scale = state.getColorMult(face);
@@ -471,8 +471,9 @@ public class RenderHelper {
     }
 
     private IIcon getIconSafe(IIcon icon) {
-        if (icon == null) return ((TextureMap) Minecraft.getMinecraft().getTextureManager()
-                .getTexture(TextureMap.locationBlocksTexture)).getAtlasSprite("missingno");
+        if (icon == null) return ((TextureMap) Minecraft.getMinecraft()
+            .getTextureManager()
+            .getTexture(TextureMap.locationBlocksTexture)).getAtlasSprite("missingno");
 
         return icon;
     }

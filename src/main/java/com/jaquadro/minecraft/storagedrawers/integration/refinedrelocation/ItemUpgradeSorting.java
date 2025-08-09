@@ -36,7 +36,7 @@ public class ItemUpgradeSorting extends Item {
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ) {
+        float hitX, float hitY, float hitZ) {
         if (world.isRemote) return false;
 
         if (world.getBlock(x, y, z) == ModBlocks.trim) {
