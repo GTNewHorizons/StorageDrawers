@@ -4,17 +4,13 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import org.lwjgl.input.Keyboard;
-
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
-import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
@@ -63,96 +59,9 @@ public class ItemDrawers extends ItemBlock {
                         .translateToLocalFormatted("storageDrawers.drawers.description", getCapacityForBlock(block)));
 
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                NBTTagCompound drawerNBT = itemStack.getTagCompound().getCompoundTag("tile");
-                TileEntityDrawers drawerTile = (TileEntityDrawers) TileEntityDrawers.createAndLoadEntity(drawerNBT);
-
-                // Check if the drawer is owned by player.
-                if (drawerTile.getOwner() == null) {
-                    list.add(
-                            EnumChatFormatting.DARK_GRAY + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.no_owned"));
-                } else {
-                    if (drawerTile.getOwner().equals(player.getUniqueID())) list.add(
-                            EnumChatFormatting.GREEN + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.access_yes"));
-                    else list.add(
-                            EnumChatFormatting.RED + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.access_no"));
-                }
-
-                // Check if the drawer is locked
-                if (drawerTile.isLocked(LockAttribute.LOCK_POPULATED)) list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.locked"));
-                else list.add(
-                        EnumChatFormatting.DARK_GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.unlocked"));
-
-                // Check if the drawer show or hide items
-                if (drawerTile.isShrouded()) list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemLabel"));
-                else list.add(
-                        EnumChatFormatting.DARK_GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.showItemLabel"));
-
-                // Check if the drawer show or hide quantify of items
-                if (drawerTile.isQuantified())
-                    list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.showItemQuantity"));
-                else
-                    list.add(EnumChatFormatting.DARK_GRAY + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemQuantity"));
-
-                // Show upgrades of drawer
-                list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.upgrades"));
-                for (int i = 0; i < drawerTile.getUpgradeSlotCount(); i++) {
-                    ItemStack drawerUpgrade = drawerTile.getUpgrade(i);
-                    if (drawerUpgrade != null)
-                        list.add("    " + drawerUpgrade.getRarity().rarityColor + drawerUpgrade.getDisplayName());
-                    else list.add(
-                            "    " + EnumChatFormatting.DARK_GRAY
-                                    + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"));
-                }
-
-                // Show items of drawer
-                list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.items"));
-                for (int i = 0; i < drawerTile.getDrawerCount(); i++) {
-                    IDrawer drawer = drawerTile.getDrawer(i);
-                    ItemStack storedItem = drawer.getStoredItemCopy();
-                    if (storedItem != null) {
-                        if (storedItem.hasDisplayName()) {
-                            list.add(
-                                    "    " + storedItem.getRarity().rarityColor
-                                            + EnumChatFormatting.ITALIC
-                                            + storedItem.getDisplayName()
-                                            + EnumChatFormatting.RESET
-                                            + " "
-                                            + EnumChatFormatting.BLUE
-                                            + drawer.getStoredItemCount());
-                        } else {
-                            list.add(
-                                    "    " + storedItem.getRarity().rarityColor
-                                            + storedItem.getDisplayName()
-                                            + " "
-                                            + EnumChatFormatting.BLUE
-                                            + drawer.getStoredItemCount());
-                        }
-                    } else list.add(
-                            "    " + EnumChatFormatting.DARK_GRAY
-                                    + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"));
-                }
-            } else {
-                list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
-                list.add(
-                        EnumChatFormatting.DARK_GRAY + StatCollector
-                                .translateToLocalFormatted("storageDrawers.drawers.sealed.description_shift"));
-            }
+            list.add(
+                    EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
         }
     }
 
