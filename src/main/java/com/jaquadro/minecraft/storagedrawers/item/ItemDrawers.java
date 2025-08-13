@@ -1,5 +1,6 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -91,17 +92,19 @@ public class ItemDrawers extends ItemBlock {
 
                 // Check if the drawer show or hide items
                 if (drawerTile.isShrouded()) list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemLabel"));
+                        EnumChatFormatting.YELLOW + StatCollector
+                                .translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemLabel"));
                 else list.add(
-                        EnumChatFormatting.DARK_GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.showItemLabel"));
+                        EnumChatFormatting.DARK_GRAY + StatCollector
+                                .translateToLocalFormatted("storageDrawers.drawers.sealed.showItemLabel"));
 
                 // Check if the drawer show or hide quantify of items
-                if (drawerTile.isQuantified())
-                    list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.showItemQuantity"));
-                else
-                    list.add(EnumChatFormatting.DARK_GRAY + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemQuantity"));
+                if (drawerTile.isQuantified()) list.add(
+                        EnumChatFormatting.YELLOW + StatCollector
+                                .translateToLocalFormatted("storageDrawers.drawers.sealed.showItemQuantity"));
+                else list.add(
+                        EnumChatFormatting.DARK_GRAY + StatCollector
+                                .translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemQuantity"));
 
                 // Show upgrades of drawer
                 list.add(
@@ -126,20 +129,19 @@ public class ItemDrawers extends ItemBlock {
                     if (storedItem != null) {
                         if (storedItem.hasDisplayName()) {
                             list.add(
-                                    "    " + storedItem.getRarity().rarityColor
+                                    "    " + EnumChatFormatting.BLUE
+                                            + drawer.getStoredItemCount()
+                                            + "x "
+                                            + storedItem.getRarity().rarityColor
                                             + EnumChatFormatting.ITALIC
-                                            + storedItem.getDisplayName()
-                                            + EnumChatFormatting.RESET
-                                            + " "
-                                            + EnumChatFormatting.BLUE
-                                            + drawer.getStoredItemCount());
+                                            + storedItem.getDisplayName());
                         } else {
                             list.add(
-                                    "    " + storedItem.getRarity().rarityColor
-                                            + storedItem.getDisplayName()
-                                            + " "
-                                            + EnumChatFormatting.BLUE
-                                            + drawer.getStoredItemCount());
+                                    "    " + EnumChatFormatting.BLUE
+                                            + drawer.getStoredItemCount()
+                                            + "x "
+                                            + storedItem.getRarity().rarityColor
+                                            + storedItem.getDisplayName());
                         }
                     } else list.add(
                             "    " + EnumChatFormatting.DARK_GRAY
