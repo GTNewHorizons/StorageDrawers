@@ -170,7 +170,7 @@ public class ItemDrawers extends ItemBlock {
                     }
                 }
 
-                // Create a list of "  #(slot_id): upgrade name"
+                // Create a list of " #(slot_id): upgrade name"
                 List<String> upgradeInfoList = new ArrayList<>();
                 for (int i = 0; i < drawerTile.getUpgradeSlotCount(); i++) {
                     ItemStack drawerUpgrade = drawerTile.getUpgrade(i);
@@ -189,14 +189,12 @@ public class ItemDrawers extends ItemBlock {
                 }
 
                 list.add(
-                        EnumChatFormatting.GRAY + StatCollector
-                                .translateToLocalFormatted("storageDrawers.drawers.sealed.upgradeList"));
+                        EnumChatFormatting.GRAY
+                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.upgradeList"));
                 if (upgradeInfoList.isEmpty()) {
-                            list.add(
-                                    "  "
-                                            + EnumChatFormatting.DARK_GRAY
-                                            + StatCollector
-                                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.none"));
+                    list.add(
+                            "  " + EnumChatFormatting.DARK_GRAY
+                                    + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.none"));
                 } else {
                     list.addAll(upgradeInfoList);
                 }
