@@ -1,6 +1,5 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -154,13 +153,12 @@ public class ItemDrawers extends ItemBlock {
 
     private void AddDrawersInformation(TileEntityDrawers tileDrawers, List list) {
         list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.drawerList"));
-
         for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
             IDrawer drawerInventory = tileDrawers.getDrawer(i);
             ItemStack storedItem = drawerInventory.getStoredItemCopy();
 
             // Create builder and add number of slot
-            StringBuilder infoItemBuilder = new StringBuilder(EnumChatFormatting.YELLOW + "  #" + (i + 1) + ": ");
+            StringBuilder infoItemBuilder = new StringBuilder(EnumChatFormatting.YELLOW + " #" + (i + 1) + ": ");
 
             // If item is null just add "<Empty" else quantity and display name.
             if (storedItem != null) {
@@ -181,7 +179,7 @@ public class ItemDrawers extends ItemBlock {
                 // Add space between display name and quantity and then add quantity of items.
                 infoItemBuilder.append(" ").append(EnumChatFormatting.BLUE).append("[");
                 if (quantityNumStack > 0) {
-                    infoItemBuilder.append(storedItem.getMaxStackSize()).append("x").append(quantityNumStack);
+                    infoItemBuilder.append(quantityNumStack).append("x").append(storedItem.getMaxStackSize());
                     if (quantityRemainer > 0) {
                         infoItemBuilder.append(" + ").append(quantityRemainer);
                     }
@@ -194,14 +192,15 @@ public class ItemDrawers extends ItemBlock {
                 list.add(infoItemBuilder.toString());
             } else {
                 infoItemBuilder.append(EnumChatFormatting.DARK_GRAY)
-                        .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
+                        .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
                 list.add(infoItemBuilder.toString());
             }
         }
     }
 
     private void AddUpgradesInformation(TileEntityDrawers tileDrawers, List list) {
-        List<String> upgradeInfoList = new ArrayList<>();
+        list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.upgradeList"));
+        boolean hasUpgrades = false;
 
         for (int i = 0; i < tileDrawers.getUpgradeSlotCount(); i++) {
             ItemStack drawerUpgrade = tileDrawers.getUpgrade(i);
@@ -214,18 +213,16 @@ public class ItemDrawers extends ItemBlock {
                 } else {
                     infoUpgradeBuilder.append(drawerUpgrade.getDisplayName());
                 }
-                upgradeInfoList.add(infoUpgradeBuilder.toString());
+                hasUpgrades = true;
+                list.add(infoUpgradeBuilder.toString());
             }
         }
 
-        list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.upgradeList"));
-        if (upgradeInfoList.isEmpty()) {
+        if (!hasUpgrades) {
             list.add(
                     EnumChatFormatting.YELLOW + "  - "
                             + EnumChatFormatting.DARK_GRAY
                             + StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
-        } else {
-            list.addAll(upgradeInfoList);
         }
     }
 
