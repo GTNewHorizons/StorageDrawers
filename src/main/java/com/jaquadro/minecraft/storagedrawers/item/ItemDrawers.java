@@ -101,11 +101,11 @@ public class ItemDrawers extends ItemBlock {
                     } else {
                         infoStatesBuilder.append(EnumChatFormatting.RED);
                     }
-                    infoStatesBuilder.append(
-                            StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_owner"));
+                    infoStatesBuilder
+                            .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_owner"));
                 } else {
-                    infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY).append(
-                            StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_public"));
+                    infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY)
+                            .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_public"));
                 }
 
                 // Show two previous status in single line
@@ -114,23 +114,23 @@ public class ItemDrawers extends ItemBlock {
                 // Show if drawer hide item label
                 if (drawerTile.isShrouded()) {
                     list.add(
-                            EnumChatFormatting.WHITE + StatCollector
-                                    .translateToLocal("storageDrawers.drawers.sealed.hideItemLabel"));
+                            EnumChatFormatting.WHITE
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.hideItemLabel"));
                 } else {
                     list.add(
-                            EnumChatFormatting.DARK_GRAY + StatCollector
-                                    .translateToLocal("storageDrawers.drawers.sealed.showItemLabel"));
+                            EnumChatFormatting.DARK_GRAY
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.showItemLabel"));
                 }
 
                 // Show if drawer show item quantity
                 if (!drawerTile.isQuantified()) {
                     list.add(
-                            EnumChatFormatting.DARK_GRAY + StatCollector
-                                    .translateToLocal("storageDrawers.drawers.sealed.hideItemQuantity"));
+                            EnumChatFormatting.DARK_GRAY
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.hideItemQuantity"));
                 } else {
                     list.add(
-                            EnumChatFormatting.WHITE + StatCollector
-                                    .translateToLocal("storageDrawers.drawers.sealed.showItemQuantity"));
+                            EnumChatFormatting.WHITE
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.showItemQuantity"));
                 }
 
                 // Show items inside.
