@@ -119,6 +119,7 @@ tile.trim.acacia.name=Acacia Trim
 tile.trim.big_oak.name=Dark Oak Trim
 
 storageDrawers.drawers.description=Holds %d stacks per drawer
+storageDrawers.drawers.sealed.description=Holds %dx%d stacks per drawer
 storageDrawers.drawers.sealed=Contents sealed within
 storageDrawers.drawers.sealed.locked=Locked
 storageDrawers.drawers.sealed.unlocked=Unlocked

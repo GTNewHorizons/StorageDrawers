@@ -60,23 +60,35 @@ public class ItemDrawers extends ItemBlock {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         Block block = Block.getBlockFromItem(itemStack.getItem());
-        list.add(
-                StatCollector
-                        .translateToLocalFormatted("storageDrawers.drawers.description", getCapacityForBlock(block)));
-
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
+            NBTTagCompound drawerNBT = itemStack.getTagCompound().getCompoundTag("tile");
+            TileEntityDrawers drawerTile = (TileEntityDrawers) TileEntityDrawers.createAndLoadEntity(drawerNBT);
+
+            int effectiveStorageMultiplier = drawerTile.getEffectiveStorageMultiplier();
+
+            if (effectiveStorageMultiplier > 1) {
+                list.add(
+                        StatCollector.translateToLocalFormatted(
+                                "storageDrawers.drawers.sealed.description",
+                                getCapacityForBlock(block),
+                                effectiveStorageMultiplier));
+            } else {
+                list.add(
+                        StatCollector.translateToLocalFormatted(
+                                "storageDrawers.drawers.description",
+                                getCapacityForBlock(block)));
+            }
+
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                NBTTagCompound drawerNBT = itemStack.getTagCompound().getCompoundTag("tile");
-                TileEntityDrawers drawerTile = (TileEntityDrawers) TileEntityDrawers.createAndLoadEntity(drawerNBT);
                 StringBuilder infoStatesBuilder = new StringBuilder();
 
                 // Show locked drawer status
                 if (drawerTile.isLocked(LockAttribute.LOCK_POPULATED)) {
                     infoStatesBuilder.append(EnumChatFormatting.YELLOW)
-                            .append(StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.locked"));
+                            .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.locked"));
                 } else {
                     infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY)
-                            .append(StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.unlocked"));
+                            .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.unlocked"));
                 }
 
                 infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY).append(", ");
@@ -90,10 +102,10 @@ public class ItemDrawers extends ItemBlock {
                         infoStatesBuilder.append(EnumChatFormatting.RED);
                     }
                     infoStatesBuilder.append(
-                            StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.access_owner"));
+                            StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_owner"));
                 } else {
                     infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY).append(
-                            StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.access_public"));
+                            StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_public"));
                 }
 
                 // Show two previous status in single line
@@ -103,28 +115,28 @@ public class ItemDrawers extends ItemBlock {
                 if (drawerTile.isShrouded()) {
                     list.add(
                             EnumChatFormatting.WHITE + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemLabel"));
+                                    .translateToLocal("storageDrawers.drawers.sealed.hideItemLabel"));
                 } else {
                     list.add(
                             EnumChatFormatting.DARK_GRAY + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.showItemLabel"));
+                                    .translateToLocal("storageDrawers.drawers.sealed.showItemLabel"));
                 }
 
                 // Show if drawer show item quantity
                 if (!drawerTile.isQuantified()) {
                     list.add(
                             EnumChatFormatting.DARK_GRAY + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.hideItemQuantity"));
+                                    .translateToLocal("storageDrawers.drawers.sealed.hideItemQuantity"));
                 } else {
                     list.add(
                             EnumChatFormatting.WHITE + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.showItemQuantity"));
+                                    .translateToLocal("storageDrawers.drawers.sealed.showItemQuantity"));
                 }
 
                 // Show items inside.
                 list.add(
                         EnumChatFormatting.GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.itemList"));
+                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.itemList"));
                 for (int i = 0; i < drawerTile.getDrawerCount(); i++) {
                     IDrawer drawerInventory = drawerTile.getDrawer(i);
                     ItemStack storedItem = drawerInventory.getStoredItemCopy();
@@ -165,7 +177,7 @@ public class ItemDrawers extends ItemBlock {
                         list.add(infoItemBuilder.toString());
                     } else {
                         infoItemBuilder.append(EnumChatFormatting.DARK_GRAY)
-                                .append(StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"));
+                                .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
                         list.add(infoItemBuilder.toString());
                     }
                 }
@@ -192,22 +204,25 @@ public class ItemDrawers extends ItemBlock {
 
                 list.add(
                         EnumChatFormatting.GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.upgradeList"));
+                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.upgradeList"));
                 if (upgradeInfoList.isEmpty()) {
                     list.add(
                             "  " + EnumChatFormatting.DARK_GRAY
-                                    + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.none"));
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
                 } else {
                     list.addAll(upgradeInfoList);
                 }
             } else {
+                list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("storageDrawers.drawers.sealed"));
                 list.add(
-                        EnumChatFormatting.YELLOW
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
-                list.add(
-                        EnumChatFormatting.DARK_GRAY + StatCollector
-                                .translateToLocalFormatted("storageDrawers.drawers.sealed.descriptionShift"));
+                        EnumChatFormatting.DARK_GRAY
+                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.descriptionShift"));
             }
+        } else {
+            list.add(
+                    StatCollector.translateToLocalFormatted(
+                            "storageDrawers.drawers.description",
+                            getCapacityForBlock(block)));
         }
     }
 
