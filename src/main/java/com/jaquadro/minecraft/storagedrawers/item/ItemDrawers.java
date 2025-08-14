@@ -206,8 +206,7 @@ public class ItemDrawers extends ItemBlock {
         for (int i = 0; i < tileDrawers.getUpgradeSlotCount(); i++) {
             ItemStack drawerUpgrade = tileDrawers.getUpgrade(i);
             if (drawerUpgrade != null) {
-                StringBuilder infoUpgradeBuilder = new StringBuilder(
-                        EnumChatFormatting.YELLOW + "  - ");
+                StringBuilder infoUpgradeBuilder = new StringBuilder(EnumChatFormatting.YELLOW + "  - ");
                 infoUpgradeBuilder.append(drawerUpgrade.getRarity().rarityColor);
                 if (drawerUpgrade.hasDisplayName()) {
                     infoUpgradeBuilder.append(EnumChatFormatting.ITALIC).append(drawerUpgrade.getDisplayName())
@@ -222,7 +221,8 @@ public class ItemDrawers extends ItemBlock {
         list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.upgradeList"));
         if (upgradeInfoList.isEmpty()) {
             list.add(
-                    EnumChatFormatting.YELLOW + "  - " + EnumChatFormatting.DARK_GRAY
+                    EnumChatFormatting.YELLOW + "  - "
+                            + EnumChatFormatting.DARK_GRAY
                             + StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
         } else {
             list.addAll(upgradeInfoList);
