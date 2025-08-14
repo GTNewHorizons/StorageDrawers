@@ -119,7 +119,6 @@ tile.trim.acacia.name=Acacia Trim
 tile.trim.big_oak.name=Dark Oak Trim
 
 storageDrawers.drawers.description=Holds %d stacks per drawer
-storageDrawers.drawers.sealed.description=Holds %dx%d stacks per drawer
 storageDrawers.drawers.sealed=Contents sealed within
 storageDrawers.drawers.sealed.locked=Locked
 storageDrawers.drawers.sealed.unlocked=Unlocked
@@ -132,6 +131,7 @@ storageDrawers.drawers.sealed.showItemQuantity=Show item quantities
 storageDrawers.drawers.sealed.drawerList=Drawers:
 storageDrawers.drawers.sealed.upgradeList=Upgrades:
 storageDrawers.drawers.sealed.none=<None>
+storageDrawers.drawers.sealed.empty=<Empty>
 storageDrawers.drawers.sealed.descriptionShift=[Hold LSHIFT to see more info]
 storageDrawers.upgrade.description=Increases storage to %d times base value
 storageDrawers.controller.description=Interact with a bank of connected drawers

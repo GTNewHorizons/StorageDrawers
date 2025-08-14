@@ -64,19 +64,10 @@ public class ItemDrawers extends ItemBlock {
             TileEntityDrawers tileDrawers = (TileEntityDrawers) TileEntityDrawers.createAndLoadEntity(nbtDrawers);
 
             // Shows description
-            int effectiveStorageMultiplier = tileDrawers.getEffectiveStorageMultiplier();
-            if (effectiveStorageMultiplier > 1) {
-                list.add(
-                        StatCollector.translateToLocalFormatted(
-                                "storageDrawers.drawers.sealed.description",
-                                getCapacityForBlock(block),
-                                effectiveStorageMultiplier));
-            } else {
-                list.add(
-                        StatCollector.translateToLocalFormatted(
-                                "storageDrawers.drawers.description",
-                                getCapacityForBlock(block)));
-            }
+            list.add(
+                    StatCollector.translateToLocalFormatted(
+                            "storageDrawers.drawers.description",
+                            getCapacityForBlock(block) * tileDrawers.getEffectiveStorageMultiplier()));
 
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 AddStatsInformation(tileDrawers, player, list);
@@ -192,7 +183,7 @@ public class ItemDrawers extends ItemBlock {
                 list.add(infoItemBuilder.toString());
             } else {
                 infoItemBuilder.append(EnumChatFormatting.DARK_GRAY)
-                        .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
+                        .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
                 list.add(infoItemBuilder.toString());
             }
         }
@@ -220,8 +211,7 @@ public class ItemDrawers extends ItemBlock {
 
         if (!hasUpgrades) {
             list.add(
-                    EnumChatFormatting.YELLOW + "  - "
-                            + EnumChatFormatting.DARK_GRAY
+                    "  " + EnumChatFormatting.DARK_GRAY
                             + StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
         }
     }
