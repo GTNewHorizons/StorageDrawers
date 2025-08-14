@@ -124,7 +124,7 @@ public class ItemDrawers extends ItemBlock {
                 // Show items inside.
                 list.add(
                         EnumChatFormatting.GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.itemMode"));
+                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.itemList"));
                 for (int i = 0; i < drawerTile.getDrawerCount(); i++) {
                     IDrawer drawerInventory = drawerTile.getDrawer(i);
                     ItemStack storedItem = drawerInventory.getStoredItemCopy();
@@ -164,17 +164,13 @@ public class ItemDrawers extends ItemBlock {
                         // add to tooltip drawer item info in certain slot.
                         list.add(infoItemBuilder.toString());
                     } else {
-                        infoItemBuilder.append(EnumChatFormatting.DARK_GRAY).append("<")
-                                .append(StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"))
-                                .append(">");
+                        infoItemBuilder.append(EnumChatFormatting.DARK_GRAY)
+                                .append(StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"));
                         list.add(infoItemBuilder.toString());
                     }
                 }
 
-                // Show upgrades inside.
-                list.add(
-                        EnumChatFormatting.GRAY
-                                + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.upgradeMode"));
+                // Create a list of "  #(slot_id): upgrade name"
                 List<String> upgradeInfoList = new ArrayList<>();
                 for (int i = 0; i < drawerTile.getUpgradeSlotCount(); i++) {
                     ItemStack drawerUpgrade = drawerTile.getUpgrade(i);
@@ -191,11 +187,16 @@ public class ItemDrawers extends ItemBlock {
                         upgradeInfoList.add(infoUpgradeBuilder.toString());
                     }
                 }
+
+                list.add(
+                        EnumChatFormatting.GRAY + StatCollector
+                                .translateToLocalFormatted("storageDrawers.drawers.sealed.upgradeList"));
                 if (upgradeInfoList.isEmpty()) {
-                    list.add(
-                            EnumChatFormatting.DARK_GRAY + "  <"
-                                    + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty")
-                                    + ">");
+                            list.add(
+                                    "  "
+                                            + EnumChatFormatting.DARK_GRAY
+                                            + StatCollector
+                                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.none"));
                 } else {
                     list.addAll(upgradeInfoList);
                 }
@@ -204,10 +205,8 @@ public class ItemDrawers extends ItemBlock {
                         EnumChatFormatting.YELLOW
                                 + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed"));
                 list.add(
-                        EnumChatFormatting.DARK_GRAY + "["
-                                + StatCollector
-                                        .translateToLocalFormatted("storageDrawers.drawers.sealed.descriptionShift")
-                                + "]");
+                        EnumChatFormatting.DARK_GRAY + StatCollector
+                                .translateToLocalFormatted("storageDrawers.drawers.sealed.descriptionShift"));
             }
         }
     }
