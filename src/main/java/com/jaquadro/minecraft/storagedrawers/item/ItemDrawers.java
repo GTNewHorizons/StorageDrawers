@@ -142,14 +142,14 @@ public class ItemDrawers extends ItemBlock {
                 if (infoMode) {
                     // Show items insides of drawer
                     list.add(
-                            EnumChatFormatting.GRAY
-                                    + StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.items"));
+                            EnumChatFormatting.GRAY + StatCollector
+                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.itemMode"));
                     for (int i = 0; i < drawerTile.getDrawerCount(); i++) {
                         IDrawer drawerInventory = drawerTile.getDrawer(i);
                         ItemStack storedItem = drawerInventory.getStoredItemCopy();
 
                         // Create builder and add number of slot
-                        StringBuilder infoSlotBuilder = new StringBuilder(
+                        StringBuilder infoItemBuilder = new StringBuilder(
                                 EnumChatFormatting.YELLOW + "  #" + (i + 1) + ": ");
 
                         // If item is null just add "<Empty" else quantity and display name.
@@ -160,33 +160,34 @@ public class ItemDrawers extends ItemBlock {
                                     - quantityNumStack * storedItem.getMaxStackSize();
 
                             // Add rarity color and display name
-                            infoSlotBuilder.append(storedItem.getRarity().rarityColor);
+                            infoItemBuilder.append(storedItem.getRarity().rarityColor);
                             if (storedItem.hasDisplayName()) {
-                                infoSlotBuilder.append(EnumChatFormatting.ITALIC).append(storedItem.getDisplayName())
+                                infoItemBuilder.append(EnumChatFormatting.ITALIC).append(storedItem.getDisplayName())
                                         .append(EnumChatFormatting.RESET);
                             } else {
-                                infoSlotBuilder.append(storedItem.getDisplayName());
+                                infoItemBuilder.append(storedItem.getDisplayName());
                             }
 
-                            // Add space between display name and quantity and then quantity of items.
-                            infoSlotBuilder.append(" ").append(EnumChatFormatting.BLUE).append("[");
+                            // Add space between display name and quantity and then add quantity of items.
+                            infoItemBuilder.append(" ").append(EnumChatFormatting.BLUE).append("[");
                             if (quantityNumStack > 0) {
-                                infoSlotBuilder.append(storedItem.getMaxStackSize()).append("x")
+                                infoItemBuilder.append(storedItem.getMaxStackSize()).append("x")
                                         .append(quantityNumStack);
                                 if (quantityRemainer > 0) {
-                                    infoSlotBuilder.append(" + ").append(quantityRemainer);
+                                    infoItemBuilder.append(" + ").append(quantityRemainer);
                                 }
                             } else {
-                                infoSlotBuilder.append(quantityRemainer);
+                                infoItemBuilder.append(quantityRemainer);
                             }
-                            infoSlotBuilder.append("]");
+                            infoItemBuilder.append("]");
 
-                            // add to tooltip drawer slot info.
-                            list.add(infoSlotBuilder.toString());
+                            // add to tooltip drawer item info in certain slot.
+                            list.add(infoItemBuilder.toString());
                         } else {
-                            infoSlotBuilder.append(EnumChatFormatting.DARK_GRAY).append(
-                                    StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"));
-                            list.add(infoSlotBuilder.toString());
+                            infoItemBuilder.append(EnumChatFormatting.DARK_GRAY).append("<").append(
+                                    StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"))
+                                    .append(">");
+                            list.add(infoItemBuilder.toString());
                         }
                     }
                     list.add(
@@ -199,7 +200,7 @@ public class ItemDrawers extends ItemBlock {
                 } else {
                     list.add(
                             EnumChatFormatting.GRAY + StatCollector
-                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.upgrades"));
+                                    .translateToLocalFormatted("storageDrawers.drawers.sealed.upgradeMode"));
                     for (int i = 0; i < drawerTile.getUpgradeSlotCount(); i++) {
                         ItemStack drawerUpgrade = drawerTile.getUpgrade(i);
 
@@ -210,17 +211,16 @@ public class ItemDrawers extends ItemBlock {
                         if (drawerUpgrade != null) {
                             infoUpgradeBuilder.append(drawerUpgrade.getRarity().rarityColor);
                             if (drawerUpgrade.hasDisplayName()) {
-                                infoUpgradeBuilder.append(EnumChatFormatting.ITALIC);
-                                infoUpgradeBuilder.append(drawerUpgrade.getDisplayName());
-                                infoUpgradeBuilder.append(EnumChatFormatting.RESET);
+                                infoUpgradeBuilder.append(EnumChatFormatting.ITALIC)
+                                        .append(drawerUpgrade.getDisplayName()).append(EnumChatFormatting.RESET);
                             } else {
                                 infoUpgradeBuilder.append(drawerUpgrade.getDisplayName());
                             }
                             list.add(infoUpgradeBuilder.toString());
                         } else {
-                            infoUpgradeBuilder.append(EnumChatFormatting.DARK_GRAY);
-                            infoUpgradeBuilder.append(
-                                    StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"));
+                            infoUpgradeBuilder.append(EnumChatFormatting.DARK_GRAY).append("<").append(
+                                    StatCollector.translateToLocalFormatted("storageDrawers.drawers.sealed.empty"))
+                                    .append(">");
                             list.add(infoUpgradeBuilder.toString());
                         }
                     }
