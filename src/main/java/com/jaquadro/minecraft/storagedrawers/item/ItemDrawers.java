@@ -172,11 +172,13 @@ public class ItemDrawers extends ItemBlock {
 
                 // Create a list of " #(slot_id): upgrade name"
                 List<String> upgradeInfoList = new ArrayList<>();
+                int upgradeCount = 1;
+
                 for (int i = 0; i < drawerTile.getUpgradeSlotCount(); i++) {
                     ItemStack drawerUpgrade = drawerTile.getUpgrade(i);
                     if (drawerUpgrade != null) {
                         StringBuilder infoUpgradeBuilder = new StringBuilder(
-                                EnumChatFormatting.YELLOW + "  #" + (i + 1) + ": ");
+                                EnumChatFormatting.YELLOW + "  #" + (upgradeCount++) + ": ");
                         infoUpgradeBuilder.append(drawerUpgrade.getRarity().rarityColor);
                         if (drawerUpgrade.hasDisplayName()) {
                             infoUpgradeBuilder.append(EnumChatFormatting.ITALIC).append(drawerUpgrade.getDisplayName())
