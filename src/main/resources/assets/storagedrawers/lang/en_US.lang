@@ -131,7 +131,6 @@ storageDrawers.drawers.sealed.hideItemQuantity=Hide item quantities
 storageDrawers.drawers.sealed.showItemQuantity=Show item quantities
 storageDrawers.drawers.sealed.drawerList=Drawers:
 storageDrawers.drawers.sealed.upgradeList=Upgrades:
-storageDrawers.drawers.sealed.empty=<Empty>
 storageDrawers.drawers.sealed.none=<None>
 storageDrawers.drawers.sealed.descriptionShift=[Hold LSHIFT to see more info]
 storageDrawers.upgrade.description=Increases storage to %d times base value
