@@ -65,11 +65,9 @@ public class ItemDrawers extends ItemBlock {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
             NBTTagCompound tag = itemStack.getTagCompound().getCompoundTag("tile");
-            ItemStack[] upgrades = new ItemStack[5]; // 5 - magic number defined in TileEntityDrawers.
-            int[] upgradesStats = readUpgradesFromNBT(tag, upgrades); // - 0 effectiveStorageMultiplier, 1 - isDownGrade
 
-            int drawerCapacity = tag.getInteger("Cap") * upgradesStats[0];
-            if (upgradesStats[1] == 1) drawerCapacity = upgradesStats[0];
+            ItemStack[] upgrades = new ItemStack[5]; // 5 - magic number defined in TileEntityDrawers.
+            int drawerCapacity = getDrawerCapacity(tag, upgrades);
 
             // Add to tooltip description + max stored stacks per drawer.
             list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
@@ -158,7 +156,7 @@ public class ItemDrawers extends ItemBlock {
         for (int i = 0; i < slots.tagCount(); i++) {
             NBTTagCompound slot = slots.getCompoundTagAt(i);
 
-            ItemStack stack = readItemStackFromDrawerSlotNBT(slot);
+            ItemStack stack = getItemStackFromSlot(slot);
             int itemCount = slot.getInteger("Count");
 
             // Create builder and add number of slot
@@ -228,13 +226,11 @@ public class ItemDrawers extends ItemBlock {
         }
     }
 
-    /** Read from NBT drawer upgrades and also returns { effectiveStorageMultiplier, isDownGrade } */
-    private int[] readUpgradesFromNBT(NBTTagCompound tag, ItemStack[] upgrades) {
-        ConfigManager config = StorageDrawers.config;
-
+    /** Read from NBT drawers upgrades and storage capacity. */
+    private int getDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
         int effectiveStorageMultiplier = 0;
-        int isDownGrade = 0;
         int slotId = 0;
+        boolean isDownGrade = false;
 
         // Read upgrades in legacy format.
         if (!tag.hasKey("Upgrades")) {
@@ -247,7 +243,7 @@ public class ItemDrawers extends ItemBlock {
             if (tag.hasKey("Void")) upgrades[slotId++] = new ItemStack(ModItems.upgradeVoid);
             if (tag.hasKey("Down")) {
                 upgrades[slotId] = new ItemStack(ModItems.upgradeDowngrade);
-                isDownGrade = 1;
+                isDownGrade = true;
             }
         }
         // Read upgrades in new format.
@@ -257,11 +253,10 @@ public class ItemDrawers extends ItemBlock {
                 NBTTagCompound upgradeTag = upgradeList.getCompoundTagAt(i);
                 upgrades[i] = ItemStack.loadItemStackFromNBT(upgradeTag);
                 if (upgrades[i] != null) {
-                    if (upgrades[i].getItem() == ModItems.upgrade)
-                        effectiveStorageMultiplier += StorageDrawers.config
-                                .getStorageUpgradeMultiplier(upgrades[i].getItemDamage());
+                    if (upgrades[i].getItem() == ModItems.upgrade) effectiveStorageMultiplier += StorageDrawers.config
+                            .getStorageUpgradeMultiplier(upgrades[i].getItemDamage());
                     // TODO: Config check (see TileEntityDrawers)
-                    if (upgrades[i].getItem() == ModItems.upgradeDowngrade) isDownGrade = 1;
+                    if (upgrades[i].getItem() == ModItems.upgradeDowngrade) isDownGrade = true;
                 }
             }
         }
@@ -269,11 +264,12 @@ public class ItemDrawers extends ItemBlock {
         // Later when we calculate total storage it will not multiply by 0
         if (effectiveStorageMultiplier == 0) effectiveStorageMultiplier = 1;
 
-        return new int[] { effectiveStorageMultiplier, isDownGrade };
+        // "Cap" tag is drawer capacity
+        return isDownGrade ? effectiveStorageMultiplier : tag.getShort("Cap") * effectiveStorageMultiplier;
     }
 
     /** Read from NBT slot of drawers ItemStack */
-    private ItemStack readItemStackFromDrawerSlotNBT(NBTTagCompound tag) {
+    private ItemStack getItemStackFromSlot(NBTTagCompound tag) {
         ItemStack stack = null;
 
         // Logic copied from one of IDrawer implementations.
