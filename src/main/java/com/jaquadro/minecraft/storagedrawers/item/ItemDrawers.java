@@ -67,7 +67,7 @@ public class ItemDrawers extends ItemBlock {
             NBTTagCompound tag = itemStack.getTagCompound().getCompoundTag("tile");
 
             ItemStack[] upgrades = new ItemStack[5]; // 5 - magic number defined in TileEntityDrawers.
-            int drawerCapacity = getDrawerCapacity(tag, upgrades);
+            int drawerCapacity = getUpgradesAndDrawerCapacity(tag, upgrades);
 
             // Add to tooltip description + max stored stacks per drawer.
             list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
@@ -95,10 +95,9 @@ public class ItemDrawers extends ItemBlock {
     /** Add to tooltip some drawers stats. */
     private void addStatsInformation(NBTTagCompound tag, EntityPlayer player, List list) {
         ConfigManager config = StorageDrawers.config;
-        StringBuilder infoStatesBuilder = new StringBuilder();
 
         EnumSet<LockAttribute> lockAttributes = null; // Unlocked or Locked drawer.
-        UUID owner = null; // Owner of driver.
+        UUID owner = null; // Owner of drawer.
         boolean shrouded = false; // Hide or show item label.
         boolean quantified = false; // Hide or show item quantities.
 
@@ -108,94 +107,75 @@ public class ItemDrawers extends ItemBlock {
         if (config.cache.enableShroudUpgrades && tag.hasKey("Shr")) shrouded = tag.getBoolean("Shr");
         if (config.cache.enableQuantifyUpgrades && tag.hasKey("Qua")) quantified = tag.getBoolean("Qua");
 
-        // Show locked drawer status
-        if (lockAttributes != null && lockAttributes.contains(LockAttribute.LOCK_POPULATED))
-            infoStatesBuilder.append(EnumChatFormatting.YELLOW)
-                    .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.locked"));
-        else infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY)
-                .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.unlocked"));
+        String lockInfo; // Stat of the locked drawer.
+        String accessInfo; // Stat of the owner.
 
-        // Add comma separator
-        infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY).append(", ");
+        // Show locked drawer status
+        if (lockAttributes != null && lockAttributes.contains(LockAttribute.LOCK_POPULATED)) {
+            lockInfo = EnumChatFormatting.YELLOW
+                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.locked");
+        } else {
+            lockInfo = EnumChatFormatting.DARK_GRAY
+                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.unlocked");
+        }
 
         // Show if drawer is Public or Protected
         if (owner != null) {
-            // Check if the current player holding drawer is the owner
-            if (player.getUniqueID().equals(owner)) infoStatesBuilder.append(EnumChatFormatting.GREEN);
-            else infoStatesBuilder.append(EnumChatFormatting.RED);
-            infoStatesBuilder.append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_owner"));
-        } else infoStatesBuilder.append(EnumChatFormatting.DARK_GRAY)
-                .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_public"));
+            if (player.getUniqueID().equals(owner)) {
+                accessInfo = EnumChatFormatting.GREEN
+                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_owner");
+            } else {
+                accessInfo = EnumChatFormatting.RED
+                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_owner");
+            }
+        } else {
+            accessInfo = EnumChatFormatting.DARK_GRAY
+                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_public");
+        }
 
         // Show two previous status in single line
-        list.add(infoStatesBuilder.toString());
+        list.add(lockInfo + EnumChatFormatting.DARK_GRAY + ", " + accessInfo);
 
         // In the next line show if drawer hide item label
-        if (shrouded) list.add(
-                EnumChatFormatting.WHITE
-                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.hideItemLabel"));
-        else list.add(
-                EnumChatFormatting.DARK_GRAY
-                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.showItemLabel"));
+        if (shrouded) {
+            list.add(
+                    EnumChatFormatting.WHITE
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.hideItemLabel"));
+        } else {
+            list.add(
+                    EnumChatFormatting.DARK_GRAY
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.showItemLabel"));
+        }
 
         // In the next line show if drawer show item quantity
-        if (quantified) list.add(
-                EnumChatFormatting.WHITE
-                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.showItemQuantity"));
-        else list.add(
-                EnumChatFormatting.DARK_GRAY
-                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.hideItemQuantity"));
+        if (quantified) {
+            list.add(
+                    EnumChatFormatting.WHITE
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.showItemQuantity"));
+        } else {
+            list.add(
+                    EnumChatFormatting.DARK_GRAY
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.hideItemQuantity"));
+        }
     }
 
     /** Add to tooltip information about drawers content. */
     private void addDrawersInformation(NBTTagCompound tag, List list) {
-        list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.drawerList"));
-
         NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
-
+        list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.drawerList"));
         for (int i = 0; i < slots.tagCount(); i++) {
             NBTTagCompound slot = slots.getCompoundTagAt(i);
             ItemStack stack = getItemStackFromSlot(slot);
-
-            // If item is null just add "<Empty" else quantity and display name.
+            String slotCounter = EnumChatFormatting.YELLOW + " #" + (i + 1) + ": ";
             if (stack != null) {
-                int itemCount = slot.getInteger("Count");
-
-                // Calculates quantities
-                int quantityNumStack = itemCount / stack.getMaxStackSize();
-                int quantityRemainer = itemCount - quantityNumStack * stack.getMaxStackSize();
-
-                // Add rarity color and display name
-                StringBuilder infoItemBuilder = new StringBuilder(
-                        EnumChatFormatting.YELLOW + " #" + (i + 1) + ": " + stack.getRarity().rarityColor);
-
-                if (stack.hasDisplayName()) {
-                    infoItemBuilder.append(EnumChatFormatting.ITALIC).append(stack.getDisplayName())
-                            .append(EnumChatFormatting.RESET);
-                } else {
-                    infoItemBuilder.append(stack.getDisplayName());
-                }
-
-                // Add space between display name and quantity and then add quantity of items.
-                infoItemBuilder.append(" ").append(EnumChatFormatting.BLUE).append("[");
-                if (quantityNumStack > 0) {
-                    infoItemBuilder.append(quantityNumStack).append("x").append(stack.getMaxStackSize());
-                    if (quantityRemainer > 0) {
-                        infoItemBuilder.append(" + ").append(quantityRemainer);
-                    }
-                } else {
-                    infoItemBuilder.append(quantityRemainer);
-                }
-                infoItemBuilder.append("]");
-
-                // add to tooltip drawer item info in certain slot.
-                list.add(infoItemBuilder.toString());
+                list.add(
+                        slotCounter + getStackDisplayName(stack)
+                                + " "
+                                + EnumChatFormatting.BLUE
+                                + getStackCountDisplay(stack, slot.getInteger("Count")));
             } else {
                 list.add(
-                        EnumChatFormatting.YELLOW + " #"
-                                + (i + 1)
-                                + ": "
-                                + EnumChatFormatting.DARK_GRAY
+                        slotCounter + EnumChatFormatting.DARK_GRAY
                                 + StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
             }
         }
@@ -209,18 +189,7 @@ public class ItemDrawers extends ItemBlock {
         for (int i = 0; i < upgrades.length; i++) { // 5 - upgrade count
             ItemStack upgrade = upgrades[i];
             if (upgrade != null) {
-                if (upgrade.hasDisplayName()) {
-                    list.add(
-                            EnumChatFormatting.YELLOW + "  - "
-                                    + EnumChatFormatting.ITALIC
-                                    + upgrade.getRarity().rarityColor
-                                    + upgrade.getDisplayName());
-                } else {
-                    list.add(
-                            EnumChatFormatting.YELLOW + "  - "
-                                    + upgrade.getRarity().rarityColor
-                                    + upgrade.getDisplayName());
-                }
+                list.add(EnumChatFormatting.YELLOW + "  - " + getStackDisplayName(upgrade));
                 hasUpgrades = true;
             }
         }
@@ -233,23 +202,24 @@ public class ItemDrawers extends ItemBlock {
     }
 
     /** Read from NBT drawers upgrades and storage capacity. */
-    private int getDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
-        int effectiveStorageMultiplier = 0;
-        int slotId = 0;
-        boolean isDownGrade = false;
+    private int getUpgradesAndDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
+        ConfigManager config = StorageDrawers.config;
+
+        int multiplier = 0;  // effective storage multiplier for calculating true storage space.
+        boolean isDowngrade = false; // if downgrade upgrade is applied.
 
         // Read upgrades in legacy format.
         if (!tag.hasKey("Upgrades")) {
+            int i = 0;  // idk how it's worked in legacy, so maybe like this ?
             if (tag.hasKey("Lev") && tag.getByte("Lev") > 1) {
-                upgrades[slotId] = new ItemStack(ModItems.upgrade, 1, tag.getByte("Lev"));
-                effectiveStorageMultiplier += StorageDrawers.config
-                        .getStorageUpgradeMultiplier(upgrades[slotId++].getItemDamage());
+                upgrades[i] = new ItemStack(ModItems.upgrade, 1, tag.getByte("Lev"));
+                multiplier += config.getStorageUpgradeMultiplier(upgrades[i++].getItemDamage());
             }
-            if (tag.hasKey("Stat")) upgrades[slotId++] = new ItemStack(ModItems.upgradeStatus, 1, tag.getByte("Stat"));
-            if (tag.hasKey("Void")) upgrades[slotId++] = new ItemStack(ModItems.upgradeVoid);
+            if (tag.hasKey("Stat")) upgrades[i++] = new ItemStack(ModItems.upgradeStatus, 1, tag.getByte("Stat"));
+            if (tag.hasKey("Void")) upgrades[i++] = new ItemStack(ModItems.upgradeVoid);
             if (tag.hasKey("Down")) {
-                upgrades[slotId] = new ItemStack(ModItems.upgradeDowngrade);
-                isDownGrade = true;
+                upgrades[i] = new ItemStack(ModItems.upgradeDowngrade);
+                isDowngrade = true;
             }
         }
         // Read upgrades in new format.
@@ -257,38 +227,58 @@ public class ItemDrawers extends ItemBlock {
             NBTTagList upgradeList = tag.getTagList("Upgrades", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < upgradeList.tagCount(); i++) {
                 NBTTagCompound upgradeTag = upgradeList.getCompoundTagAt(i);
-                upgrades[i] = ItemStack.loadItemStackFromNBT(upgradeTag);
-                if (upgrades[i] != null) {
-                    if (upgrades[i].getItem() == ModItems.upgrade) effectiveStorageMultiplier += StorageDrawers.config
-                            .getStorageUpgradeMultiplier(upgrades[i].getItemDamage());
+                ItemStack stack = ItemStack.loadItemStackFromNBT(upgradeTag);
+                if (stack != null) {
+                    if (stack.getItem() == ModItems.upgrade) multiplier += StorageDrawers.config
+                            .getStorageUpgradeMultiplier(stack.getItemDamage());
                     // TODO: Config check (see TileEntityDrawers)
-                    if (upgrades[i].getItem() == ModItems.upgradeDowngrade) isDownGrade = true;
+                    if (stack.getItem() == ModItems.upgradeDowngrade) isDowngrade = true;
                 }
+                upgrades[i] = stack;
             }
         }
 
         // Later when we calculate total storage it will not multiply by 0
-        if (effectiveStorageMultiplier == 0) effectiveStorageMultiplier = 1;
+        if (multiplier == 0) multiplier = 1;
 
         // "Cap" tag is drawer capacity
-        return isDownGrade ? effectiveStorageMultiplier : tag.getShort("Cap") * effectiveStorageMultiplier;
+        return isDowngrade ? multiplier : tag.getShort("Cap") * multiplier;
     }
 
     /** Read from NBT slot of drawers ItemStack */
     private ItemStack getItemStackFromSlot(NBTTagCompound tag) {
-        ItemStack stack = null;
-
         // Logic copied from one of IDrawer implementations.
+        ItemStack stack = null;
         if (tag.hasKey("Item") && tag.hasKey("Count")) {
             Item item = Item.getItemById(tag.getShort("Item"));
-            if (item != null) {
-                stack = new ItemStack(item);
-                stack.setItemDamage(tag.getShort("Meta"));
+            if (item != null) { // p_i1881_2_ - stackSize
+                stack = new ItemStack(item, 1, tag.getShort("Meta"));
                 if (tag.hasKey("Tags")) stack.setTagCompound(tag.getCompoundTag("Tags"));
             }
         }
-
         return stack;
+    }
+
+    /** stack shouldn't be null. */
+    private String getStackDisplayName(ItemStack stack) {
+        if (stack.hasDisplayName()) {
+            return EnumChatFormatting.ITALIC.toString() + stack.getRarity().rarityColor + stack.getDisplayName();
+        } else {
+            return stack.getRarity().rarityColor.toString() + stack.getDisplayName();
+        }
+    }
+
+    /** stack shouldn't be null. */
+    private String getStackCountDisplay(ItemStack stack, int itemCount) {
+        int numStack = itemCount / stack.getMaxStackSize();
+        int remainder = itemCount - numStack * stack.getMaxStackSize();
+
+        if (numStack > 0) {
+            if (remainder > 0) return "[" + numStack + "x" + stack.getMaxStackSize() + " + " + remainder + "]";
+            else return "[" + numStack + "x" + stack.getMaxStackSize() + "]";
+        } else {
+            return "[" + remainder + "]";
+        }
     }
 
     protected int getCapacityForBlock(Block block) {
