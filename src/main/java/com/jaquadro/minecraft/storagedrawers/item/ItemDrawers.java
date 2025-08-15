@@ -172,7 +172,7 @@ public class ItemDrawers extends ItemBlock {
                         slotCounter + getStackDisplayName(stack)
                                 + " "
                                 + EnumChatFormatting.BLUE
-                                + getStackCountDisplay(stack, slot.getInteger("Count")));
+                                + getStackCountDisplay(stack.getMaxStackSize(), slot.getInteger("Count")));
             } else {
                 list.add(
                         slotCounter + EnumChatFormatting.DARK_GRAY
@@ -205,12 +205,12 @@ public class ItemDrawers extends ItemBlock {
     private int getUpgradesAndDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
         ConfigManager config = StorageDrawers.config;
 
-        int multiplier = 0;  // effective storage multiplier for calculating true storage space.
+        int multiplier = 0; // effective storage multiplier for calculating true storage space.
         boolean isDowngrade = false; // if downgrade upgrade is applied.
 
         // Read upgrades in legacy format.
         if (!tag.hasKey("Upgrades")) {
-            int i = 0;  // idk how it's worked in legacy, so maybe like this ?
+            int i = 0; // idk how it's worked in legacy, so maybe like this ?
             if (tag.hasKey("Lev") && tag.getByte("Lev") > 1) {
                 upgrades[i] = new ItemStack(ModItems.upgrade, 1, tag.getByte("Lev"));
                 multiplier += config.getStorageUpgradeMultiplier(upgrades[i++].getItemDamage());
@@ -229,8 +229,8 @@ public class ItemDrawers extends ItemBlock {
                 NBTTagCompound upgradeTag = upgradeList.getCompoundTagAt(i);
                 ItemStack stack = ItemStack.loadItemStackFromNBT(upgradeTag);
                 if (stack != null) {
-                    if (stack.getItem() == ModItems.upgrade) multiplier += StorageDrawers.config
-                            .getStorageUpgradeMultiplier(stack.getItemDamage());
+                    if (stack.getItem() == ModItems.upgrade)
+                        multiplier += StorageDrawers.config.getStorageUpgradeMultiplier(stack.getItemDamage());
                     // TODO: Config check (see TileEntityDrawers)
                     if (stack.getItem() == ModItems.upgradeDowngrade) isDowngrade = true;
                 }
@@ -269,13 +269,13 @@ public class ItemDrawers extends ItemBlock {
     }
 
     /** stack shouldn't be null. */
-    private String getStackCountDisplay(ItemStack stack, int itemCount) {
-        int numStack = itemCount / stack.getMaxStackSize();
-        int remainder = itemCount - numStack * stack.getMaxStackSize();
+    private String getStackCountDisplay(int maxStackSize, int itemCount) {
+        int numStack = itemCount / maxStackSize;
+        int remainder = itemCount - numStack * maxStackSize;
 
         if (numStack > 0) {
-            if (remainder > 0) return "[" + numStack + "x" + stack.getMaxStackSize() + " + " + remainder + "]";
-            else return "[" + numStack + "x" + stack.getMaxStackSize() + "]";
+            if (remainder > 0) return "[" + numStack + "x" + maxStackSize + " + " + remainder + "]";
+            else return "[" + numStack + "x" + maxStackSize + "]";
         } else {
             return "[" + remainder + "]";
         }
