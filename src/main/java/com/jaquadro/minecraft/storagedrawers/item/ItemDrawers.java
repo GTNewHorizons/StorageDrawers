@@ -257,7 +257,7 @@ public class ItemDrawers extends ItemBlock {
                 NBTTagCompound upgradeTag = upgradeList.getCompoundTagAt(i);
                 upgrades[i] = ItemStack.loadItemStackFromNBT(upgradeTag);
                 if (upgrades[i] != null) {
-                    if (config.cache.enableStorageUpgrades && upgrades[i].getItem() == ModItems.upgrade)
+                    if (upgrades[i].getItem() == ModItems.upgrade)
                         effectiveStorageMultiplier += StorageDrawers.config
                                 .getStorageUpgradeMultiplier(upgrades[i].getItemDamage());
                     // TODO: Config check (see TileEntityDrawers)
