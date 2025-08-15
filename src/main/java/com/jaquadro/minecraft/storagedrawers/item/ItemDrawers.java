@@ -155,21 +155,20 @@ public class ItemDrawers extends ItemBlock {
 
         for (int i = 0; i < slots.tagCount(); i++) {
             NBTTagCompound slot = slots.getCompoundTagAt(i);
-
             ItemStack stack = getItemStackFromSlot(slot);
-            int itemCount = slot.getInteger("Count");
-
-            // Create builder and add number of slot
-            StringBuilder infoItemBuilder = new StringBuilder(EnumChatFormatting.YELLOW + " #" + (i + 1) + ": ");
 
             // If item is null just add "<Empty" else quantity and display name.
             if (stack != null) {
+                int itemCount = slot.getInteger("Count");
+
                 // Calculates quantities
                 int quantityNumStack = itemCount / stack.getMaxStackSize();
                 int quantityRemainer = itemCount - quantityNumStack * stack.getMaxStackSize();
 
                 // Add rarity color and display name
-                infoItemBuilder.append(stack.getRarity().rarityColor);
+                StringBuilder infoItemBuilder = new StringBuilder(
+                        EnumChatFormatting.YELLOW + " #" + (i + 1) + ": " + stack.getRarity().rarityColor);
+
                 if (stack.hasDisplayName()) {
                     infoItemBuilder.append(EnumChatFormatting.ITALIC).append(stack.getDisplayName())
                             .append(EnumChatFormatting.RESET);
@@ -192,9 +191,12 @@ public class ItemDrawers extends ItemBlock {
                 // add to tooltip drawer item info in certain slot.
                 list.add(infoItemBuilder.toString());
             } else {
-                infoItemBuilder.append(EnumChatFormatting.DARK_GRAY)
-                        .append(StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
-                list.add(infoItemBuilder.toString());
+                list.add(
+                        EnumChatFormatting.YELLOW + " #"
+                                + (i + 1)
+                                + ": "
+                                + EnumChatFormatting.DARK_GRAY
+                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
             }
         }
     }
@@ -207,7 +209,18 @@ public class ItemDrawers extends ItemBlock {
         for (int i = 0; i < upgrades.length; i++) { // 5 - upgrade count
             ItemStack upgrade = upgrades[i];
             if (upgrade != null) {
-                list.add(EnumChatFormatting.YELLOW + "  - " + upgrade.getRarity().rarityColor + upgrade.getDisplayName());
+                if (upgrade.hasDisplayName()) {
+                    list.add(
+                            EnumChatFormatting.YELLOW + "  - "
+                                    + EnumChatFormatting.ITALIC
+                                    + upgrade.getRarity().rarityColor
+                                    + upgrade.getDisplayName());
+                } else {
+                    list.add(
+                            EnumChatFormatting.YELLOW + "  - "
+                                    + upgrade.getRarity().rarityColor
+                                    + upgrade.getDisplayName());
+                }
                 hasUpgrades = true;
             }
         }
