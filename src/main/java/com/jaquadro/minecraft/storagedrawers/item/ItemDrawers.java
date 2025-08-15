@@ -158,19 +158,8 @@ public class ItemDrawers extends ItemBlock {
         for (int i = 0; i < slots.tagCount(); i++) {
             NBTTagCompound slot = slots.getCompoundTagAt(i);
 
-            ItemStack stack = null;
-            int itemCount = 0;
-
-            // Logic copied from one of IDrawer implementations.
-            if (slot.hasKey("Item") && tag.hasKey("Count")) {
-                Item item = Item.getItemById(tag.getShort("Item"));
-                if (item != null) {
-                    stack = new ItemStack(item);
-                    stack.setItemDamage(tag.getShort("Meta"));
-                    if (tag.hasKey("Tags")) stack.setTagCompound(tag.getCompoundTag("Tags"));
-                    itemCount = tag.getInteger("Count");
-                }
-            }
+            ItemStack stack = readItemStackFromDrawerSlotNBT(slot);
+            int itemCount = slot.getInteger("Count");
 
             // Create builder and add number of slot
             StringBuilder infoItemBuilder = new StringBuilder(EnumChatFormatting.YELLOW + " #" + (i + 1) + ": ");
@@ -281,6 +270,23 @@ public class ItemDrawers extends ItemBlock {
         if (effectiveStorageMultiplier == 0) effectiveStorageMultiplier = 1;
 
         return new int[] { effectiveStorageMultiplier, isDownGrade };
+    }
+
+    /** Read from NBT slot of drawers ItemStack */
+    private ItemStack readItemStackFromDrawerSlotNBT(NBTTagCompound tag) {
+        ItemStack stack = null;
+
+        // Logic copied from one of IDrawer implementations.
+        if (tag.hasKey("Item") && tag.hasKey("Count")) {
+            Item item = Item.getItemById(tag.getShort("Item"));
+            if (item != null) {
+                stack = new ItemStack(item);
+                stack.setItemDamage(tag.getShort("Meta"));
+                if (tag.hasKey("Tags")) stack.setTagCompound(tag.getCompoundTag("Tags"));
+            }
+        }
+
+        return stack;
     }
 
     protected int getCapacityForBlock(Block block) {
