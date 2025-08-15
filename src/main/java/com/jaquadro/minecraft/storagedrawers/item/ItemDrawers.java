@@ -205,17 +205,10 @@ public class ItemDrawers extends ItemBlock {
         boolean hasUpgrades = false;
 
         for (int i = 0; i < upgrades.length; i++) { // 5 - upgrade count
-            if (upgrades[i] != null) {
-                StringBuilder infoUpgradeBuilder = new StringBuilder(EnumChatFormatting.YELLOW + "  - ");
-                infoUpgradeBuilder.append(upgrades[i].getRarity().rarityColor);
-                if (upgrades[i].hasDisplayName()) {
-                    infoUpgradeBuilder.append(EnumChatFormatting.ITALIC).append(upgrades[i].getDisplayName())
-                            .append(EnumChatFormatting.RESET);
-                } else {
-                    infoUpgradeBuilder.append(upgrades[i].getDisplayName());
-                }
+            ItemStack upgrade = upgrades[i];
+            if (upgrade != null) {
+                list.add(EnumChatFormatting.YELLOW + "  - " + upgrade.getRarity().rarityColor + upgrade.getDisplayName());
                 hasUpgrades = true;
-                list.add(infoUpgradeBuilder.toString());
             }
         }
 
