@@ -66,10 +66,11 @@ public class ItemDrawers extends ItemBlock {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
             NBTTagCompound tag = itemStack.getTagCompound().getCompoundTag("tile");
 
-            ItemStack[] upgrades = new ItemStack[5]; // 5 - magic number defined in TileEntityDrawers.
+            // 5 - magic number used by TileEntityDrawers class representing number of upgrade slots.
+            ItemStack[] upgrades = new ItemStack[5];
             int drawerCapacity = getUpgradesAndDrawerCapacity(tag, upgrades);
 
-            // Add to tooltip description + max stored stacks per drawer.
+            // Add to tooltip description + true stack storage space (if storage upgrades are applied).
             list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
 
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
@@ -100,6 +101,8 @@ public class ItemDrawers extends ItemBlock {
         UUID owner = null; // Owner of drawer.
         boolean shrouded = false; // Hide or show item label.
         boolean quantified = false; // Hide or show item quantities.
+
+        // Logic for reading NBT are copied from "readFromPortableNBT" method from "TileEntityDrawers" class.
 
         if (config.cache.enableLockUpgrades && tag.hasKey("Lock"))
             lockAttributes = LockAttribute.getEnumSet(tag.getByte("Lock"));
@@ -165,14 +168,13 @@ public class ItemDrawers extends ItemBlock {
         list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.drawerList"));
         for (int i = 0; i < slots.tagCount(); i++) {
             NBTTagCompound slot = slots.getCompoundTagAt(i);
-            ItemStack stack = getItemStackFromSlot(slot);
+            ItemStack stack = getItemStackFromDrawer(slot);
             String slotCounter = EnumChatFormatting.YELLOW + " #" + (i + 1) + ": ";
             if (stack != null) {
                 list.add(
-                        slotCounter + getStackDisplayName(stack)
+                        slotCounter + getGoodItemStackDisplayName(stack)
                                 + " "
-                                + EnumChatFormatting.BLUE
-                                + getStackCountDisplay(stack.getMaxStackSize(), slot.getInteger("Count")));
+                                + getItemCountDisplay(stack.getMaxStackSize(), slot.getInteger("Count")));
             } else {
                 list.add(
                         slotCounter + EnumChatFormatting.DARK_GRAY
@@ -189,7 +191,7 @@ public class ItemDrawers extends ItemBlock {
         for (int i = 0; i < upgrades.length; i++) { // 5 - upgrade count
             ItemStack upgrade = upgrades[i];
             if (upgrade != null) {
-                list.add(EnumChatFormatting.YELLOW + "  - " + getStackDisplayName(upgrade));
+                list.add(EnumChatFormatting.YELLOW + "  - " + getGoodItemStackDisplayName(upgrade));
                 hasUpgrades = true;
             }
         }
@@ -201,14 +203,14 @@ public class ItemDrawers extends ItemBlock {
         }
     }
 
-    /** Read from NBT drawers upgrades and storage capacity. */
+    /** Read upgrades and drawer capacity from NBT representing drawers data. */
     private int getUpgradesAndDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
         ConfigManager config = StorageDrawers.config;
 
         int multiplier = 0; // effective storage multiplier for calculating true storage space.
         boolean isDowngrade = false; // if downgrade upgrade is applied.
 
-        // Read upgrades in legacy format.
+        // Read upgrades in legacy format. Copied like in `readLegacyUpgradeNBT` method from "TileEntityDrawers" class.
         if (!tag.hasKey("Upgrades")) {
             int i = 0; // idk how it's worked in legacy, so maybe like this ?
             if (tag.hasKey("Lev") && tag.getByte("Lev") > 1) {
@@ -222,7 +224,7 @@ public class ItemDrawers extends ItemBlock {
                 isDowngrade = true;
             }
         }
-        // Read upgrades in new format.
+        // Read upgrades in new format. Copied like in `readFromPortableNBT` method from "TileEntityDrawers" class.
         else {
             NBTTagList upgradeList = tag.getTagList("Upgrades", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < upgradeList.tagCount(); i++) {
@@ -231,7 +233,7 @@ public class ItemDrawers extends ItemBlock {
                 if (stack != null) {
                     if (stack.getItem() == ModItems.upgrade)
                         multiplier += StorageDrawers.config.getStorageUpgradeMultiplier(stack.getItemDamage());
-                    // TODO: Config check (see TileEntityDrawers)
+                    // TODO: Add not implemented config check.
                     if (stack.getItem() == ModItems.upgradeDowngrade) isDowngrade = true;
                 }
                 upgrades[i] = stack;
@@ -245,9 +247,9 @@ public class ItemDrawers extends ItemBlock {
         return isDowngrade ? multiplier : tag.getShort("Cap") * multiplier;
     }
 
-    /** Read from NBT slot of drawers ItemStack */
-    private ItemStack getItemStackFromSlot(NBTTagCompound tag) {
-        // Logic copied from one of IDrawer implementations.
+    /** Read ItemStack from NBT representing drawer slot data. */
+    private ItemStack getItemStackFromDrawer(NBTTagCompound tag) {
+        // Logic copied from readNBT method of DrawerData class.
         ItemStack stack = null;
         if (tag.hasKey("Item") && tag.hasKey("Count")) {
             Item item = Item.getItemById(tag.getShort("Item"));
@@ -259,8 +261,8 @@ public class ItemDrawers extends ItemBlock {
         return stack;
     }
 
-    /** stack shouldn't be null. */
-    private String getStackDisplayName(ItemStack stack) {
+    /** Returns a colored display name of stack != null. Can be in italic format if stack has display tag. */
+    private String getGoodItemStackDisplayName(ItemStack stack) {
         if (stack.hasDisplayName()) {
             return EnumChatFormatting.ITALIC.toString() + stack.getRarity().rarityColor + stack.getDisplayName();
         } else {
@@ -268,17 +270,21 @@ public class ItemDrawers extends ItemBlock {
         }
     }
 
-    /** stack shouldn't be null. */
-    private String getStackCountDisplay(int maxStackSize, int itemCount) {
+    /** Returns blue colored item count display with format like in WAILA. */
+    private String getItemCountDisplay(int maxStackSize, int itemCount) {
         int numStack = itemCount / maxStackSize;
         int remainder = itemCount - numStack * maxStackSize;
 
+        String itemCountDisplay;
+
         if (numStack > 0) {
-            if (remainder > 0) return "[" + numStack + "x" + maxStackSize + " + " + remainder + "]";
-            else return "[" + numStack + "x" + maxStackSize + "]";
+            if (remainder > 0) itemCountDisplay = "[" + numStack + "x" + maxStackSize + " + " + remainder + "]";
+            else itemCountDisplay = "[" + numStack + "x" + maxStackSize + "]";
         } else {
-            return "[" + remainder + "]";
+            itemCountDisplay = "[" + remainder + "]";
         }
+
+        return EnumChatFormatting.BLUE + itemCountDisplay;
     }
 
     protected int getCapacityForBlock(Block block) {
