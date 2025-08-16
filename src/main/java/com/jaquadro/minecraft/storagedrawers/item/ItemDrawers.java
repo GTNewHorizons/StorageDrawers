@@ -65,25 +65,25 @@ public class ItemDrawers extends ItemBlock {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
             NBTTagCompound tag = itemStack.getTagCompound().getCompoundTag("tile");
-
             // 5 - magic number used by TileEntityDrawers class representing number of upgrade slots.
             ItemStack[] upgrades = new ItemStack[5];
             int drawerCapacity = getUpgradesAndDrawerCapacity(tag, upgrades);
 
             // Add to tooltip description + true stack storage space (if storage upgrades are applied).
             list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
-
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                // Base drawer information
                 addStatsInformation(tag, player, list);
                 addDrawersInformation(tag, list);
                 addUpgradesInformation(upgrades, list);
+                // Inheritors drawer information
+                addLeftShiftInformation(tag, player, list);
             } else {
                 list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("storageDrawers.drawers.sealed"));
                 list.add(
                         EnumChatFormatting.DARK_GRAY
                                 + StatCollector.translateToLocal("storageDrawers.drawers.sealed.descriptionShift"));
             }
-
         } else {
             Block block = Block.getBlockFromItem(itemStack.getItem());
             list.add(
@@ -178,7 +178,7 @@ public class ItemDrawers extends ItemBlock {
             } else {
                 list.add(
                         slotCounter + EnumChatFormatting.DARK_GRAY
-                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.empty"));
+                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.itemEmpty"));
             }
         }
     }
@@ -199,8 +199,13 @@ public class ItemDrawers extends ItemBlock {
         if (!hasUpgrades) {
             list.add(
                     "  " + EnumChatFormatting.DARK_GRAY
-                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.none"));
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.upgradeNone"));
         }
+    }
+
+    /** This method is used for ItemDrawers inheritors when left shift is down*/
+    public void addLeftShiftInformation(NBTTagCompound tag, EntityPlayer player, List list) {
+
     }
 
     /** Read upgrades and drawer capacity from NBT representing drawers data. */
@@ -262,7 +267,7 @@ public class ItemDrawers extends ItemBlock {
     }
 
     /** Returns a colored display name of stack != null. Can be in italic format if stack has display tag. */
-    private String getGoodItemStackDisplayName(ItemStack stack) {
+    protected String getGoodItemStackDisplayName(ItemStack stack) {
         if (stack.hasDisplayName()) {
             return EnumChatFormatting.ITALIC.toString() + stack.getRarity().rarityColor + stack.getDisplayName();
         } else {
