@@ -10,9 +10,6 @@ import net.minecraft.util.StatCollector;
 
 import com.jaquadro.minecraft.storagedrawers.item.ItemCompDrawers;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 public class ItemSortingCompDrawers extends ItemCompDrawers {
 
     public ItemSortingCompDrawers(Block block) {
@@ -20,11 +17,7 @@ public class ItemSortingCompDrawers extends ItemCompDrawers {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-        super.addInformation(itemStack, player, list, par4);
-
-        Block block = Block.getBlockFromItem(itemStack.getItem());
+    protected void addSubDescriptionInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted("storageDrawers.waila.sorting"));
     }
 }

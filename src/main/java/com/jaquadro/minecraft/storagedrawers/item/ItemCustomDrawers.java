@@ -37,11 +37,31 @@ public class ItemCustomDrawers extends ItemDrawers {
         return true;
     }
 
-    @Override
-    public void addLeftShiftInformation(NBTTagCompound tag, EntityPlayer player, List list) {
-        addMaterialsInformation(tag, list);
+    public static ItemStack makeItemStack(Block block, int count, ItemStack matSide, ItemStack matTrim,
+            ItemStack matFront) {
+        Item item = Item.getItemFromBlock(block);
+        if (!(item instanceof ItemCustomDrawers)) return null;
+
+        NBTTagCompound tag = new NBTTagCompound();
+
+        if (matSide != null) tag.setTag("MatS", getMaterialTag(matSide));
+
+        if (matTrim != null) tag.setTag("MatT", getMaterialTag(matTrim));
+
+        if (matFront != null) tag.setTag("MatF", getMaterialTag(matFront));
+
+        ItemStack stack = new ItemStack(item, count, 0);
+        if (!tag.hasNoTags()) stack.setTagCompound(tag);
+
+        return stack;
     }
 
+    @Override
+    protected void addSubSealedInformation(NBTTagCompound tag, List list) {
+        this.addMaterialsInformation(tag, list);
+    }
+
+    /** Add to tooltip information about materials used in framed drawers */
     private void addMaterialsInformation(NBTTagCompound tag, List list) {
         ItemStack materialSide = null;
         ItemStack materialFront = null;
@@ -60,47 +80,29 @@ public class ItemCustomDrawers extends ItemDrawers {
                 "  " + EnumChatFormatting.YELLOW
                         + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialSide")
                         + " "
-                        + getGoodMaterialDisplayName(materialSide));
+                        + getMaterialDisplayName(materialSide));
         // Display trim material
         list.add(
                 "  " + EnumChatFormatting.YELLOW
                         + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialTrim")
                         + " "
-                        + getGoodMaterialDisplayName(materialTrim));
+                        + getMaterialDisplayName(materialTrim));
         // Display front material
         list.add(
                 "  " + EnumChatFormatting.YELLOW
                         + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialFront")
                         + " "
-                        + getGoodMaterialDisplayName(materialFront));
+                        + getMaterialDisplayName(materialFront));
     }
 
-    private String getGoodMaterialDisplayName(ItemStack stack) {
+    /** Returns good display name or in gray localised "sealed.materialNone". */
+    private String getMaterialDisplayName(ItemStack stack) {
         if (stack != null) {
-            return getGoodItemStackDisplayName(stack);
+            return getGoodDisplayName(stack);
         } else {
             return EnumChatFormatting.DARK_GRAY
                     + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone");
         }
-    }
-
-    public static ItemStack makeItemStack(Block block, int count, ItemStack matSide, ItemStack matTrim,
-            ItemStack matFront) {
-        Item item = Item.getItemFromBlock(block);
-        if (!(item instanceof ItemCustomDrawers)) return null;
-
-        NBTTagCompound tag = new NBTTagCompound();
-
-        if (matSide != null) tag.setTag("MatS", getMaterialTag(matSide));
-
-        if (matTrim != null) tag.setTag("MatT", getMaterialTag(matTrim));
-
-        if (matFront != null) tag.setTag("MatF", getMaterialTag(matFront));
-
-        ItemStack stack = new ItemStack(item, count, 0);
-        if (!tag.hasNoTags()) stack.setTagCompound(tag);
-
-        return stack;
     }
 
     private static NBTTagCompound getMaterialTag(ItemStack mat) {

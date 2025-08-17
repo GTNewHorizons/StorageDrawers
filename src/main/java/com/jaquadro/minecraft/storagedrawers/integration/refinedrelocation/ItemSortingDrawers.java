@@ -13,9 +13,6 @@ import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.integration.RefinedRelocation;
 import com.jaquadro.minecraft.storagedrawers.item.ItemBasicDrawers;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 public class ItemSortingDrawers extends ItemBasicDrawers {
 
     public ItemSortingDrawers(Block block) {
@@ -23,11 +20,7 @@ public class ItemSortingDrawers extends ItemBasicDrawers {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-        super.addInformation(itemStack, player, list, par4);
-
-        Block block = Block.getBlockFromItem(itemStack.getItem());
+    protected void addSubDescriptionInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted("storageDrawers.waila.sorting"));
     }
 

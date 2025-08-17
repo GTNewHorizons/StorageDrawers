@@ -65,19 +65,21 @@ public class ItemDrawers extends ItemBlock {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
             NBTTagCompound tag = itemStack.getTagCompound().getCompoundTag("tile");
+
             // 5 - magic number used by TileEntityDrawers class representing number of upgrade slots.
             ItemStack[] upgrades = new ItemStack[5];
             int drawerCapacity = getUpgradesAndDrawerCapacity(tag, upgrades);
 
             // Add to tooltip description + true stack storage space (if storage upgrades are applied).
             list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
+            this.addSubDescriptionInformation(itemStack, player, list, par4);
+
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                // Base drawer information
-                addStatsInformation(tag, player, list);
-                addDrawersInformation(tag, list);
-                addUpgradesInformation(upgrades, list);
-                // Inheritors drawer information
-                addLeftShiftInformation(tag, player, list);
+                this.addStatsInformation(tag, player, list);
+                this.addDrawersInformation(tag, list);
+                this.addUpgradesInformation(upgrades, list);
+                // Possible custom drawer information
+                this.addSubSealedInformation(tag, list);
             } else {
                 list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("storageDrawers.drawers.sealed"));
                 list.add(
@@ -90,11 +92,38 @@ public class ItemDrawers extends ItemBlock {
                     StatCollector.translateToLocalFormatted(
                             "storageDrawers.drawers.description",
                             getCapacityForBlock(block)));
+            this.addSubDescriptionInformation(itemStack, player, list, par4);
         }
     }
 
+    /** Returns default drawers storage capacity of drawer block. If the block is not drawer returns 0. */
+    protected int getCapacityForBlock(Block block) {
+        ConfigManager config = StorageDrawers.config;
+        int count = 0;
+
+        if (!(block instanceof BlockDrawers)) return 0;
+
+        BlockDrawers drawer = (BlockDrawers) block;
+
+        if (drawer.drawerCount == 1) count = config.getBlockBaseStorage("fulldrawers1");
+        else if (drawer.drawerCount == 2 && !drawer.halfDepth) count = config.getBlockBaseStorage("fulldrawers2");
+        else if (drawer.drawerCount == 4 && !drawer.halfDepth) count = config.getBlockBaseStorage("fulldrawers4");
+        else if (drawer.drawerCount == 2 && drawer.halfDepth) count = config.getBlockBaseStorage("halfdrawers2");
+        else if (drawer.drawerCount == 4 && drawer.halfDepth) count = config.getBlockBaseStorage("halfdrawers4");
+        else if (drawer.drawerCount == 3) count = config.getBlockBaseStorage("compDrawers");
+
+        return count;
+    }
+
+    // Add information functions before holding shift.
+
+    /** Add information between description information and sealed drawer information. */
+    protected void addSubDescriptionInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {}
+
+    // Add information functions when holding shift
+
     /** Add to tooltip some drawers stats. */
-    private void addStatsInformation(NBTTagCompound tag, EntityPlayer player, List list) {
+    protected void addStatsInformation(NBTTagCompound tag, EntityPlayer player, List list) {
         ConfigManager config = StorageDrawers.config;
 
         EnumSet<LockAttribute> lockAttributes = null; // Unlocked or Locked drawer.
@@ -136,7 +165,6 @@ public class ItemDrawers extends ItemBlock {
                     + StatCollector.translateToLocal("storageDrawers.drawers.sealed.access_public");
         }
 
-        // Show two previous status in single line
         list.add(lockInfo + EnumChatFormatting.DARK_GRAY + ", " + accessInfo);
 
         // In the next line show if drawer hide item label
@@ -163,7 +191,7 @@ public class ItemDrawers extends ItemBlock {
     }
 
     /** Add to tooltip information about drawers content. */
-    private void addDrawersInformation(NBTTagCompound tag, List list) {
+    protected void addDrawersInformation(NBTTagCompound tag, List list) {
         NBTTagList slots = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
         list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.drawerList"));
         for (int i = 0; i < slots.tagCount(); i++) {
@@ -172,26 +200,26 @@ public class ItemDrawers extends ItemBlock {
             String slotCounter = EnumChatFormatting.YELLOW + " #" + (i + 1) + ": ";
             if (stack != null) {
                 list.add(
-                        slotCounter + getGoodItemStackDisplayName(stack)
+                        slotCounter + getGoodDisplayName(stack)
                                 + " "
                                 + getItemCountDisplay(stack.getMaxStackSize(), slot.getInteger("Count")));
             } else {
                 list.add(
                         slotCounter + EnumChatFormatting.DARK_GRAY
-                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.itemEmpty"));
+                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.drawerEmpty"));
             }
         }
     }
 
     /** Add to tooltip information about upgrades. */
-    private void addUpgradesInformation(ItemStack[] upgrades, List list) {
+    protected void addUpgradesInformation(ItemStack[] upgrades, List list) {
         list.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.upgradeList"));
         boolean hasUpgrades = false;
 
         for (int i = 0; i < upgrades.length; i++) { // 5 - upgrade count
             ItemStack upgrade = upgrades[i];
             if (upgrade != null) {
-                list.add(EnumChatFormatting.YELLOW + "  - " + getGoodItemStackDisplayName(upgrade));
+                list.add(EnumChatFormatting.YELLOW + "  - " + getGoodDisplayName(upgrade));
                 hasUpgrades = true;
             }
         }
@@ -203,13 +231,27 @@ public class ItemDrawers extends ItemBlock {
         }
     }
 
-    /** This method is used for ItemDrawers inheritors when left shift is down*/
-    public void addLeftShiftInformation(NBTTagCompound tag, EntityPlayer player, List list) {
+    /** Add information after Stats, Drawers and Upgrades information. */
+    protected void addSubSealedInformation(NBTTagCompound tag, List list) {}
 
+    // Functions for extracting data from NBT
+
+    /** Read ItemStack from NBT when representing drawer slot. */
+    protected ItemStack getItemStackFromDrawer(NBTTagCompound slot) {
+        // Logic copied from readNBT method of DrawerData class.
+        ItemStack stack = null;
+        if (slot.hasKey("Item") && slot.hasKey("Count")) {
+            Item item = Item.getItemById(slot.getShort("Item"));
+            if (item != null) { // p_i1881_2_ - stackSize
+                stack = new ItemStack(item, 1, slot.getShort("Meta"));
+                if (slot.hasKey("Tags")) stack.setTagCompound(slot.getCompoundTag("Tags"));
+            }
+        }
+        return stack;
     }
 
-    /** Read upgrades and drawer capacity from NBT representing drawers data. */
-    private int getUpgradesAndDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
+    /** Read upgrades and drawer capacity from NBT when representing drawers. */
+    protected int getUpgradesAndDrawerCapacity(NBTTagCompound tag, ItemStack[] upgrades) {
         ConfigManager config = StorageDrawers.config;
 
         int multiplier = 0; // effective storage multiplier for calculating true storage space.
@@ -252,22 +294,10 @@ public class ItemDrawers extends ItemBlock {
         return isDowngrade ? multiplier : tag.getShort("Cap") * multiplier;
     }
 
-    /** Read ItemStack from NBT representing drawer slot data. */
-    private ItemStack getItemStackFromDrawer(NBTTagCompound tag) {
-        // Logic copied from readNBT method of DrawerData class.
-        ItemStack stack = null;
-        if (tag.hasKey("Item") && tag.hasKey("Count")) {
-            Item item = Item.getItemById(tag.getShort("Item"));
-            if (item != null) { // p_i1881_2_ - stackSize
-                stack = new ItemStack(item, 1, tag.getShort("Meta"));
-                if (tag.hasKey("Tags")) stack.setTagCompound(tag.getCompoundTag("Tags"));
-            }
-        }
-        return stack;
-    }
+    // String functions for good displays.
 
     /** Returns a colored display name of stack != null. Can be in italic format if stack has display tag. */
-    protected String getGoodItemStackDisplayName(ItemStack stack) {
+    protected String getGoodDisplayName(ItemStack stack) {
         if (stack.hasDisplayName()) {
             return EnumChatFormatting.ITALIC.toString() + stack.getRarity().rarityColor + stack.getDisplayName();
         } else {
@@ -276,7 +306,7 @@ public class ItemDrawers extends ItemBlock {
     }
 
     /** Returns blue colored item count display with format like in WAILA. */
-    private String getItemCountDisplay(int maxStackSize, int itemCount) {
+    protected String getItemCountDisplay(int maxStackSize, int itemCount) {
         int numStack = itemCount / maxStackSize;
         int remainder = itemCount - numStack * maxStackSize;
 
@@ -290,23 +320,5 @@ public class ItemDrawers extends ItemBlock {
         }
 
         return EnumChatFormatting.BLUE + itemCountDisplay;
-    }
-
-    protected int getCapacityForBlock(Block block) {
-        ConfigManager config = StorageDrawers.config;
-        int count = 0;
-
-        if (!(block instanceof BlockDrawers)) return 0;
-
-        BlockDrawers drawer = (BlockDrawers) block;
-
-        if (drawer.drawerCount == 1) count = config.getBlockBaseStorage("fulldrawers1");
-        else if (drawer.drawerCount == 2 && !drawer.halfDepth) count = config.getBlockBaseStorage("fulldrawers2");
-        else if (drawer.drawerCount == 4 && !drawer.halfDepth) count = config.getBlockBaseStorage("fulldrawers4");
-        else if (drawer.drawerCount == 2 && drawer.halfDepth) count = config.getBlockBaseStorage("halfdrawers2");
-        else if (drawer.drawerCount == 4 && drawer.halfDepth) count = config.getBlockBaseStorage("halfdrawers4");
-        else if (drawer.drawerCount == 3) count = config.getBlockBaseStorage("compDrawers");
-
-        return count;
     }
 }
