@@ -63,36 +63,38 @@ public class ItemDrawers extends ItemBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {
-            NBTTagCompound tag = itemStack.getTagCompound().getCompoundTag("tile");
+        if (itemStack.hasTagCompound()) {
+            NBTTagCompound tag = itemStack.getTagCompound();
+            if (tag.hasKey("tile")) {
+                NBTTagCompound tileTag = tag.getCompoundTag("tile");
 
-            // 5 - magic number used by TileEntityDrawers class representing number of upgrade slots.
-            ItemStack[] upgrades = new ItemStack[5];
-            int drawerCapacity = getUpgradesAndDrawerCapacity(tag, upgrades);
+                // 5 - magic number used by TileEntityDrawers class representing number of upgrade slots.
+                ItemStack[] upgrades = new ItemStack[5];
+                int drawerCapacity = getUpgradesAndDrawerCapacity(tileTag, upgrades);
 
-            // Add to tooltip description + true stack storage space (if storage upgrades are applied).
-            list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
-            this.addSubDescriptionInformation(itemStack, player, list, par4);
+                // Add to tooltip description + true stack storage space (if storage upgrades are applied).
+                this.addDescriptionInformation(drawerCapacity, list);
 
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                this.addStatsInformation(tag, player, list);
-                this.addDrawersInformation(tag, list);
-                this.addUpgradesInformation(upgrades, list);
-                // Possible custom drawer information
-                this.addSubSealedInformation(tag, list);
+                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    this.addStatsInformation(tileTag, player, list);
+                    this.addDrawersInformation(tileTag, list);
+                    this.addUpgradesInformation(upgrades, list);
+                    // Possible alternative drawer information from tag.
+                    this.addSealedContentsInformation(tileTag, list);
+                } else {
+                    list.add(
+                            EnumChatFormatting.YELLOW
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed"));
+                    list.add(
+                            EnumChatFormatting.DARK_GRAY
+                                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.descriptionShift"));
+                }
             } else {
-                list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("storageDrawers.drawers.sealed"));
-                list.add(
-                        EnumChatFormatting.DARK_GRAY
-                                + StatCollector.translateToLocal("storageDrawers.drawers.sealed.descriptionShift"));
+                this.addAlternativeTagInformation(itemStack, player, list, par4);
             }
         } else {
             Block block = Block.getBlockFromItem(itemStack.getItem());
-            list.add(
-                    StatCollector.translateToLocalFormatted(
-                            "storageDrawers.drawers.description",
-                            getCapacityForBlock(block)));
-            this.addSubDescriptionInformation(itemStack, player, list, par4);
+            this.addNoneTagDescriptionInformation(getCapacityForBlock(block), list);
         }
     }
 
@@ -115,12 +117,25 @@ public class ItemDrawers extends ItemBlock {
         return count;
     }
 
-    // Add information functions before holding shift.
+    // Add description information in different places
 
-    /** Add information between description information and sealed drawer information. */
-    protected void addSubDescriptionInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {}
+    /** Add common description for all types of drawers, like sealed drawers and framed drawers with materials. */
+    protected void addDescriptionInformation(int drawerCapacity, List list) {
+        list.add(StatCollector.translateToLocalFormatted("storageDrawers.drawers.description", drawerCapacity));
+    }
 
-    // Add information functions when holding shift
+    /** Add bonus description information for drawers without NBTTagCompound. */
+    protected void addNoneTagDescriptionInformation(int drawerCapacity, List list) {
+        this.addDescriptionInformation(drawerCapacity, list);
+    }
+
+    /**
+     * Add information in the case if they are others tags to check. In this case itemStack has always an
+     * NBTTagCompound.
+     */
+    protected void addAlternativeTagInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {}
+
+    // Add sealed contents information.
 
     /** Add to tooltip some drawers stats. */
     protected void addStatsInformation(NBTTagCompound tag, EntityPlayer player, List list) {
@@ -232,7 +247,7 @@ public class ItemDrawers extends ItemBlock {
     }
 
     /** Add information after Stats, Drawers and Upgrades information. */
-    protected void addSubSealedInformation(NBTTagCompound tag, List list) {}
+    protected void addSealedContentsInformation(NBTTagCompound tag, List list) {}
 
     // Functions for extracting data from NBT
 
