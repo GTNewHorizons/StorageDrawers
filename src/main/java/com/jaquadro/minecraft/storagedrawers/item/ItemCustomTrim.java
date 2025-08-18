@@ -1,7 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,7 +14,8 @@ import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityTrim;
 
-import java.util.List;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCustomTrim extends ItemBlock {
 
@@ -46,14 +47,15 @@ public class ItemCustomTrim extends ItemBlock {
             this.addMaterialsInformation(tag, list);
         } else {
             list.add(StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialList"));
-            list.add("  " + EnumChatFormatting.DARK_GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone"));
+            list.add(
+                    "  " + EnumChatFormatting.DARK_GRAY
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone"));
         }
     }
 
     /**
-     * Add to tooltip information about materials used in framed trim.
-     * Copied from ItemCustomDrawers method.
-     * */
+     * Add to tooltip information about materials used in framed trim. Copied from ItemCustomDrawers method.
+     */
     private void addMaterialsInformation(NBTTagCompound tag, List list) {
         ItemStack materialSide = null;
         ItemStack materialFront = null;
@@ -105,9 +107,9 @@ public class ItemCustomTrim extends ItemBlock {
     }
 
     /**
-     * Returns good display name or in gray localised "sealed.materialNone".
-     * Copied from ItemDrawers and ItemCustomDrawers methods.
-     * */
+     * Returns good display name or in gray localised "sealed.materialNone". Copied from ItemDrawers and
+     * ItemCustomDrawers methods.
+     */
     private String getMaterialDisplayName(ItemStack stack) {
         if (stack != null) {
             if (stack.hasDisplayName()) {
