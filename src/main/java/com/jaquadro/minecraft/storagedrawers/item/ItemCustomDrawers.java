@@ -1,10 +1,14 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
@@ -64,6 +68,90 @@ public class ItemCustomDrawers extends ItemDrawers {
         if (!tag.hasNoTags()) stack.setTagCompound(tag);
 
         return stack;
+    }
+
+    @Override
+    protected void addAlternativeTagInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+        // Add materials information for not sealed framed drawers.
+        Block block = Block.getBlockFromItem(itemStack.getItem());
+        this.addDescriptionInformation(getCapacityForBlock(block), list);
+        this.addMaterialsInformation(itemStack.getTagCompound(), list); // safe to use without tags.
+    }
+
+    @Override
+    protected void addNoneTagDescriptionInformation(int drawerCapacity, List list) {
+        super.addNoneTagDescriptionInformation(drawerCapacity, list);
+        list.add(
+                EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialList"));
+        list.add(
+                "  " + EnumChatFormatting.DARK_GRAY
+                        + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone"));
+    }
+
+    @Override
+    protected void addSealedContentsInformation(NBTTagCompound tag, List list) {
+        this.addMaterialsInformation(tag, list);
+    }
+
+    /** Add to tooltip information about materials used in framed drawers */
+    private void addMaterialsInformation(NBTTagCompound tag, List list) {
+        ItemStack materialSide = null;
+        ItemStack materialFront = null;
+        ItemStack materialTrim = null;
+        boolean hasMaterials = false;
+
+        // Logic copied from "readFromPortableNBT" method from "TileEntityDrawers".
+        if (tag.hasKey("MatS")) {
+            materialSide = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatS"));
+            hasMaterials = true;
+        }
+        if (tag.hasKey("MatF")) {
+            materialFront = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatF"));
+            hasMaterials = true;
+        }
+        if (tag.hasKey("MatT")) {
+            materialTrim = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatT"));
+            hasMaterials = true;
+        }
+
+        list.add(
+                EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialList"));
+
+        if (hasMaterials) {
+            // Display side material
+            list.add(
+                    "  " + EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialSide")
+                            + " "
+                            + getMaterialDisplayName(materialSide));
+            // Display trim material
+            list.add(
+                    "  " + EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialTrim")
+                            + " "
+                            + getMaterialDisplayName(materialTrim));
+            // Display front material
+            list.add(
+                    "  " + EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialFront")
+                            + " "
+                            + getMaterialDisplayName(materialFront));
+        } else {
+            // Display <None> ...
+            list.add(
+                    "  " + EnumChatFormatting.DARK_GRAY
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone"));
+        }
+    }
+
+    /** Returns good display name or in gray localised "sealed.materialNone". */
+    private String getMaterialDisplayName(ItemStack stack) {
+        if (stack != null) {
+            return getGoodDisplayName(stack);
+        } else {
+            return EnumChatFormatting.DARK_GRAY
+                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone");
+        }
     }
 
     private static NBTTagCompound getMaterialTag(ItemStack mat) {
