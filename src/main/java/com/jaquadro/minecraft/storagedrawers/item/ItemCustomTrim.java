@@ -1,14 +1,21 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityTrim;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCustomTrim extends ItemBlock {
 
@@ -30,6 +37,90 @@ public class ItemCustomTrim extends ItemBlock {
         }
 
         return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+        if (itemStack.hasTagCompound()) {
+            NBTTagCompound tag = itemStack.getTagCompound();
+            this.addMaterialsInformation(tag, list);
+        } else {
+            list.add(StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialList"));
+            list.add(
+                    "  " + EnumChatFormatting.DARK_GRAY
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone"));
+        }
+    }
+
+    /**
+     * Add to tooltip information about materials used in framed trim. Copied from ItemCustomDrawers method.
+     */
+    private void addMaterialsInformation(NBTTagCompound tag, List list) {
+        ItemStack materialSide = null;
+        ItemStack materialFront = null;
+        ItemStack materialTrim = null;
+        boolean hasMaterials = false;
+
+        // Logic copied from "readFromPortableNBT" method from "TileEntityDrawers".
+        if (tag.hasKey("MatS")) {
+            materialSide = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatS"));
+            hasMaterials = true;
+        }
+        if (tag.hasKey("MatF")) {
+            materialFront = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatF"));
+            hasMaterials = true;
+        }
+        if (tag.hasKey("MatT")) {
+            materialTrim = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatT"));
+            hasMaterials = true;
+        }
+
+        list.add(
+                EnumChatFormatting.GRAY + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialList"));
+
+        if (hasMaterials) {
+            // Display side material
+            list.add(
+                    "  " + EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialSide")
+                            + " "
+                            + getMaterialDisplayName(materialSide));
+            // Display trim material
+            list.add(
+                    "  " + EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialTrim")
+                            + " "
+                            + getMaterialDisplayName(materialTrim));
+            // Display front material
+            list.add(
+                    "  " + EnumChatFormatting.YELLOW
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialFront")
+                            + " "
+                            + getMaterialDisplayName(materialFront));
+        } else {
+            // Display <None> ...
+            list.add(
+                    "  " + EnumChatFormatting.DARK_GRAY
+                            + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone"));
+        }
+    }
+
+    /**
+     * Returns good display name or in gray localised "sealed.materialNone". Copied from ItemDrawers and
+     * ItemCustomDrawers methods.
+     */
+    private String getMaterialDisplayName(ItemStack stack) {
+        if (stack != null) {
+            if (stack.hasDisplayName()) {
+                return EnumChatFormatting.ITALIC.toString() + stack.getRarity().rarityColor + stack.getDisplayName();
+            } else {
+                return stack.getRarity().rarityColor.toString() + stack.getDisplayName();
+            }
+        } else {
+            return EnumChatFormatting.DARK_GRAY
+                    + StatCollector.translateToLocal("storageDrawers.drawers.sealed.materialNone");
+        }
     }
 
     public static ItemStack makeItemStack(Block block, int count, ItemStack matSide, ItemStack matTrim) {
