@@ -34,6 +34,7 @@ public class IntegrationRegistry {
             reg.add(new ThermalFoundation());
         if (ChiselIntegrationModule.isEnabled()) reg.add(new ChiselIntegrationModule());
         if (GTNHIntegrationModule.isEnabled()) reg.add(new GTNHIntegrationModule());
+        if (BackhandIntegrationModule.isEnabled()) reg.add(new BackhandIntegrationModule());
     }
 
     private IntegrationRegistry() {
