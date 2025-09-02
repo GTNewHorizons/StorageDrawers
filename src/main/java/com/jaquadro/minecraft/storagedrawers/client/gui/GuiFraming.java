@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiFraming extends GuiContainer {
 
     private static final ResourceLocation guiTextires = new ResourceLocation(
-        StorageDrawers.MOD_ID.toLowerCase(),
-        "textures/gui/framing.png");
+            StorageDrawers.MOD_ID.toLowerCase(),
+            "textures/gui/framing.png");
     private TileEntityFramingTable tileFramingTable;
 
     public GuiFraming(InventoryPlayer inventory, TileEntityFramingTable tileEntity) {
@@ -33,7 +33,7 @@ public class GuiFraming extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String name = tileFramingTable.hasCustomInventoryName() ? tileFramingTable.getInventoryName()
-            : I18n.format(tileFramingTable.getInventoryName());
+                : I18n.format(tileFramingTable.getInventoryName());
         fontRendererObj.drawString(name, 8, 6, 4210752);
         fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752);
     }
@@ -41,8 +41,7 @@ public class GuiFraming extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float dt, int mouseX, int mouseY) {
         GL11.glColor4f(1, 1, 1, 1);
-        mc.getTextureManager()
-            .bindTexture(guiTextires);
+        mc.getTextureManager().bindTexture(guiTextires);
 
         int guiX = (width - xSize) / 2;
         int guiY = (height - ySize) / 2;

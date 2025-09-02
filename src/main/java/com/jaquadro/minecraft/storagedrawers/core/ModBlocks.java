@@ -118,28 +118,28 @@ public class ModBlocks {
         }
 
         GameRegistry.registerTileEntityWithAlternatives(
-            TileEntityDrawersStandard.class,
-            getQualifiedName("tileDrawersStandard"),
-            getQualifiedName(fullDrawers1),
-            getQualifiedName(fullDrawers2),
-            getQualifiedName(fullDrawers4),
-            getQualifiedName(halfDrawers2),
-            getQualifiedName(halfDrawers4));
+                TileEntityDrawersStandard.class,
+                getQualifiedName("tileDrawersStandard"),
+                getQualifiedName(fullDrawers1),
+                getQualifiedName(fullDrawers2),
+                getQualifiedName(fullDrawers4),
+                getQualifiedName(halfDrawers2),
+                getQualifiedName(halfDrawers4));
 
         GameRegistry.registerTileEntityWithAlternatives(
-            TileEntityDrawersComp.class,
-            getQualifiedName("tileDrawersComp"),
-            getQualifiedName(compDrawers));
+                TileEntityDrawersComp.class,
+                getQualifiedName("tileDrawersComp"),
+                getQualifiedName(compDrawers));
 
         GameRegistry.registerTileEntityWithAlternatives(
-            TileEntityController.class,
-            getQualifiedName("tileController"),
-            getQualifiedName(controller));
+                TileEntityController.class,
+                getQualifiedName("tileController"),
+                getQualifiedName(controller));
 
         GameRegistry.registerTileEntityWithAlternatives(
-            TileEntitySlave.class,
-            getQualifiedName("tileControllerSlave"),
-            getQualifiedName(controllerSlave));
+                TileEntitySlave.class,
+                getQualifiedName("tileControllerSlave"),
+                getQualifiedName(controllerSlave));
 
         GameRegistry.registerTileEntity(TileEntityFramingTable.class, getQualifiedName("framingTable"));
 
@@ -177,7 +177,6 @@ public class ModBlocks {
     }
 
     public static String getQualifiedName(Block block) {
-        return GameData.getBlockRegistry()
-            .getNameForObject(block);
+        return GameData.getBlockRegistry().getNameForObject(block);
     }
 }

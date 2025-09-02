@@ -21,7 +21,7 @@ public class DrawersCustomRenderer extends DrawersRenderer {
 
     @Override
     protected void renderBaseBlock(IBlockAccess world, TileEntityDrawers tile, int x, int y, int z, BlockDrawers block,
-        RenderBlocks renderer) {
+            RenderBlocks renderer) {
         BlockDrawersCustom custom = (BlockDrawersCustom) block;
 
         ItemStack materialSide = tile.getMaterialSide();
@@ -33,12 +33,9 @@ public class DrawersCustomRenderer extends DrawersRenderer {
         ItemStack materialTrim = tile.getMaterialTrim();
         if (materialTrim == null) materialTrim = materialSide;
 
-        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem())
-            .getIcon(4, materialTrim.getItemDamage());
-        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem())
-            .getIcon(4, materialSide.getItemDamage());
-        IIcon frontIcon = Block.getBlockFromItem(materialFront.getItem())
-            .getIcon(4, materialFront.getItemDamage());
+        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem()).getIcon(4, materialTrim.getItemDamage());
+        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem()).getIcon(4, materialSide.getItemDamage());
+        IIcon frontIcon = Block.getBlockFromItem(materialFront.getItem()).getIcon(4, materialFront.getItemDamage());
 
         if (trimIcon == null) trimIcon = custom.getDefaultTrimIcon();
         if (panelIcon == null) panelIcon = custom.getDefaultFaceIcon();

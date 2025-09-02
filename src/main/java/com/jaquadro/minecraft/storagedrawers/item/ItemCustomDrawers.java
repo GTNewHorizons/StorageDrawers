@@ -21,38 +21,24 @@ public class ItemCustomDrawers extends ItemDrawers {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-        float hitX, float hitY, float hitZ, int metadata) {
+            float hitX, float hitY, float hitZ, int metadata) {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityDrawers tile = (TileEntityDrawers) world.getTileEntity(x, y, z);
-        if (tile != null && stack.hasTagCompound()
-            && !stack.getTagCompound()
-                .hasKey("tile")) {
-            if (stack.getTagCompound()
-                .hasKey("MatS"))
-                tile.setMaterialSide(
-                    ItemStack.loadItemStackFromNBT(
-                        stack.getTagCompound()
-                            .getCompoundTag("MatS")));
-            if (stack.getTagCompound()
-                .hasKey("MatT"))
-                tile.setMaterialTrim(
-                    ItemStack.loadItemStackFromNBT(
-                        stack.getTagCompound()
-                            .getCompoundTag("MatT")));
-            if (stack.getTagCompound()
-                .hasKey("MatF"))
-                tile.setMaterialFront(
-                    ItemStack.loadItemStackFromNBT(
-                        stack.getTagCompound()
-                            .getCompoundTag("MatF")));
+        if (tile != null && stack.hasTagCompound() && !stack.getTagCompound().hasKey("tile")) {
+            if (stack.getTagCompound().hasKey("MatS"))
+                tile.setMaterialSide(ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag("MatS")));
+            if (stack.getTagCompound().hasKey("MatT"))
+                tile.setMaterialTrim(ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag("MatT")));
+            if (stack.getTagCompound().hasKey("MatF"))
+                tile.setMaterialFront(ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag("MatF")));
         }
 
         return true;
     }
 
     public static ItemStack makeItemStack(Block block, int count, ItemStack matSide, ItemStack matTrim,
-        ItemStack matFront) {
+            ItemStack matFront) {
         Item item = Item.getItemFromBlock(block);
         if (!(item instanceof ItemCustomDrawers)) return null;
 

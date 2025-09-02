@@ -12,9 +12,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class DataResolver extends ExtendedDataResolver {
 
     public static String[] blockNames = new String[] { "Baobab", "Eucalyptus", "Mahogany", "Mossbark", "Asper",
-        "Cypress", null, "White", "Bamboo", "Rotten", "Marshwood", null, null, null, "Scorched", "Varnished" };
+            "Cypress", null, "White", "Bamboo", "Rotten", "Marshwood", null, null, null, "Scorched", "Varnished" };
     public static String[] textureNames = new String[] { "baobab", "eucalyptus", "mahogany", "mossbark", "asper",
-        "cypress", null, "white", "bamboo", "rotten", "marshwood", null, null, null, "scorched", "varnished" };
+            "cypress", null, "white", "bamboo", "rotten", "marshwood", null, null, null, "scorched", "varnished" };
 
     public DataResolver(String modID) {
         super(modID, blockNames);
@@ -69,17 +69,17 @@ public class DataResolver extends ExtendedDataResolver {
         for (int i = 7, p = 7; i < 11; i++, p++)
             setPlankSlab(i, planks, p, GameRegistry.findBlock("erebus", getPlankName(getUnlocalizedName(i))), 0);
         for (int i = 14, p = 14; i < 15; i++, p++) setPlankSlab(
-            i,
-            GameRegistry.findBlock("erebus", "planks_scorched"),
-            p,
-            GameRegistry.findBlock("erebus", getPlankName(getUnlocalizedName(i))),
-            0);
+                i,
+                GameRegistry.findBlock("erebus", "planks_scorched"),
+                p,
+                GameRegistry.findBlock("erebus", getPlankName(getUnlocalizedName(i))),
+                0);
         for (int i = 15, p = 15; i < 16; i++, p++) setPlankSlab(
-            i,
-            GameRegistry.findBlock("erebus", "planks_varnished"),
-            p,
-            GameRegistry.findBlock("erebus", getPlankName(getUnlocalizedName(i))),
-            0);
+                i,
+                GameRegistry.findBlock("erebus", "planks_varnished"),
+                p,
+                GameRegistry.findBlock("erebus", getPlankName(getUnlocalizedName(i))),
+                0);
     }
 
     private String getPlankName(String name) {

@@ -98,7 +98,7 @@ public class OreDictionaryBlacklist {
         @Override
         public String describeUndo() {
             if (added) return "Removing previously added ore dictionary prefix '" + name
-                + "' from drawer conversion blacklist.";
+                    + "' from drawer conversion blacklist.";
             else return "";
         }
 

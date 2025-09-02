@@ -68,7 +68,7 @@ public class BlockDrawersCustom extends BlockDrawers {
         if (tile == null) return ItemCustomDrawers.makeItemStack(this, 1, null, null, null);
 
         return ItemCustomDrawers
-            .makeItemStack(this, 1, tile.getMaterialSide(), tile.getMaterialTrim(), tile.getMaterialFront());
+                .makeItemStack(this, 1, tile.getMaterialSide(), tile.getMaterialTrim(), tile.getMaterialFront());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class BlockDrawersCustom extends BlockDrawers {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
-        float hitY, float hitZ) {
+            float hitY, float hitZ) {
         TileEntityDrawers tile = getTileEntity(world, x, y, z);
         if (tile != null && tile.getMaterialSide() == null) return false;
 

@@ -46,8 +46,7 @@ public class NEIStorageDrawersConfig implements IConfigureNEI {
     }
 
     public static void hideBlock(String blockID) {
-        Block block = GameData.getBlockRegistry()
-            .getObject(blockID);
+        Block block = GameData.getBlockRegistry().getObject(blockID);
         if (block != null) {
             ItemStack stack = new ItemStack(Item.getItemFromBlock(block), 1, OreDictionary.WILDCARD_VALUE);
             if (loaded) hideItem(stack);

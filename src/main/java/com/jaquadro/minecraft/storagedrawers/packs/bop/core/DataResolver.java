@@ -12,7 +12,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class DataResolver extends ExtendedDataResolver {
 
     private static String[] textureNames = new String[] { "sacredoak", "cherry", "dark", "fir", "ethereal", "magic",
-        "mangrove", "palm", "redwood", "willow", null, "pine", "hellbark", "jacaranda", "mahogany" };
+            "mangrove", "palm", "redwood", "willow", null, "pine", "hellbark", "jacaranda", "mahogany" };
 
     public DataResolver(String modID) {
         super(modID, textureNames);
@@ -55,22 +55,22 @@ public class DataResolver extends ExtendedDataResolver {
     @Override
     public void init() {
         for (int i = 0, p = 0, m = 0; i < 8; i++, p++, m++) setPlankSlab(
-            i,
-            GameRegistry.findBlock("BiomesOPlenty", "planks"),
-            p,
-            GameRegistry.findBlock("BiomesOPlenty", "woodenSingleSlab1"),
-            m);
+                i,
+                GameRegistry.findBlock("BiomesOPlenty", "planks"),
+                p,
+                GameRegistry.findBlock("BiomesOPlenty", "woodenSingleSlab1"),
+                m);
         for (int i = 8, p = 8, m = 0; i < 10; i++, p++, m++) setPlankSlab(
-            i,
-            GameRegistry.findBlock("BiomesOPlenty", "planks"),
-            p,
-            GameRegistry.findBlock("BiomesOPlenty", "woodenSingleSlab2"),
-            m);
+                i,
+                GameRegistry.findBlock("BiomesOPlenty", "planks"),
+                p,
+                GameRegistry.findBlock("BiomesOPlenty", "woodenSingleSlab2"),
+                m);
         for (int i = 11, p = 11, m = 3; i < textureNames.length; i++, p++, m++) setPlankSlab(
-            i,
-            GameRegistry.findBlock("BiomesOPlenty", "planks"),
-            p,
-            GameRegistry.findBlock("BiomesOPlenty", "woodenSingleSlab2"),
-            m);
+                i,
+                GameRegistry.findBlock("BiomesOPlenty", "planks"),
+                p,
+                GameRegistry.findBlock("BiomesOPlenty", "woodenSingleSlab2"),
+                m);
     }
 }

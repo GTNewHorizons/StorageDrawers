@@ -27,9 +27,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockFramingTable extends BlockContainer {
 
     public static final int[][] leftOffset = new int[][] { { 0, 0 }, { 0, 0 }, { 1, 0 }, { -1, 0 }, { 0, -1 },
-        { 0, 1 } };
+            { 0, 1 } };
     public static final int[][] rightOffset = new int[][] { { 0, 0 }, { 0, 0 }, { -1, 0 }, { 1, 0 }, { 0, 1 },
-        { 0, -1 } };
+            { 0, -1 } };
 
     private Random random = new Random();
 
@@ -61,7 +61,7 @@ public class BlockFramingTable extends BlockContainer {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float vx, float vy,
-        float vz) {
+            float vz) {
         int meta = world.getBlockMetadata(x, y, z);
         int priX = x + getXOff(meta);
         int priZ = z + getZOff(meta);
@@ -166,16 +166,14 @@ public class BlockFramingTable extends BlockContainer {
 
                     stack.stackSize -= amount;
                     EntityItem entity = new EntityItem(
-                        world,
-                        x + fx,
-                        y + fy,
-                        z + fz,
-                        new ItemStack(stack.getItem(), amount, stack.getItemDamage()));
+                            world,
+                            x + fx,
+                            y + fy,
+                            z + fz,
+                            new ItemStack(stack.getItem(), amount, stack.getItemDamage()));
 
-                    if (stack.hasTagCompound()) entity.getEntityItem()
-                        .setTagCompound(
-                            (NBTTagCompound) stack.getTagCompound()
-                                .copy());
+                    if (stack.hasTagCompound())
+                        entity.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
 
                     entity.motionX = random.nextGaussian() * .05f;
                     entity.motionY = random.nextGaussian() * .05f + .2f;

@@ -16,10 +16,10 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(
-    modid = StorageDrawersPack.MOD_ID,
-    name = StorageDrawersPack.MOD_NAME,
-    version = StorageDrawers.MOD_VERSION,
-    dependencies = "required-after:StorageDrawers;")
+        modid = StorageDrawersPack.MOD_ID,
+        name = StorageDrawersPack.MOD_NAME,
+        version = StorageDrawers.MOD_VERSION,
+        dependencies = "required-after:StorageDrawers;")
 public class StorageDrawersPack {
 
     public static final String MOD_ID = "StorageDrawersForestry";
@@ -40,15 +40,13 @@ public class StorageDrawersPack {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        if (StorageDrawers.config.userConfig.packsConfig()
-            .autoEnablePacks()) {
+        if (StorageDrawers.config.userConfig.packsConfig().autoEnablePacks()) {
             if (!Loader.isModLoaded("Forestry")) {
                 LOAD = false;
             }
-        } else if (!StorageDrawers.config.userConfig.packsConfig()
-            .isForestryPackEnabled()) {
-                LOAD = false;
-            }
+        } else if (!StorageDrawers.config.userConfig.packsConfig().isForestryPackEnabled()) {
+            LOAD = false;
+        }
 
         if (!LOAD) return;
 
@@ -71,8 +69,7 @@ public class StorageDrawersPack {
         if (api != null) {
             for (IExtendedDataResolver resolver : resolvers) {
                 api.registerStandardPackRecipes(resolver);
-                api.packFactory()
-                    .registerResolver(resolver);
+                api.packFactory().registerResolver(resolver);
             }
         }
     }

@@ -29,8 +29,8 @@ public class CoFHSecurityProvider implements ISecurityProvider {
     public boolean hasAccess(GameProfile profile, IProtectable target) {
         if (target.getOwner() == null) return true;
 
-        GameProfile ownerProfile = (profile.getId()
-            .equals(target.getOwner())) ? new GameProfile(profile.getId(), profile.getName())
+        GameProfile ownerProfile = (profile.getId().equals(target.getOwner()))
+                ? new GameProfile(profile.getId(), profile.getName())
                 : new GameProfile(target.getOwner(), null);
 
         return foundation.playerHasAccess(profile.getName(), ownerProfile);

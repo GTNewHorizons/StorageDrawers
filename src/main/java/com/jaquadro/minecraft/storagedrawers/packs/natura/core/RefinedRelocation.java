@@ -27,9 +27,9 @@ public class RefinedRelocation {
         IStorageDrawersApi api = StorageDrawersApi.instance();
         if (api == null) return;
 
-        if (!Loader.isModLoaded("RefinedRelocation") || !api.userConfig()
-            .integrationConfig()
-            .isRefinedRelocationEnabled()) return;
+        if (!Loader.isModLoaded("RefinedRelocation")
+                || !api.userConfig().integrationConfig().isRefinedRelocationEnabled())
+            return;
 
         IPackBlockFactory factory = api.packFactory();
         IPackDataResolver resolver = StorageDrawersPack.instance.resolver;
@@ -64,8 +64,7 @@ public class RefinedRelocation {
         if (blockConfig.isBlockEnabled(blockConfig.getBlockConfigName(BlockConfiguration.TrimSorting)))
             factory.registerBlock(trim, "trimSort");
 
-        if (!config.addonConfig()
-            .showAddonItemsNEI()) {
+        if (!config.addonConfig().showAddonItemsNEI()) {
             factory.hideBlock(ModBlocks.getQualifiedName(fullDrawers1));
             factory.hideBlock(ModBlocks.getQualifiedName(fullDrawers2));
             factory.hideBlock(ModBlocks.getQualifiedName(fullDrawers4));
@@ -75,11 +74,11 @@ public class RefinedRelocation {
         }
 
         ModBlocks.addAlternativeTileEntityMappings(
-            TileSortingDrawersStandard.class,
-            ModBlocks.getQualifiedName(fullDrawers1),
-            ModBlocks.getQualifiedName(fullDrawers2),
-            ModBlocks.getQualifiedName(fullDrawers4),
-            ModBlocks.getQualifiedName(halfDrawers2),
-            ModBlocks.getQualifiedName(halfDrawers4));
+                TileSortingDrawersStandard.class,
+                ModBlocks.getQualifiedName(fullDrawers1),
+                ModBlocks.getQualifiedName(fullDrawers2),
+                ModBlocks.getQualifiedName(fullDrawers4),
+                ModBlocks.getQualifiedName(halfDrawers2),
+                ModBlocks.getQualifiedName(halfDrawers4));
     }
 }

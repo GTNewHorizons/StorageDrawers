@@ -18,17 +18,17 @@ public class RenderHelperLL {
     private static final int MAXZ = 5;
 
     private static final int xyzuvMap[][][] = { { // Y-NEG
-        { 0, 2, 5, 0, 2 }, { 0, 2, 4, 0, 3 }, { 1, 2, 4, 1, 3 }, { 1, 2, 5, 1, 2 } },
-        { // Y-POS
-            { 1, 3, 5, 0, 2 }, { 1, 3, 4, 0, 3 }, { 0, 3, 4, 1, 3 }, { 0, 3, 5, 1, 2 } },
-        { // Z-NEG
-            { 0, 3, 4, 0, 2 }, { 1, 3, 4, 1, 2 }, { 1, 2, 4, 1, 3 }, { 0, 2, 4, 0, 3 } },
-        { // Z-POS
-            { 0, 3, 5, 0, 2 }, { 0, 2, 5, 0, 3 }, { 1, 2, 5, 1, 3 }, { 1, 3, 5, 1, 2 } },
-        { // X-NEG
-            { 0, 3, 5, 0, 2 }, { 0, 3, 4, 1, 2 }, { 0, 2, 4, 1, 3 }, { 0, 2, 5, 0, 3 } },
-        { // X-POS
-            { 1, 2, 5, 0, 2 }, { 1, 2, 4, 1, 2 }, { 1, 3, 4, 1, 3 }, { 1, 3, 5, 0, 3 } }, };
+            { 0, 2, 5, 0, 2 }, { 0, 2, 4, 0, 3 }, { 1, 2, 4, 1, 3 }, { 1, 2, 5, 1, 2 } },
+            { // Y-POS
+                    { 1, 3, 5, 0, 2 }, { 1, 3, 4, 0, 3 }, { 0, 3, 4, 1, 3 }, { 0, 3, 5, 1, 2 } },
+            { // Z-NEG
+                    { 0, 3, 4, 0, 2 }, { 1, 3, 4, 1, 2 }, { 1, 2, 4, 1, 3 }, { 0, 2, 4, 0, 3 } },
+            { // Z-POS
+                    { 0, 3, 5, 0, 2 }, { 0, 2, 5, 0, 3 }, { 1, 2, 5, 1, 3 }, { 1, 3, 5, 1, 2 } },
+            { // X-NEG
+                    { 0, 3, 5, 0, 2 }, { 0, 3, 4, 1, 2 }, { 0, 2, 4, 1, 3 }, { 0, 2, 5, 0, 3 } },
+            { // X-POS
+                    { 1, 2, 5, 0, 2 }, { 1, 2, 4, 1, 2 }, { 1, 3, 4, 1, 3 }, { 1, 3, 5, 0, 3 } }, };
 
     private RenderHelperState state;
 
@@ -60,13 +60,15 @@ public class RenderHelperLL {
             case RenderHelper.ZNEG:
             case RenderHelper.ZPOS:
                 if (state.rotateTransform == RenderHelperState.ROTATE180
-                    || state.rotateTransform == RenderHelperState.ROTATE90) state.flipTexture = !state.flipTexture;
+                        || state.rotateTransform == RenderHelperState.ROTATE90)
+                    state.flipTexture = !state.flipTexture;
                 drawFaceZ(face, x, y, z, icon);
                 break;
             case RenderHelper.XNEG:
             case RenderHelper.XPOS:
                 if (state.rotateTransform == RenderHelperState.ROTATE180
-                    || state.rotateTransform == RenderHelperState.ROTATE270) state.flipTexture = !state.flipTexture;
+                        || state.rotateTransform == RenderHelperState.ROTATE270)
+                    state.flipTexture = !state.flipTexture;
                 drawFaceX(face, x, y, z, icon);
                 break;
         }
@@ -87,7 +89,7 @@ public class RenderHelperLL {
         }
 
         int rotate = (face == RenderHelper.YNEG) ? state.uvRotate[RenderHelper.YNEG]
-            : state.uvRotate[RenderHelper.YPOS];
+                : state.uvRotate[RenderHelper.YPOS];
 
         if (rangeX <= 1 && rangeZ <= 1) {
             if (face == RenderHelper.YNEG)
@@ -149,11 +151,11 @@ public class RenderHelperLL {
         if (rotate == RenderHelperState.ROTATE90)
             setUV(icon, 1 - maxZ + state.shiftU, 1 - minZ + state.shiftU, minX + state.shiftV, maxX + state.shiftV);
         if (rotate == RenderHelperState.ROTATE180) setUV(
-            icon,
-            1 - minX + state.shiftU,
-            1 - maxX + state.shiftU,
-            1 - maxZ + state.shiftV,
-            1 - minZ + state.shiftV);
+                icon,
+                1 - minX + state.shiftU,
+                1 - maxX + state.shiftU,
+                1 - maxZ + state.shiftV,
+                1 - minZ + state.shiftV);
         if (rotate == RenderHelperState.ROTATE270)
             setUV(icon, maxZ + state.shiftU, minZ + state.shiftU, 1 - minX + state.shiftV, 1 - maxX + state.shiftV);
     }
@@ -165,11 +167,11 @@ public class RenderHelperLL {
         if (rotate == RenderHelperState.ROTATE90)
             setUV(icon, maxZ + state.shiftU, minZ + state.shiftU, 1 - maxX + state.shiftV, 1 - minX + state.shiftV);
         if (rotate == RenderHelperState.ROTATE180) setUV(
-            icon,
-            1 - maxX + state.shiftU,
-            1 - minX + state.shiftU,
-            1 - maxZ + state.shiftV,
-            1 - minZ + state.shiftV);
+                icon,
+                1 - maxX + state.shiftU,
+                1 - minX + state.shiftU,
+                1 - maxZ + state.shiftV,
+                1 - minZ + state.shiftV);
         if (rotate == RenderHelperState.ROTATE270)
             setUV(icon, 1 - maxZ + state.shiftU, 1 - minZ + state.shiftU, maxX + state.shiftV, minX + state.shiftV);
     }
@@ -351,7 +353,7 @@ public class RenderHelperLL {
     }
 
     public void drawPartialFace(int face, double x, double y, double z, IIcon icon, double uMin, double vMin,
-        double uMax, double vMax) {
+            double uMax, double vMax) {
         setXYZ(x, y, z);
         setUV(icon, uMin, uMax, vMin, vMax);
 
@@ -360,7 +362,7 @@ public class RenderHelperLL {
     }
 
     private void setupUVPoints(double uStart, double vStart, double uStop, double vStop, int rangeU, int rangeV,
-        IIcon icon) {
+            IIcon icon) {
         if (rangeU <= 1) {
             minUDiv[0] = uStart;
             maxUDiv[0] = uStop;
@@ -400,9 +402,9 @@ public class RenderHelperLL {
             float lerpLR = (float) (posLR / diffLR);
 
             int brightTop = RenderHelperAO
-                .mixAOBrightness(state.brightnessTopLeft, state.brightnessTopRight, 1 - lerpLR, lerpLR);
+                    .mixAOBrightness(state.brightnessTopLeft, state.brightnessTopRight, 1 - lerpLR, lerpLR);
             int brightBottom = RenderHelperAO
-                .mixAOBrightness(state.brightnessBottomLeft, state.brightnessBottomRight, 1 - lerpLR, lerpLR);
+                    .mixAOBrightness(state.brightnessBottomLeft, state.brightnessBottomRight, 1 - lerpLR, lerpLR);
 
             double posTB = 0;
             for (int tb = 0; tb <= rangeTB; tb++) {

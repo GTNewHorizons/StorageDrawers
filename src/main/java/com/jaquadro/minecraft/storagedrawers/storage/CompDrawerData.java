@@ -13,7 +13,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IVoidable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 
 public class CompDrawerData extends BaseDrawerData
-    implements IFractionalDrawer, IVoidable, IShroudable, ILockable, IQuantifiable {
+        implements IFractionalDrawer, IVoidable, IShroudable, ILockable, IQuantifiable {
 
     private static final ItemStack nullStack = new ItemStack((Item) null);
 

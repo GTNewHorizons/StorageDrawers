@@ -28,9 +28,9 @@ public class BlockSortingDrawersPack extends BlockSortingDrawers implements IPac
 
     public BlockSortingDrawersPack(IPackDataResolver resolver, int drawerCount, boolean halfDepth) {
         super(
-            resolver.getBlockName(BlockConfiguration.by(BlockType.DrawersSorting, drawerCount, halfDepth)),
-            drawerCount,
-            halfDepth);
+                resolver.getBlockName(BlockConfiguration.by(BlockType.DrawersSorting, drawerCount, halfDepth)),
+                drawerCount,
+                halfDepth);
 
         this.resolver = resolver;
 

@@ -57,8 +57,7 @@ public class ModBlocks {
         if (blockConfig.isBlockEnabled(blockConfig.getBlockConfigName(BlockConfiguration.Trim)))
             factory.registerBlock(trim, "trim");
 
-        if (!config.addonConfig()
-            .showAddonItemsNEI()) {
+        if (!config.addonConfig().showAddonItemsNEI()) {
             factory.hideBlock(getQualifiedName(fullDrawers1));
             factory.hideBlock(getQualifiedName(fullDrawers2));
             factory.hideBlock(getQualifiedName(fullDrawers4));
@@ -68,23 +67,22 @@ public class ModBlocks {
         }
 
         addAlternativeTileEntityMappings(
-            TileEntityDrawersStandard.class,
-            getQualifiedName(fullDrawers1),
-            getQualifiedName(fullDrawers2),
-            getQualifiedName(fullDrawers4),
-            getQualifiedName(halfDrawers2),
-            getQualifiedName(halfDrawers4));
+                TileEntityDrawersStandard.class,
+                getQualifiedName(fullDrawers1),
+                getQualifiedName(fullDrawers2),
+                getQualifiedName(fullDrawers4),
+                getQualifiedName(halfDrawers2),
+                getQualifiedName(halfDrawers4));
     }
 
     public static String getQualifiedName(Block block) {
-        return GameData.getBlockRegistry()
-            .getNameForObject(block);
+        return GameData.getBlockRegistry().getNameForObject(block);
     }
 
     public static void addAlternativeTileEntityMappings(Class<? extends TileEntity> tileEntityClass,
-        String... alternatives) {
+            String... alternatives) {
         Map<String, Class<?>> teMappings = ObfuscationReflectionHelper
-            .getPrivateValue(TileEntity.class, null, "field_" + "145855_i", "nameToClassMap");
+                .getPrivateValue(TileEntity.class, null, "field_" + "145855_i", "nameToClassMap");
         for (String s : alternatives) {
             if (!teMappings.containsKey(s)) {
                 teMappings.put(s, tileEntityClass);

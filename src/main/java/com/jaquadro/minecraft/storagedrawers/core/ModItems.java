@@ -34,8 +34,8 @@ public class ModItems {
 
     public void init() {
         upgradeTemplate = new Item().setUnlocalizedName(makeName("upgradeTemplate"))
-            .setTextureName(StorageDrawers.MOD_ID + ":upgrade_template")
-            .setCreativeTab(ModCreativeTabs.tabStorageDrawers);
+                .setTextureName(StorageDrawers.MOD_ID + ":upgrade_template")
+                .setCreativeTab(ModCreativeTabs.tabStorageDrawers);
         upgrade = new ItemUpgrade(makeName("upgrade"));
         upgradeStatus = new ItemUpgradeStatus(makeName("upgradeStatus"));
         upgradeLock = new ItemUpgradeLock(makeName("upgradeLock"));

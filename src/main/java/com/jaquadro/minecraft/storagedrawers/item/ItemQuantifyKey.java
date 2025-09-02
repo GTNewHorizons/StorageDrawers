@@ -41,8 +41,8 @@ public class ItemQuantifyKey extends Item {
     public Multimap getAttributeModifiers(ItemStack item) {
         Multimap multimap = super.getAttributeModifiers(item);
         multimap.put(
-            SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-            new AttributeModifier(field_111210_e, "Weapon modifier", (double) 2, 0));
+                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+                new AttributeModifier(field_111210_e, "Weapon modifier", (double) 2, 0));
         return multimap;
     }
 }

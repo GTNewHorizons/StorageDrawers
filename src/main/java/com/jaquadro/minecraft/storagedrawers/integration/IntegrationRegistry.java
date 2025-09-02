@@ -64,10 +64,9 @@ public class IntegrationRegistry {
             } catch (Throwable t) {
                 registry.remove(i--);
                 FMLLog.log(
-                    StorageDrawers.MOD_ID,
-                    Level.INFO,
-                    "Could not load integration module: " + module.getClass()
-                        .getName());
+                        StorageDrawers.MOD_ID,
+                        Level.INFO,
+                        "Could not load integration module: " + module.getClass().getName());
             }
         }
     }
@@ -78,8 +77,7 @@ public class IntegrationRegistry {
 
     public boolean isModLoaded(String mod_id) {
         for (IntegrationModule module : registry) {
-            if (module.getModID()
-                .equals(mod_id)) return true;
+            if (module.getModID().equals(mod_id)) return true;
         }
 
         return false;

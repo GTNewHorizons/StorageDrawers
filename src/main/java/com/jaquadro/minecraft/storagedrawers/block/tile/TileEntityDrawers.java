@@ -39,7 +39,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawerGroupInteractive, ISidedInventory,
-    IUpgradeProvider, ILockable, ISealable, IProtectable, IDowngradable {
+        IUpgradeProvider, ILockable, ISealable, IProtectable, IDowngradable {
 
     private IDrawer[] drawers;
     private IDrawerInventory inventory;
@@ -603,8 +603,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     public int interactPutItemsIntoSlot(int slot, EntityPlayer player) {
         int count = 0;
-        if (worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID()
-            .equals(lastClickUUID)) count = interactPutCurrentInventoryIntoSlot(slot, player);
+        if (worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID))
+            count = interactPutCurrentInventoryIntoSlot(slot, player);
         else count = interactPutCurrentItemIntoSlot(slot, player);
 
         lastClickTime = worldObj.getTotalWorldTime();
@@ -796,17 +796,17 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         IDrawer drawer = getDrawer(slot);
         if (drawer == null) {
             FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.ERROR,
-                "Drawer at (" + this.xCoord
-                    + ","
-                    + this.yCoord
-                    + ","
-                    + this.zCoord
-                    + ") has no slot "
-                    + slot
-                    + ". Drawers.length is "
-                    + drawers.length);
+                    StorageDrawers.MOD_ID,
+                    Level.ERROR,
+                    "Drawer at (" + this.xCoord
+                            + ","
+                            + this.yCoord
+                            + ","
+                            + this.zCoord
+                            + ") has no slot "
+                            + slot
+                            + ". Drawers.length is "
+                            + drawers.length);
             return;
         }
         if (drawer.getStoredItemCount() != count) {
@@ -827,11 +827,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private void syncClientCount(int slot) {
         IMessage message = new CountUpdateMessage(xCoord, yCoord, zCoord, slot, drawers[slot].getStoredItemCount());
         NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(
-            worldObj.provider.dimensionId,
-            xCoord,
-            yCoord,
-            zCoord,
-            500);
+                worldObj.provider.dimensionId,
+                xCoord,
+                yCoord,
+                zCoord,
+                500);
 
         StorageDrawers.network.sendToAllAround(message, targetPoint);
     }

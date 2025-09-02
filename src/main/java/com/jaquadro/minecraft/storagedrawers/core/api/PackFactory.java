@@ -33,11 +33,9 @@ public class PackFactory implements IPackBlockFactory {
         switch (blockConfig.getBlockType()) {
             case Drawers:
                 return new BlockDrawersPack(dataResolver, blockConfig.getDrawerCount(), blockConfig.isHalfDepth())
-                    .setConfigName(getConfigName(blockConfig));
+                        .setConfigName(getConfigName(blockConfig));
             case DrawersSorting:
-                if (IntegrationRegistry.instance()
-                    .isModLoaded("RefinedRelocation"))
-                    return new BlockSortingDrawersPack(
+                if (IntegrationRegistry.instance().isModLoaded("RefinedRelocation")) return new BlockSortingDrawersPack(
                         dataResolver,
                         blockConfig.getDrawerCount(),
                         blockConfig.isHalfDepth()).setConfigName(getConfigName(blockConfig));
@@ -45,8 +43,8 @@ public class PackFactory implements IPackBlockFactory {
             case Trim:
                 return new BlockTrimPack(dataResolver);
             case TrimSorting:
-                if (IntegrationRegistry.instance()
-                    .isModLoaded("RefinedRelocation")) return new BlockSortingTrimPack(dataResolver);
+                if (IntegrationRegistry.instance().isModLoaded("RefinedRelocation"))
+                    return new BlockSortingTrimPack(dataResolver);
                 return null;
             default:
                 return null;

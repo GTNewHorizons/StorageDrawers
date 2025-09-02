@@ -14,7 +14,7 @@ public class StorageRenderItem extends RenderItem {
 
     @Override
     public void renderItemOverlayIntoGUI(FontRenderer font, TextureManager texManager, ItemStack item, int x, int y,
-        String text) {
+            String text) {
         if (item != overrideStack) {
             super.renderItemOverlayIntoGUI(font, texManager, item, x, y, text);
             return;
@@ -53,10 +53,8 @@ public class StorageRenderItem extends RenderItem {
                 GL11.glEnable(GL11.GL_DEPTH_TEST);
             }
 
-            if (item.getItem()
-                .showDurabilityBar(item)) {
-                double health = item.getItem()
-                    .getDurabilityForDisplay(item);
+            if (item.getItem().showDurabilityBar(item)) {
+                double health = item.getItem().getDurabilityForDisplay(item);
                 int j1 = (int) Math.round(13.0D - health * 13.0D);
                 int k = (int) Math.round(255.0D - health * 255.0D);
                 GL11.glDisable(GL11.GL_LIGHTING);

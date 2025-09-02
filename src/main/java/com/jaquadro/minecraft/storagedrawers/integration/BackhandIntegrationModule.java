@@ -7,7 +7,7 @@ import cpw.mods.fml.common.Loader;
 public class BackhandIntegrationModule extends IntegrationModule {
 
     private static final boolean BACKHAND_ENABLED = Loader.isModLoaded("backhand")
-        && StorageDrawers.config.integrationConfig.isBackhandEnabled();
+            && StorageDrawers.config.integrationConfig.isBackhandEnabled();
 
     @Override
     public String getModID() {

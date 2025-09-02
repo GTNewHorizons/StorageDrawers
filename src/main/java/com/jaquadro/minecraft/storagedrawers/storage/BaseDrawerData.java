@@ -65,8 +65,7 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
 
                 List<ItemStack> list = OreDictionary.getOres(oreName);
                 for (int i = 0, n = list.size(); i < n; i++) {
-                    if (list.get(i)
-                        .getItemDamage() == OreDictionary.WILDCARD_VALUE) continue;
+                    if (list.get(i).getItemDamage() == OreDictionary.WILDCARD_VALUE) continue;
                     oreDictMatches.add(list.get(i));
                 }
             }
@@ -159,7 +158,8 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
         if (!stack1.isItemEqual(stack2)) {
             if (!StorageDrawers.config.cache.enableItemConversion) return false;
             if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) return false;
+                    || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+                return false;
             if (stack1.getItem() == stack2.getItem()) return false;
 
             int[] ids1 = OreDictionary.getOreIDs(stack1);

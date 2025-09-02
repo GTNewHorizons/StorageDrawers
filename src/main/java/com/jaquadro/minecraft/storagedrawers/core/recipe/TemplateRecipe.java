@@ -40,8 +40,7 @@ public class TemplateRecipe implements IRecipe {
         ItemStack center = inventory.getStackInRowAndColumn(1, 1);
         if (center == null || !(center.getItem() instanceof ItemDrawers)) return null;
 
-        if (center.getTagCompound() != null && center.getTagCompound()
-            .hasKey("tile")) return null;
+        if (center.getTagCompound() != null && center.getTagCompound().hasKey("tile")) return null;
 
         return getRecipeOutput();
     }

@@ -26,10 +26,7 @@ public final class ModCreativeTabs {
         if (api == null) return null;
 
         IUserConfig config = api.userConfig();
-        if (config.addonConfig()
-            .addonItemsUseSeparateTab()
-            && config.addonConfig()
-                .showAddonItemsVanilla()) {
+        if (config.addonConfig().addonItemsUseSeparateTab() && config.addonConfig().showAddonItemsVanilla()) {
             tabStorageDrawers = new CreativeTabs("storageDrawersMisc") {
 
                 @Override
@@ -52,8 +49,7 @@ public final class ModCreativeTabs {
         IStorageDrawersApi api = StorageDrawersApi.instance();
         if (api == null) return Item.getItemFromBlock(Blocks.chest);
 
-        IBlockConfig blockConfig = api.userConfig()
-            .blockConfig();
+        IBlockConfig blockConfig = api.userConfig().blockConfig();
 
         if (blockConfig.isBlockEnabled(blockConfig.getBlockConfigName(BlockConfiguration.BasicFull2)))
             return Item.getItemFromBlock(ModBlocks.fullDrawers2[0]);

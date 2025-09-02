@@ -58,7 +58,7 @@ public class OreDictRegistry {
 
         String[] oreTypes = { "ore", "block", "ingot", "nugget" };
         String[] oreMaterials = { "Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper",
-            "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
+                "Lead", "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium" };
 
         for (String ore : oreMaterials) {
             for (String type : oreTypes) addWhitelist(type + ore);
@@ -139,8 +139,7 @@ public class OreDictRegistry {
     }
 
     private String getModId(Item item) {
-        String itemId = GameData.getItemRegistry()
-            .getNameForObject(item);
+        String itemId = GameData.getItemRegistry().getNameForObject(item);
         if (itemId == null) return null;
 
         GameRegistry.UniqueIdentifier uid = new GameRegistry.UniqueIdentifier(itemId);
@@ -155,12 +154,9 @@ public class OreDictRegistry {
 
         HashSet<String> modIds = new HashSet<String>();
         for (int i = 0, n = oreList.size(); i < n; i++) {
-            if (oreList.get(i)
-                .getItemDamage() == OreDictionary.WILDCARD_VALUE) return false;
+            if (oreList.get(i).getItemDamage() == OreDictionary.WILDCARD_VALUE) return false;
 
-            String modId = getModId(
-                oreList.get(i)
-                    .getItem());
+            String modId = getModId(oreList.get(i).getItem());
             if (modId != null) modIds.add(modId);
         }
 

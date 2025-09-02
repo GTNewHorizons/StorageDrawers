@@ -42,7 +42,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         GL11.glTranslatef(-.5f, -.5f, -.5f);
 
         renderHelper.state
-            .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
+                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         renderExterior(block, 0, 0, 0, side, renderer);
 
@@ -58,21 +58,21 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
-        RenderBlocks renderer) {
+            RenderBlocks renderer) {
         if (!(block instanceof BlockController)) return false;
 
         return renderWorldBlock(world, x, y, z, (BlockController) block, modelId, renderer);
     }
 
     private boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockController block, int modelId,
-        RenderBlocks renderer) {
+            RenderBlocks renderer) {
         TileEntityController tile = block.getTileEntity(world, x, y, z);
         if (tile == null) return false;
 
         int side = tile.getDirection();
 
         renderHelper.state
-            .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
+                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         boxRenderer.setUnit(unit);
         boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
@@ -125,19 +125,19 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         }
 
         boxRenderer.renderExterior(
-            renderer.blockAccess,
-            block,
-            x,
-            y,
-            z,
-            xMin,
-            0,
-            zMin,
-            xMax,
-            1,
-            zMax,
-            0,
-            ModularBoxRenderer.sideCut[side]);
+                renderer.blockAccess,
+                block,
+                x,
+                y,
+                z,
+                xMin,
+                0,
+                zMin,
+                xMax,
+                1,
+                zMax,
+                0,
+                ModularBoxRenderer.sideCut[side]);
     }
 
     private void renderInterior(BlockController block, int x, int y, int z, int side, RenderBlocks renderer) {
@@ -173,19 +173,19 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         }
 
         boxRenderer.renderInterior(
-            renderer.blockAccess,
-            block,
-            x,
-            y,
-            z,
-            xMin,
-            unit,
-            zMin,
-            xMax,
-            1 - unit,
-            zMax,
-            0,
-            ModularBoxRenderer.sideCut[side]);
+                renderer.blockAccess,
+                block,
+                x,
+                y,
+                z,
+                xMin,
+                unit,
+                zMin,
+                xMax,
+                1 - unit,
+                zMax,
+                0,
+                ModularBoxRenderer.sideCut[side]);
     }
 
     @Override

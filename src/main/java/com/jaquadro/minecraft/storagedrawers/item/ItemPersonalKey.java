@@ -65,8 +65,8 @@ public class ItemPersonalKey extends Item {
     public Multimap getAttributeModifiers(ItemStack item) {
         Multimap multimap = super.getAttributeModifiers(item);
         multimap.put(
-            SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-            new AttributeModifier(field_111210_e, "Weapon modifier", (double) 2, 0));
+                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+                new AttributeModifier(field_111210_e, "Weapon modifier", (double) 2, 0));
         return multimap;
     }
 
@@ -74,8 +74,9 @@ public class ItemPersonalKey extends Item {
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list) {
         list.add(new ItemStack(item, 1, 0));
-        if (StorageDrawers.config.cache.enableThermalFoundationIntegration && IntegrationRegistry.instance()
-            .isModLoaded("ThermalFoundation")) list.add(new ItemStack(item, 1, 1));
+        if (StorageDrawers.config.cache.enableThermalFoundationIntegration
+                && IntegrationRegistry.instance().isModLoaded("ThermalFoundation"))
+            list.add(new ItemStack(item, 1, 1));
     }
 
     @Override

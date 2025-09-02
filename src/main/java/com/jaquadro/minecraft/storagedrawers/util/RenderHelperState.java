@@ -8,10 +8,10 @@ public class RenderHelperState {
     public static final int ROTATE270 = 3;
 
     public static final int[][] ROTATION_BY_FACE_FACE = { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 2, 3, 1 }, { 0, 0, 2, 0, 1, 3 }, { 0, 0, 1, 3, 0, 2 }, { 0, 0, 3, 1, 2, 0 }, };
+            { 0, 0, 0, 2, 3, 1 }, { 0, 0, 2, 0, 1, 3 }, { 0, 0, 1, 3, 0, 2 }, { 0, 0, 3, 1, 2, 0 }, };
 
     public static final int[][] FACE_BY_FACE_ROTATION = { { 0, 0, 0, 0 }, { 1, 1, 1, 1 }, { 2, 5, 3, 4 },
-        { 3, 4, 2, 5 }, { 4, 2, 5, 3 }, { 5, 3, 4, 2 }, };
+            { 3, 4, 2, 5 }, { 4, 2, 5, 3 }, { 5, 3, 4, 2 }, };
 
     public double renderMinX;
     public double renderMinY;

@@ -43,7 +43,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation(
-        "textures/misc/enchanted_item_glint.png");
+            "textures/misc/enchanted_item_glint.png");
 
     private final RenderItem itemRenderer = new RenderItem() {
 
@@ -69,10 +69,9 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         @Override
         public void renderItemIntoGUI(FontRenderer fontRenderer, TextureManager texManager, ItemStack itemStack, int x,
-            int y, boolean renderEffect) {
-            if (itemStack.getItemSpriteNumber() == 0 && RenderBlocks.renderItemIn3d(
-                Block.getBlockFromItem(itemStack.getItem())
-                    .getRenderType())) {
+                int y, boolean renderEffect) {
+            if (itemStack.getItemSpriteNumber() == 0
+                    && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(itemStack.getItem()).getRenderType())) {
                 renderItemIntoGUIBlock(fontRenderer, texManager, itemStack, x, y, renderEffect);
                 return;
             }
@@ -80,8 +79,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             Item item = itemStack.getItem();
             int meta = itemStack.getItemDamage();
 
-            ResourceLocation loc = itemStack.getItem()
-                .requiresMultipleRenderPasses()
+            ResourceLocation loc = itemStack.getItem().requiresMultipleRenderPasses()
                     ? (item.getSpriteNumber() == 0 ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture)
                     : (texManager.getResourceLocation(itemStack.getItemSpriteNumber()));
 
@@ -89,13 +87,12 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 texManager.bindTexture(loc);
 
-                IIcon icon = itemStack.getItem()
-                    .requiresMultipleRenderPasses() ? item.getIcon(itemStack, i) : itemStack.getIconIndex();
+                IIcon icon = itemStack.getItem().requiresMultipleRenderPasses() ? item.getIcon(itemStack, i)
+                        : itemStack.getIconIndex();
 
                 if (icon == null) continue;
 
-                int color = itemStack.getItem()
-                    .getColorFromItemStack(itemStack, i);
+                int color = itemStack.getItem().getColorFromItemStack(itemStack, i);
                 float r = (float) (color >> 16 & 255) / 255.0F;
                 float g = (float) (color >> 8 & 255) / 255.0F;
                 float b = (float) (color & 255) / 255.0F;
@@ -151,13 +148,13 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
                 Tessellator tessellator = Tessellator.instance;
                 tessellator.startDrawingQuads();
                 tessellator
-                    .addVertexWithUV(x + 0, y + h, 0, (u + (float) h * hScale) * uScale, (v + (float) h) * vScale);
+                        .addVertexWithUV(x + 0, y + h, 0, (u + (float) h * hScale) * uScale, (v + (float) h) * vScale);
                 tessellator.addVertexWithUV(
-                    x + w,
-                    y + h,
-                    0,
-                    (u + (float) w + (float) h * hScale) * uScale,
-                    (v + (float) h) * vScale);
+                        x + w,
+                        y + h,
+                        0,
+                        (u + (float) w + (float) h * hScale) * uScale,
+                        (v + (float) h) * vScale);
                 tessellator.addVertexWithUV(x + w, y + 0, 0, (u + (float) w) * uScale, (v + 0.0F) * vScale);
                 tessellator.addVertexWithUV(x + 0, y + 0, 0, (u + 0.0F) * uScale, (v + 0.0F) * vScale);
                 tessellator.draw();
@@ -165,7 +162,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         }
 
         private void renderItemIntoGUIBlock(FontRenderer fontRenderer, TextureManager texManager, ItemStack itemStack,
-            int x, int y, boolean renderEffect) {
+                int x, int y, boolean renderEffect) {
             texManager.bindTexture(TextureMap.locationBlocksTexture);
             Block block = Block.getBlockFromItem(itemStack.getItem());
 
@@ -186,8 +183,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             GL11.glRotatef(210, 1, 0, 0);
             GL11.glRotatef(45, 0, 1, 0);
 
-            int color = itemStack.getItem()
-                .getColorFromItemStack(itemStack, 0);
+            int color = itemStack.getItem().getColorFromItemStack(itemStack, 0);
             float r = (float) (color >> 16 & 255) / 255.0F;
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
@@ -232,8 +228,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         if (tileDrawers.isShrouded() || tileDrawers.isSealed()) return;
 
         float depth;
-        Block block = tile.getWorldObj()
-            .getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
+        Block block = tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
         if (block instanceof BlockDrawers) {
             depth = ((BlockDrawers) block).halfDepth ? .5f : 1;
         } else {
@@ -246,8 +241,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         itemRenderer.setRenderManager(RenderManager.instance);
 
         ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
-        int ambLight = tile.getWorldObj()
-            .getLightBrightnessForSkyBlocks(
+        int ambLight = tile.getWorldObj().getLightBrightnessForSkyBlocks(
                 tile.xCoord + side.offsetX,
                 tile.yCoord + side.offsetY,
                 tile.zCoord + side.offsetZ,
@@ -257,8 +251,8 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lu, lv);
 
         brightness = tile.getWorldObj()
-            .getLightBrightness(tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ)
-            * 1.25f;
+                .getLightBrightness(tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ)
+                * 1.25f;
         if (brightness > 1) brightness = 1;
 
         Minecraft mc = Minecraft.getMinecraft();
@@ -425,18 +419,17 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         }
 
         renderText(
-            CountFormatter.format(this.func_147498_b(), tile.getDrawer(slot)),
-            side,
-            offsetX,
-            offsetY,
-            1f - depth + block.getTrimDepth() - 0.005f,
-            alpha);
+                CountFormatter.format(this.func_147498_b(), tile.getDrawer(slot)),
+                side,
+                offsetX,
+                offsetY,
+                1f - depth + block.getTrimDepth() - 0.005f,
+                alpha);
     }
 
     private void renderText(String renderString, ForgeDirection side, float offsetX, float offsetY, float offsetZ,
-        float alpha) {
-        int stringWidth = this.func_147498_b()
-            .getStringWidth(renderString);
+            float alpha) {
+        int stringWidth = this.func_147498_b().getStringWidth(renderString);
 
         GL11.glPushMatrix();
 
@@ -448,7 +441,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         this.func_147498_b()
-            .drawString(renderString, -stringWidth / 2, 0, (int) (255 * alpha) << 24 | 255 << 16 | 255 << 8 | 255);
+                .drawString(renderString, -stringWidth / 2, 0, (int) (255 * alpha) << 24 | 255 << 16 | 255 << 8 | 255);
 
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
@@ -457,7 +450,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     }
 
     private void renderFancyItem(ItemStack itemStack, TileEntityDrawers tile, int slot, ForgeDirection side,
-        float depth) {
+            float depth) {
         int drawerCount = tile.getDrawerCount();
         boolean isBlockType = isItemBlockType(itemStack);
 
@@ -530,12 +523,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     }
 
     private void renderFastItem(ItemStack itemStack, TileEntityDrawers tile, int slot, ForgeDirection side, float depth,
-        float partialTickTime) {
+            float partialTickTime) {
         boolean skipRenderHook = false;
         Block itemBlock = Block.getBlockFromItem(itemStack.getItem());
         if (itemBlock != null) {
-            String itemBlockName = GameData.getBlockRegistry()
-                .getNameForObject(itemBlock);
+            String itemBlockName = GameData.getBlockRegistry().getNameForObject(itemBlock);
             if (itemBlockName != null && itemBlockName.equals("Mariculture:tanks")) skipRenderHook = true;
         }
 
@@ -551,15 +543,14 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         alignRendering(side);
         moveRendering(
-            size,
-            getOffsetXForSide(side, xunit) * 16 - (8 * size),
-            12.25f - yunit,
-            1f - depth + block.getTrimDepth() - .005f);
+                size,
+                getOffsetXForSide(side, xunit) * 16 - (8 * size),
+                12.25f - yunit,
+                1f - depth + block.getTrimDepth() - .005f);
 
         List<IRenderLabel> renderHandlers = StorageDrawers.renderRegistry.getRenderHandlers();
         for (int i = 0, n = renderHandlers.size(); i < n; i++) {
-            renderHandlers.get(i)
-                .render(tile, tile, slot, brightness, partialTickTime);
+            renderHandlers.get(i).render(tile, tile, slot, brightness, partialTickTime);
         }
 
         GL11.glPushMatrix();
@@ -580,8 +571,8 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glDisable(GL11.GL_NORMALIZE);
 
         try {
-            if (skipRenderHook
-                || !ForgeHooksClient.renderInventoryItem(this.renderBlocks, mc.renderEngine, itemStack, true, 0, 0, 0))
+            if (skipRenderHook || !ForgeHooksClient
+                    .renderInventoryItem(this.renderBlocks, mc.renderEngine, itemStack, true, 0, 0, 0))
                 itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, 0, 0, true);
         } catch (Exception e) {}
 
@@ -590,9 +581,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
     private boolean isItemBlockType(ItemStack itemStack) {
         return itemStack.getItemSpriteNumber() == 0 && itemStack.getItem() instanceof ItemBlock
-            && RenderBlocks.renderItemIn3d(
-                Block.getBlockFromItem(itemStack.getItem())
-                    .getRenderType());
+                && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(itemStack.getItem()).getRenderType());
     }
 
     private float getXOffset(int drawerCount, int slot) {

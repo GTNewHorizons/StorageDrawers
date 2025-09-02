@@ -30,8 +30,8 @@ public class BlockRegistry {
         }
 
         uniq.register(
-            UniqueMetaIdentifier.createFor(plankBlock, plankMeta),
-            UniqueMetaIdentifier.createFor(block, meta));
+                UniqueMetaIdentifier.createFor(plankBlock, plankMeta),
+                UniqueMetaIdentifier.createFor(block, meta));
 
         UniqueMetaRegistry<UniqueMetaIdentifier> blockReg = invertRegistry.get(config);
         if (blockReg == null) {
@@ -40,8 +40,8 @@ public class BlockRegistry {
         }
 
         blockReg.register(
-            UniqueMetaIdentifier.createFor(block, meta),
-            UniqueMetaIdentifier.createFor(plankBlock, plankMeta));
+                UniqueMetaIdentifier.createFor(block, meta),
+                UniqueMetaIdentifier.createFor(plankBlock, plankMeta));
     }
 
     public Block getBlock(BlockConfiguration config, Block plankBlock, int plankMeta) {
@@ -61,7 +61,7 @@ public class BlockRegistry {
     }
 
     private Block blockLookup(Map<BlockConfiguration, UniqueMetaRegistry<UniqueMetaIdentifier>> reg,
-        BlockConfiguration config, Block block, int meta) {
+            BlockConfiguration config, Block block, int meta) {
         UniqueMetaRegistry<UniqueMetaIdentifier> uniq = reg.get(config);
         if (uniq == null) return null;
 
@@ -72,7 +72,7 @@ public class BlockRegistry {
     }
 
     private int metaLookup(Map<BlockConfiguration, UniqueMetaRegistry<UniqueMetaIdentifier>> reg,
-        BlockConfiguration config, Block block, int meta) {
+            BlockConfiguration config, Block block, int meta) {
         UniqueMetaRegistry<UniqueMetaIdentifier> uniq = reg.get(config);
         if (uniq == null) return 0;
 

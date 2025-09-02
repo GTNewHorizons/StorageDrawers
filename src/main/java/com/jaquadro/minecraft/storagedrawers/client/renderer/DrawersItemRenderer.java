@@ -59,13 +59,10 @@ public class DrawersItemRenderer implements IItemRenderer {
         if (block instanceof BlockDrawersCustom) renderCustomBlock(block, item, renderer);
         else renderBaseBlock(block, item, renderer);
 
-        if (item.hasTagCompound() && item.getTagCompound()
-            .hasKey("tile")) {
+        if (item.hasTagCompound() && item.getTagCompound().hasKey("tile")) {
             double depth = block.halfDepth ? .5 : 1;
-            RenderHelper.instances.get()
-                .setRenderBounds(1 - depth - .005, 0, 0, 1, 1, 1);
-            RenderHelper.instances.get()
-                .renderFace(side, null, block, block.getTapeIcon(), 1, 1, 1);
+            RenderHelper.instances.get().setRenderBounds(1 - depth - .005, 0, 0, 1, 1, 1);
+            RenderHelper.instances.get().renderFace(side, null, block, block.getTapeIcon(), 1, 1, 1);
         }
 
         if (renderType == ItemRenderType.INVENTORY || renderType == ItemRenderType.ENTITY)
@@ -76,7 +73,7 @@ public class DrawersItemRenderer implements IItemRenderer {
         int side = 4;
 
         RenderHelper.instances.get().state
-            .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZPOS][side]);
+                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZPOS][side]);
 
         boxRenderer.setUnit(block.getTrimWidth());
         boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
@@ -109,12 +106,9 @@ public class DrawersItemRenderer implements IItemRenderer {
         if (materialTrim == null) materialTrim = materialSide;
         if (materialFront == null) materialFront = materialSide;
 
-        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem())
-            .getIcon(4, materialTrim.getItemDamage());
-        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem())
-            .getIcon(4, materialSide.getItemDamage());
-        IIcon frontIcon = Block.getBlockFromItem(materialFront.getItem())
-            .getIcon(4, materialFront.getItemDamage());
+        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem()).getIcon(4, materialTrim.getItemDamage());
+        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem()).getIcon(4, materialSide.getItemDamage());
+        IIcon frontIcon = Block.getBlockFromItem(materialFront.getItem()).getIcon(4, materialFront.getItemDamage());
 
         if (trimIcon == null) trimIcon = custom.getDefaultTrimIcon();
         if (panelIcon == null) panelIcon = custom.getDefaultFaceIcon();
@@ -156,19 +150,19 @@ public class DrawersItemRenderer implements IItemRenderer {
         }
 
         boxRenderer.renderExterior(
-            renderer.blockAccess,
-            block,
-            x,
-            y,
-            z,
-            xMin,
-            0,
-            zMin,
-            xMax,
-            1,
-            zMax,
-            0,
-            ModularBoxRenderer.sideCut[side]);
+                renderer.blockAccess,
+                block,
+                x,
+                y,
+                z,
+                xMin,
+                0,
+                zMin,
+                xMax,
+                1,
+                zMax,
+                0,
+                ModularBoxRenderer.sideCut[side]);
     }
 
     private void renderInterior(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer) {
@@ -204,19 +198,19 @@ public class DrawersItemRenderer implements IItemRenderer {
         }
 
         boxRenderer.renderInterior(
-            renderer.blockAccess,
-            block,
-            x,
-            y,
-            z,
-            xMin,
-            unit,
-            zMin,
-            xMax,
-            1 - unit,
-            zMax,
-            0,
-            ModularBoxRenderer.sideCut[side]);
+                renderer.blockAccess,
+                block,
+                x,
+                y,
+                z,
+                xMin,
+                unit,
+                zMin,
+                xMax,
+                1 - unit,
+                zMax,
+                0,
+                ModularBoxRenderer.sideCut[side]);
     }
 
     private RenderBlocks getRenderer(Object[] data) {

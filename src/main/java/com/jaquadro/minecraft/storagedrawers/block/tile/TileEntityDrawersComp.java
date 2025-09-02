@@ -156,17 +156,17 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         ItemStack uTier1 = findHigherTier(stack);
         if (uTier1 != null) {
             if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.INFO,
-                "Picked candidate " + uTier1.toString() + " with conv=" + lookupSizeResult);
+                    StorageDrawers.MOD_ID,
+                    Level.INFO,
+                    "Picked candidate " + uTier1.toString() + " with conv=" + lookupSizeResult);
 
             int uCount1 = lookupSizeResult;
             ItemStack uTier2 = findHigherTier(uTier1);
             if (uTier2 != null) {
                 if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                    StorageDrawers.MOD_ID,
-                    Level.INFO,
-                    "Picked candidate " + uTier2.toString() + " with conv=" + lookupSizeResult);
+                        StorageDrawers.MOD_ID,
+                        Level.INFO,
+                        "Picked candidate " + uTier2.toString() + " with conv=" + lookupSizeResult);
 
                 populateSlot(index++, uTier2, lookupSizeResult * uCount1);
             }
@@ -181,9 +181,9 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         ItemStack lTier1 = findLowerTier(stack);
         if (lTier1 != null) {
             if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.INFO,
-                "Picked candidate " + lTier1.toString() + " with conv=" + lookupSizeResult);
+                    StorageDrawers.MOD_ID,
+                    Level.INFO,
+                    "Picked candidate " + lTier1.toString() + " with conv=" + lookupSizeResult);
 
             populateSlot(index++, lTier1, 1);
             for (int i = 0; i < index - 1; i++) convRate[i] *= lookupSizeResult;
@@ -194,9 +194,9 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         ItemStack lTier2 = findLowerTier(lTier1);
         if (lTier2 != null) {
             if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.INFO,
-                "Picked candidate " + lTier2.toString() + " with conv=" + lookupSizeResult);
+                    StorageDrawers.MOD_ID,
+                    Level.INFO,
+                    "Picked candidate " + lTier2.toString() + " with conv=" + lookupSizeResult);
 
             populateSlot(index++, lTier2, 1);
             for (int i = 0; i < index - 1; i++) convRate[i] *= lookupSizeResult;
@@ -219,9 +219,9 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         CompTierRegistry.Record record = StorageDrawers.compRegistry.findHigherTier(stack);
         if (record != null) {
             if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.INFO,
-                "Found " + record.upper.toString() + " in registry with conv=" + record.convRate);
+                    StorageDrawers.MOD_ID,
+                    Level.INFO,
+                    "Found " + record.upper.toString() + " in registry with conv=" + record.convRate);
 
             lookupSizeResult = record.convRate;
             return record.upper;
@@ -254,15 +254,15 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
                     candidates.add(match);
                     if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                        StorageDrawers.MOD_ID,
-                        Level.INFO,
-                        "Found ascending candidate for " + stack.toString()
-                            + ": "
-                            + match.toString()
-                            + " size="
-                            + lookupSizeResult
-                            + ", inverse="
-                            + comp.toString());
+                            StorageDrawers.MOD_ID,
+                            Level.INFO,
+                            "Found ascending candidate for " + stack.toString()
+                                    + ": "
+                                    + match.toString()
+                                    + " size="
+                                    + lookupSizeResult
+                                    + ", inverse="
+                                    + comp.toString());
 
                     break;
                 }
@@ -306,9 +306,9 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         CompTierRegistry.Record record = StorageDrawers.compRegistry.findLowerTier(stack);
         if (record != null) {
             if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.INFO,
-                "Found " + record.lower.toString() + " in registry with conv=" + record.convRate);
+                    StorageDrawers.MOD_ID,
+                    Level.INFO,
+                    "Found " + record.lower.toString() + " in registry with conv=" + record.convRate);
 
             lookupSizeResult = record.convRate;
             return record.lower;
@@ -354,20 +354,20 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
                         candidatesRate.put(match, lookupSizeResult);
 
                         if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
+                                StorageDrawers.MOD_ID,
+                                Level.INFO,
+                                "Found descending candidate for " + stack.toString()
+                                        + ": "
+                                        + match.toString()
+                                        + " size="
+                                        + lookupSizeResult
+                                        + ", inverse="
+                                        + comp.toString());
+                    } else if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
                             StorageDrawers.MOD_ID,
                             Level.INFO,
-                            "Found descending candidate for " + stack.toString()
-                                + ": "
-                                + match.toString()
-                                + " size="
-                                + lookupSizeResult
-                                + ", inverse="
-                                + comp.toString());
-                    } else if (!worldObj.isRemote && StorageDrawers.config.cache.debugTrace) FMLLog.log(
-                        StorageDrawers.MOD_ID,
-                        Level.INFO,
-                        "Back-check failed for " + match
-                            .toString() + " size=" + lookupSizeResult + ", inverse=" + comp.toString());
+                            "Back-check failed for " + match
+                                    .toString() + " size=" + lookupSizeResult + ", inverse=" + comp.toString());
                 }
             }
         }
@@ -392,13 +392,11 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
     }
 
     private ItemStack findMatchingModCandidate(ItemStack reference, List<ItemStack> candidates) {
-        String referenceName = GameData.getItemRegistry()
-            .getNameForObject(reference.getItem());
+        String referenceName = GameData.getItemRegistry().getNameForObject(reference.getItem());
         if (referenceName != null) {
             GameRegistry.UniqueIdentifier referneceID = new GameRegistry.UniqueIdentifier(referenceName);
             for (ItemStack candidate : candidates) {
-                String matchName = GameData.getItemRegistry()
-                    .getNameForObject(candidate.getItem());
+                String matchName = GameData.getItemRegistry().getNameForObject(candidate.getItem());
                 if (matchName != null) {
                     GameRegistry.UniqueIdentifier matchID = new GameRegistry.UniqueIdentifier(matchName);
                     if (referneceID.modId.equals(matchID.modId)) return candidate;
@@ -575,8 +573,8 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
                 return Integer.MAX_VALUE / convRate[slot];
             }
 
-            return protoStack[0].getItem()
-                .getItemStackLimit(protoStack[0]) * getStackCapacity(0) * getConversionRate(slot);
+            return protoStack[0].getItem().getItemStackLimit(protoStack[0]) * getStackCapacity(0)
+                    * getConversionRate(slot);
         }
 
         @Override
@@ -588,8 +586,8 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
                 return Integer.MAX_VALUE / convRate[slot];
             }
 
-            if (convRate == null || protoStack[0] == null || convRate[0] == 0) return itemPrototype.getItem()
-                .getItemStackLimit(itemPrototype) * getBaseStackCapacity();
+            if (convRate == null || protoStack[0] == null || convRate[0] == 0)
+                return itemPrototype.getItem().getItemStackLimit(itemPrototype) * getBaseStackCapacity();
 
             if (BaseDrawerData.areItemsEqual(protoStack[slot], itemPrototype)) return getMaxCapacity(slot);
 
@@ -607,8 +605,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         public int getStoredItemStackSize(int slot) {
             if (protoStack[slot] == null || convRate == null || convRate[slot] == 0) return 0;
 
-            return protoStack[slot].getItem()
-                .getItemStackLimit(protoStack[slot]);
+            return protoStack[slot].getItem().getItemStackLimit(protoStack[slot]);
         }
 
         @Override
@@ -723,7 +720,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         private int getBaseStackCapacity() {
             ConfigManager config = StorageDrawers.config;
             return TileEntityDrawersComp.this.getEffectiveStorageMultiplier()
-                * TileEntityDrawersComp.this.getDrawerCapacity();
+                    * TileEntityDrawersComp.this.getDrawerCapacity();
         }
 
         public void markAmountDirty() {
@@ -731,11 +728,11 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
             IMessage message = new CountUpdateMessage(xCoord, yCoord, zCoord, 0, pooledCount);
             NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(
-                getWorldObj().provider.dimensionId,
-                xCoord,
-                yCoord,
-                zCoord,
-                500);
+                    getWorldObj().provider.dimensionId,
+                    xCoord,
+                    yCoord,
+                    zCoord,
+                    500);
 
             StorageDrawers.network.sendToAllAround(message, targetPoint);
         }

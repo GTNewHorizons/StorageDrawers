@@ -36,8 +36,9 @@ public class CommonDrawerRenderer {
         if (world != null) renderHelper.setColorAndBrightness(world, block, x, y, z);
 
         renderHelper.state.setRotateTransform(RenderHelper.ZNEG, direction);
-        renderHelper.state
-            .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][direction]);
+        renderHelper.state.setUVRotation(
+                RenderHelper.YPOS,
+                RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][direction]);
 
         return renderHelper;
     }
@@ -50,7 +51,7 @@ public class CommonDrawerRenderer {
     }
 
     public void renderBasePass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
-        IIcon iconSide, IIcon iconTrim, IIcon iconFront) {
+            IIcon iconSide, IIcon iconTrim, IIcon iconFront) {
         RenderHelper renderHelper = start(world, x, y, z, block, direction);
 
         panelRenderer.setTrimIcon(iconTrim);
@@ -103,7 +104,7 @@ public class CommonDrawerRenderer {
     }
 
     public void renderOverlayPass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
-        IIcon iconTrim, IIcon iconFront) {
+            IIcon iconTrim, IIcon iconFront) {
         RenderHelper renderHelper = start(world, x, y, z, block, direction);
 
         IIcon trimShadow = block.getTrimShadowOverlay(iconTrim == iconFront);
@@ -153,8 +154,7 @@ public class CommonDrawerRenderer {
             renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
             renderHelper.setRenderBounds(unit7, unit7, depth + trimDepth, unit9, unit9, 1);
             renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
-        } else RenderHelper.instances.get()
-            .renderEmptyPlane(x, y, z);
+        } else RenderHelper.instances.get().renderEmptyPlane(x, y, z);
 
         end();
     }

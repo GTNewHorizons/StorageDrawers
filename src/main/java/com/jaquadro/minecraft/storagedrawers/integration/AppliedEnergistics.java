@@ -44,7 +44,7 @@ public class AppliedEnergistics extends IntegrationModule {
 
         @Override
         public IMEMonitor<IAEItemStack> createStorageBusMonitor(IMEInventory<IAEItemStack> inventory,
-            BaseActionSource src) {
+                BaseActionSource src) {
             try {
                 Object adaptor = constMEAdaptor.newInstance(inventory, src);
                 Object monitor = constMonitor.newInstance(adaptor);
@@ -60,7 +60,7 @@ public class AppliedEnergistics extends IntegrationModule {
 
         @Override
         public IMEMonitor<IAEItemStack> createStorageBusMonitor(IMEInventory<IAEItemStack> inventory,
-            BaseActionSource src) {
+                BaseActionSource src) {
             return null;
         }
     }
@@ -80,7 +80,7 @@ public class AppliedEnergistics extends IntegrationModule {
 
         ShapelessRecipeHandler shapelessHandler = new ShapelessRecipeHandler();
         if (shapelessHandler.isValid()) StorageDrawers.recipeHandlerRegistry
-            .registerRecipeHandler(shapelessHandler.getRecipeClass(), shapelessHandler);
+                .registerRecipeHandler(shapelessHandler.getRecipeClass(), shapelessHandler);
 
         StorageDrawers.recipeHandlerRegistry.registerIngredientHandler(IIngredient.class, new IngredientHandler());
 
@@ -92,9 +92,7 @@ public class AppliedEnergistics extends IntegrationModule {
 
     @Override
     public void postInit() {
-        AEApi.instance()
-            .registries()
-            .externalStorage()
-            .addExternalStorageInterface(new DrawerExternalStorageHandler(factory));
+        AEApi.instance().registries().externalStorage()
+                .addExternalStorageInterface(new DrawerExternalStorageHandler(factory));
     }
 }

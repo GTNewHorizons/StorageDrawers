@@ -45,14 +45,12 @@ public class ItemMetaListRegistry<E> {
     }
 
     public void clear(Item item) {
-        for (Map.Entry<Integer, List<E>> map : registry.entrySet(item)) map.getValue()
-            .clear();
+        for (Map.Entry<Integer, List<E>> map : registry.entrySet(item)) map.getValue().clear();
     }
 
     public void clear() {
         for (Map.Entry<Item, Map<Integer, List<E>>> map : registry.entrySet()) {
-            for (List<E> list : map.getValue()
-                .values()) list.clear();
+            for (List<E> list : map.getValue().values()) list.clear();
         }
     }
 

@@ -24,14 +24,14 @@ public class TrimCustomRenderer implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
-        RenderBlocks renderer) {
+            RenderBlocks renderer) {
         if (!(block instanceof BlockTrimCustom)) return false;
 
         return renderWorldBlock(world, x, y, z, (BlockTrimCustom) block, modelId, renderer);
     }
 
     private boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, BlockTrimCustom block, int modelId,
-        RenderBlocks renderer) {
+            RenderBlocks renderer) {
         TileEntityTrim tile = block.getTileEntity(world, x, y, z);
         if (tile == null) return false;
 
@@ -41,10 +41,8 @@ public class TrimCustomRenderer implements ISimpleBlockRenderingHandler {
         ItemStack materialTrim = tile.getMaterialTrim();
         if (materialTrim == null) materialTrim = materialSide;
 
-        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem())
-            .getIcon(4, materialTrim.getItemDamage());
-        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem())
-            .getIcon(4, materialSide.getItemDamage());
+        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem()).getIcon(4, materialTrim.getItemDamage());
+        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem()).getIcon(4, materialSide.getItemDamage());
 
         if (trimIcon == null) trimIcon = block.getDefaultTrimIcon();
         if (panelIcon == null) panelIcon = block.getDefaultFaceIcon();

@@ -113,8 +113,7 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
         if (storageProvider.isStorageUnlimited(slot) || storageProvider.isVendingUnlimited(slot))
             return Integer.MAX_VALUE;
 
-        return itemPrototype.getItem()
-            .getItemStackLimit(itemPrototype) * storageProvider.getSlotStackCapacity(slot);
+        return itemPrototype.getItem().getItemStackLimit(itemPrototype) * storageProvider.getSlotStackCapacity(slot);
     }
 
     @Override
@@ -130,8 +129,7 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
     public int getStoredItemStackSize() {
         if (protoStack.getItem() == null) return 0;
 
-        return protoStack.getItem()
-            .getItemStackLimit(protoStack);
+        return protoStack.getItem().getItemStackLimit(protoStack);
     }
 
     @Override
