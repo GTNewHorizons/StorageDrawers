@@ -376,12 +376,14 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
                     if (locked) {
                         int slot = getDrawerSlot(side, hitX, hitY, hitZ);
                         IDrawer drawer = tileDrawers.getDrawer(slot);
-                        ItemStack stack = drawer.getStoredItemPrototype();
-                        int count = drawer.getStoredItemCount();
+                        if (drawer != null) {
+                            ItemStack stack = drawer.getStoredItemPrototype();
+                            int count = drawer.getStoredItemCount();
 
-                        if (stack != null && count == 0) {
-                            drawer.setStoredItemRedir(null, 0);
-                            return true;
+                            if (stack != null && count == 0) {
+                                drawer.setStoredItemRedir(null, 0);
+                                return true;
+                            }
                         }
                     }
                     tileDrawers.setLocked(LockAttribute.LOCK_POPULATED, !locked);
@@ -424,10 +426,12 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         int slot = getDrawerSlot(side, hitX, hitY, hitZ);
         IDrawer drawer = tileDrawers.getDrawer(slot);
-        ItemStack currentStack = drawer.getStoredItemPrototype();
+        if (drawer != null) {
+            ItemStack currentStack = drawer.getStoredItemPrototype();
 
-        int countAdded = tileDrawers.interactPutItemsIntoSlot(slot, player);
-        if (countAdded > 0 && currentStack != null) world.markBlockForUpdate(x, y, z);
+            int countAdded = tileDrawers.interactPutItemsIntoSlot(slot, player);
+            if (countAdded > 0 && currentStack != null) world.markBlockForUpdate(x, y, z);
+        }
 
         return true;
     }
@@ -504,6 +508,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         int slot = getDrawerSlot(side, hitX, hitY, hitZ);
         IDrawer drawer = tileDrawers.getDrawer(slot);
+        if (drawer == null) return;
 
         final ItemStack item;
         // if invertSHift is true this will happen when the player is not shifting

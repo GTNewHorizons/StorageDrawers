@@ -38,6 +38,8 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
+import javax.annotation.Nullable;
+
 public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawerGroupInteractive, ISidedInventory,
         IUpgradeProvider, ILockable, ISealable, IProtectable, IDowngradable {
 
@@ -857,6 +859,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     }
 
     @Override
+    @Nullable
     public IDrawer getDrawer(int slot) {
         if (slot < 0 || slot >= drawers.length) return null;
 
