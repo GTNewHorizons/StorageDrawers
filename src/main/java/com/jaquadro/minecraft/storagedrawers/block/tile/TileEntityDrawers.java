@@ -3,6 +3,8 @@ package com.jaquadro.minecraft.storagedrawers.block.tile;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -857,6 +859,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     }
 
     @Override
+    @Nullable
     public IDrawer getDrawer(int slot) {
         if (slot < 0 || slot >= drawers.length) return null;
 
