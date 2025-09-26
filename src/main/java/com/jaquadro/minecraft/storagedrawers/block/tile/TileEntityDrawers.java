@@ -3,6 +3,8 @@ package com.jaquadro.minecraft.storagedrawers.block.tile;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -37,8 +39,6 @@ import com.jaquadro.minecraft.storagedrawers.storage.IUpgradeProvider;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-
-import javax.annotation.Nullable;
 
 public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawerGroupInteractive, ISidedInventory,
         IUpgradeProvider, ILockable, ISealable, IProtectable, IDowngradable {
