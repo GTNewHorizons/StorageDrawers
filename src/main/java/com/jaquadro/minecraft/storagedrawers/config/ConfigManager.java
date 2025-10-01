@@ -83,6 +83,7 @@ public class ConfigManager {
         public boolean enableThermalFoundationIntegration;
         public boolean enableChiselIntegration;
         public boolean enableGTNHIntegration;
+        public boolean enableBackhandIntegration;
         public boolean autoEnablePacks;
         public boolean enableNaturaPack;
         public boolean enableBopPack;
@@ -186,6 +187,11 @@ public class ConfigManager {
         @Override
         public boolean isGTNHEnabled() {
             return cache.enableGTNHIntegration;
+        }
+
+        @Override
+        public boolean isBackhandEnabled() {
+            return cache.enableBackhandIntegration;
         }
     }
 
@@ -425,6 +431,8 @@ public class ConfigManager {
                 .setLanguageKey(LANG_PREFIX + "integration.enableChisel").setRequiresMcRestart(true).getBoolean();
         cache.enableGTNHIntegration = config.get(sectionIntegration.getQualifiedName(), "enableGTNH", true)
                 .setLanguageKey(LANG_PREFIX + "integration.enableGTNH").setRequiresMcRestart(true).getBoolean();
+        cache.enableBackhandIntegration = config.get(sectionIntegration.getQualifiedName(), "enableBackhand", true)
+                .setLanguageKey(LANG_PREFIX + "integration.enableBackhand").setRequiresMcRestart(true).getBoolean();
 
         cache.autoEnablePacks = config.get(
                 sectionPacks.getQualifiedName(),
