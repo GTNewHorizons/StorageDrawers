@@ -24,12 +24,10 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
-import com.jaquadro.minecraft.storagedrawers.integration.BackhandIntegrationModule;
 import com.jaquadro.minecraft.storagedrawers.item.ItemPersonalKey;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import xonin.backhand.api.core.BackhandUtils;
 
 public class BlockController extends BlockContainer implements INetworked {
 
@@ -123,10 +121,6 @@ public class BlockController extends BlockContainer implements INetworked {
             float hitY, float hitZ) {
         TileEntityController te = getTileEntitySafe(world, x, y, z);
         ItemStack item = player.inventory.getCurrentItem();
-
-        if (BackhandIntegrationModule.isEnabled() && BackhandUtils.getOffhandItem(player) != null && item == null) {
-            if ((BackhandUtils.useOffhandItem(player, () -> true))) return false;
-        }
 
         if (item != null && item.getItem() != null) {
             if (item.getItem() == ModItems.shroudKey) {
