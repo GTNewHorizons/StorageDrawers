@@ -338,10 +338,6 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         TileEntityDrawers tileDrawers = getTileEntitySafe(world, x, y, z);
         ItemStack item = player.inventory.getCurrentItem();
 
-        if (BackhandIntegrationModule.isEnabled() && BackhandUtils.getOffhandItem(player) != null && item == null) {
-            if ((BackhandUtils.useOffhandItem(player, () -> true))) return false;
-        }
-
         if (!SecurityManager.hasAccess(player.getGameProfile(), tileDrawers)) return false;
 
         if (StorageDrawers.config.cache.debugTrace) {
