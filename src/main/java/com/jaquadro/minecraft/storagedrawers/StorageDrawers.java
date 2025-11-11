@@ -40,7 +40,7 @@ import cpw.mods.fml.relauncher.Side;
         modid = StorageDrawers.MOD_ID,
         name = StorageDrawers.MOD_NAME,
         version = StorageDrawers.MOD_VERSION,
-        dependencies = "after:waila;",
+        dependencies = "after:waila;required-after:gtnhlib;",
         guiFactory = StorageDrawers.SOURCE_PATH + "core.ModGuiFactory")
 public class StorageDrawers {
 

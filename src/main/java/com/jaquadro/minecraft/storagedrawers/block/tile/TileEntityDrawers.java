@@ -15,9 +15,19 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.capability.CapabilityProvider;
+import com.gtnewhorizon.gtnhlib.capability.item.ItemIO;
+import com.gtnewhorizon.gtnhlib.capability.item.ItemSink;
+import com.gtnewhorizon.gtnhlib.capability.item.ItemSource;
+import com.gtnewhorizon.gtnhlib.item.AbstractInventoryIterator;
+import com.gtnewhorizon.gtnhlib.item.ImmutableItemStack;
+import com.gtnewhorizon.gtnhlib.item.InventoryIterator;
+import com.gtnewhorizon.gtnhlib.item.SimpleItemIO;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.inventory.IDrawerInventory;
 import com.jaquadro.minecraft.storagedrawers.api.security.ISecurityProvider;
@@ -39,9 +49,10 @@ import com.jaquadro.minecraft.storagedrawers.storage.IUpgradeProvider;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import it.unimi.dsi.fastutil.ints.IntIterators;
 
 public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawerGroupInteractive, ISidedInventory,
-        IUpgradeProvider, ILockable, ISealable, IProtectable, IDowngradable {
+        IUpgradeProvider, ILockable, ISealable, IProtectable, IDowngradable, CapabilityProvider {
 
     private IDrawer[] drawers;
     private IDrawerInventory inventory;
@@ -975,6 +986,83 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         @Override
         public int[] getSlotsForSide(int side) {
             return autoSides;
+        }
+    }
+
+    private DrawerItemIO io;
+
+    @Override
+    public <T> @Nullable T getCapability(@NotNull Class<T> capability, @NotNull ForgeDirection side) {
+        if (capability == ItemSource.class || capability == ItemSink.class || capability == ItemIO.class) {
+            if (io == null) io = new DrawerItemIO();
+
+            return capability.cast(io);
+        }
+
+        return null;
+    }
+
+    private class DrawerItemIO extends SimpleItemIO {
+
+        private final int[] presentSlots = IntIterators.unwrap(IntIterators.fromTo(0, drawers.length));
+
+        @Override
+        protected @NotNull InventoryIterator iterator(int[] allowedSlots) {
+            return new AbstractInventoryIterator(presentSlots, allowedSlots) {
+
+                @Override
+                protected ItemStack getStackInSlot(int slot) {
+                    if (slot < 0 || slot >= drawers.length) return null;
+
+                    return drawers[slot].getStoredItemCopy();
+                }
+
+                @Override
+                public ItemStack extract(int amount, boolean forced) {
+                    int slot = getCurrentSlot();
+
+                    if (slot < 0 || slot >= drawers.length) return null;
+
+                    IDrawer drawer = drawers[slot];
+
+                    ItemStack stored = drawer.getStoredItemCopy();
+
+                    if (stored == null) return null;
+
+                    int toExtract = Math.min(stored.stackSize, amount);
+
+                    stored.stackSize = toExtract;
+                    drawer.setStoredItemCount(drawer.getStoredItemCount() - toExtract);
+
+                    return stored;
+                }
+
+                @Override
+                public int insert(ImmutableItemStack stack, boolean forced) {
+                    int slot = getCurrentSlot();
+
+                    if (slot < 0 || slot >= drawers.length) return stack.getStackSize();
+
+                    IDrawer drawer = drawers[slot];
+
+                    ItemStack insertExample = stack.toStackFast();
+
+                    if (!drawer.canItemBeStored(insertExample)) return stack.getStackSize();
+
+                    int capacity = forced ? Integer.MAX_VALUE : drawer.getMaxCapacity(insertExample);
+                    int remaining = capacity - drawer.getStoredItemCount();
+
+                    int toInsert = Math.min(remaining, stack.getStackSize());
+
+                    if (drawer.getStoredItemPrototype() == null) {
+                        drawer.setStoredItemRedir(stack.toStack(1), toInsert);
+                    } else {
+                        drawer.setStoredItemCount(drawer.getStoredItemCount() + toInsert);
+                    }
+
+                    return stack.getStackSize() - toInsert;
+                }
+            };
         }
     }
 }
