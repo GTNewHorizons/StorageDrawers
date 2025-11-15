@@ -32,6 +32,11 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
     }
 
     @Override
+    public boolean isVendingUnlimited() {
+        return storageProvider.isVendingUnlimited(slot);
+    }
+
+    @Override
     public ItemStack getStoredItemPrototype() {
         if (protoStack == nullStack) return null;
 
@@ -77,7 +82,7 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
 
     @Override
     public int getStoredItemCount() {
-        if (protoStack != nullStack && storageProvider.isVendingUnlimited(slot)) return Integer.MAX_VALUE;
+        if (protoStack != nullStack && isVendingUnlimited()) return Integer.MAX_VALUE;
 
         return count;
     }
@@ -88,7 +93,7 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
     }
 
     public void setStoredItemCount(int amount, boolean mark, boolean clearOnEmpty) {
-        if (storageProvider.isVendingUnlimited(slot)) return;
+        if (isVendingUnlimited()) return;
 
         count = amount;
         if (count > getMaxCapacity()) count = getMaxCapacity();

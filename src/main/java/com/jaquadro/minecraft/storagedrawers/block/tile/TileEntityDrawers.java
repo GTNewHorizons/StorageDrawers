@@ -28,6 +28,7 @@ import com.gtnewhorizon.gtnhlib.item.AbstractInventoryIterator;
 import com.gtnewhorizon.gtnhlib.item.ImmutableItemStack;
 import com.gtnewhorizon.gtnhlib.item.InventoryIterator;
 import com.gtnewhorizon.gtnhlib.item.SimpleItemIO;
+import com.gtnewhorizon.gtnhlib.util.ItemUtil;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.inventory.IDrawerInventory;
 import com.jaquadro.minecraft.storagedrawers.api.security.ISecurityProvider;
@@ -1044,6 +1045,10 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
                     if (slot < 0 || slot >= drawers.length) return stack.getStackSize();
 
                     IDrawer drawer = drawers[slot];
+
+                    if (drawer.isVendingUnlimited()
+                            && ItemUtil.areStacksEqual(stack.toStackFast(), drawer.getStoredItemPrototype()))
+                        return 0;
 
                     ItemStack insertExample = stack.toStackFast();
 
