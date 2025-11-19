@@ -43,6 +43,10 @@ public interface IDrawer {
      */
     IDrawer setStoredItemRedir(ItemStack itemPrototype, int amount);
 
+    default boolean isVendingUnlimited() {
+        return false;
+    }
+
     /**
      * Gets the number of items stored in this drawer.
      */
