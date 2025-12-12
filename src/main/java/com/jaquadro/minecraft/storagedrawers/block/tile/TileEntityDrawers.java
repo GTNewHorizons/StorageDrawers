@@ -1056,8 +1056,16 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
                     int capacity = forced ? Integer.MAX_VALUE : drawer.getMaxCapacity(insertExample);
                     int remaining = capacity - drawer.getStoredItemCount();
-
                     int toInsert = Math.min(remaining, stack.getStackSize());
+
+                    if (isVoid()) {
+                        if (drawer.getStoredItemPrototype() == null) {
+                            drawer.setStoredItemRedir(stack.toStack(1), toInsert);
+                        } else {
+                            drawer.setStoredItemCount(drawer.getStoredItemCount() + toInsert);
+                        }
+                        return 0;
+                    }
 
                     if (drawer.getStoredItemPrototype() == null) {
                         drawer.setStoredItemRedir(stack.toStack(1), toInsert);
