@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
@@ -17,9 +19,11 @@ public abstract class MixinPlayerControllerMP {
     @Shadow
     private float curBlockDamageMP;
 
-    @ModifyExpressionValue(
-            method = "clickBlock",
-            at = @At(value = "INVOKE", target = "Ltarget/Class;curBlockDamageMPZ"))
+    @Definition(
+            id = "curBlockDamageMP",
+            field = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;curBlockDamageMP:F")
+    @Expression("this.curBlockDamageMP == 0.0")
+    @ModifyExpressionValue(method = "clickBlock", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
 
     private boolean withClickOnDrawer(boolean original, @Local Minecraft mc, @Local int x, @Local int y, @Local int z,
             @Local int side) {
