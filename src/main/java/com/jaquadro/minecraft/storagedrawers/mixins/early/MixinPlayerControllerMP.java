@@ -6,34 +6,31 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
-import com.llamalad7.mixinextras.expression.Definition;
-import com.llamalad7.mixinextras.expression.Expression;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(PlayerControllerMP.class)
 public abstract class MixinPlayerControllerMP {
 
     @Shadow
-    private float curBlockDamageMP;
+    private Minecraft mc;
 
-    @Definition(
-            id = "curBlockDamageMP",
-            field = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;curBlockDamageMP:F")
-    @Expression("this.curBlockDamageMP == 0.0")
-    @ModifyExpressionValue(method = "clickBlock", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
-
-    private boolean withClickOnDrawer(boolean original, @Local Minecraft mc, @Local int x, @Local int y, @Local int z,
-            @Local int side) {
-        if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers) {
-            TileEntityDrawers ted = (TileEntityDrawers) mc.theWorld.getTileEntity(x, y, z);
+    @Inject(
+            method = "onPlayerDamageBlock",
+            at = @At(
+                    value = "INVOKE_ASSIGN",
+                    target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
+    private void mixin(int x, int y, int z, int side, CallbackInfo ci) { // cancels block break progress and fires a
+                                                                         // click
+        // block event on the TileEntityDrawer if applicable
+        if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted
+                && mc.theWorld.getBlock(x, y, z) instanceof BlockDrawers bd) {
             if (ted.getDirection() == side) {
-                curBlockDamageMP = 0.0F;
-                return true;
+                bd.onBlockClicked(mc.theWorld, x, y, z, mc.thePlayer);
             }
         }
-        return original;
     }
 }

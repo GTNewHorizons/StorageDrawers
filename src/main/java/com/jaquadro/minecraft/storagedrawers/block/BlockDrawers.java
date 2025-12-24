@@ -514,6 +514,9 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         }
 
         TileEntityDrawers tileDrawers = getTileEntitySafe(world, x, y, z);
+        tileDrawers.clickedOnPreviousTick = true;
+        Minecraft.getMinecraft().playerController.curBlockDamageMP = 0.0F;
+
         if (tileDrawers.getDirection() != side) return;
 
         if (tileDrawers.isSealed()) return;

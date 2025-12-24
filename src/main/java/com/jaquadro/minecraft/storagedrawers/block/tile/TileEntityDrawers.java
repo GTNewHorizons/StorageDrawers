@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -68,6 +69,10 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private boolean hideUpgrade = false;
     private boolean downgraded = false;
 
+    private int ticksClickedInARow = 10000;
+    private int itemsOutputInARow = 0;
+    public boolean clickedOnPreviousTick = false;
+
     private UUID owner;
     private String securityKey;
 
@@ -83,6 +88,17 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private ItemStack materialSide;
     private ItemStack materialFront;
     private ItemStack materialTrim;
+
+    @Override
+    public void updateEntity() {
+        if (clickedOnPreviousTick) {
+            ticksClickedInARow++;
+        } else {
+            ticksClickedInARow = 10000; // set high so that it always registers on first click!
+            itemsOutputInARow = 0;
+        }
+        clickedOnPreviousTick = false;
+    }
 
     protected TileEntityDrawers(int drawerCount) {
         initWithDrawerCount(drawerCount);
@@ -541,6 +557,20 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         ItemStack stack = getItemsFromSlot(slot, count);
         if (stack == null) return null;
 
+        int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
+
+        if (ticksClickedInARow < ticksConsecutiveClickRequirement) return null;
+
+        System.out.println(
+                "Reached tick goal of " + ticksConsecutiveClickRequirement
+                        + "and outputted "
+                        + itemsOutputInARow
+                        + " items. Current player block break progress is at "
+                        + Minecraft.getMinecraft().playerController.curBlockDamageMP);
+
+        ticksClickedInARow = 0;
+        itemsOutputInARow++;
+
         IDrawer drawer = drawers[slot];
         drawer.setStoredItemCount(drawer.getStoredItemCount() - stack.stackSize);
 
@@ -778,11 +808,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
             materialTrim.writeToNBT(itag);
             tag.setTag("MatT", itag);
         }
-    }
-
-    @Override
-    public boolean canUpdate() {
-        return false;
     }
 
     @Override

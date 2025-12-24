@@ -11,7 +11,7 @@ public enum Mixins implements IMixins {
 
     // You should declare all of your mixins early and late in this same enum
 
-    EXAMPLE(new MixinBuilder().setPhase(Phase.EARLY).addClientMixins("MixinPlayerControllerMP"));
+    MIXIN_PLAYER_CONTROLLER(new MixinBuilder().setPhase(Phase.EARLY).addClientMixins("MixinPlayerControllerMP"));
 
     private final MixinBuilder builder;
 
