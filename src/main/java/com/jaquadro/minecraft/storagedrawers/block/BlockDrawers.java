@@ -450,7 +450,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         return false;
     }
 
-    protected int getDrawerSlot(int side, float hitX, float hitY, float hitZ) {
+    public int getDrawerSlot(int side, float hitX, float hitY, float hitZ) {
         if (drawerCount == 1) return 0;
         if (drawerCount == 2) return hitTop(hitY) ? 0 : 1;
 
@@ -514,8 +514,6 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         }
 
         TileEntityDrawers tileDrawers = getTileEntitySafe(world, x, y, z);
-        tileDrawers.clickedOnPreviousTick = true;
-        Minecraft.getMinecraft().playerController.curBlockDamageMP = 0.0F;
 
         if (tileDrawers.getDirection() != side) return;
 
@@ -523,32 +521,32 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
 
         if (!SecurityManager.hasAccess(player.getGameProfile(), tileDrawers)) return;
 
-        int slot = getDrawerSlot(side, hitX, hitY, hitZ);
-        IDrawer drawer = tileDrawers.getDrawer(slot);
-        if (drawer == null) return;
-
-        final ItemStack item;
-        // if invertSHift is true this will happen when the player is not shifting
-        if (player.isSneaking() != invertShift)
-            item = tileDrawers.takeItemsFromSlot(slot, drawer.getStoredItemStackSize());
-        else item = tileDrawers.takeItemsFromSlot(slot, 1);
-
-        if (StorageDrawers.config.cache.debugTrace)
-            FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item);
-
-        if (item != null && item.stackSize > 0) {
-            if (!player.inventory.addItemStackToInventory(item)) {
-                ForgeDirection dir = ForgeDirection.getOrientation(side);
-                dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
-                world.markBlockForUpdate(x, y, z);
-            } else world.playSoundEffect(
-                    x + .5f,
-                    y + .5f,
-                    z + .5f,
-                    "random.pop",
-                    .2f,
-                    ((world.rand.nextFloat() - world.rand.nextFloat()) * .7f + 1) * 2);
-        }
+        // int slot = getDrawerSlot(side, hitX, hitY, hitZ);
+        // IDrawer drawer = tileDrawers.getDrawer(slot);
+        // if (drawer == null) return;
+        //
+        // final ItemStack item;
+        // // if invertSHift is true this will happen when the player is not shifting
+        // if (player.isSneaking() != invertShift)
+        // item = tileDrawers.takeItemsFromSlot(slot, drawer.getStoredItemStackSize());
+        // else item = tileDrawers.takeItemsFromSlot(slot, 1);
+        //
+        // if (StorageDrawers.config.cache.debugTrace)
+        // FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? " null item" : " " + item);
+        //
+        // if (item != null && item.stackSize > 0) {
+        // if (!player.inventory.addItemStackToInventory(item)) {
+        // ForgeDirection dir = ForgeDirection.getOrientation(side);
+        // dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
+        // world.markBlockForUpdate(x, y, z);
+        // } else world.playSoundEffect(
+        // x + .5f,
+        // y + .5f,
+        // z + .5f,
+        // "random.pop",
+        // .2f,
+        // ((world.rand.nextFloat() - world.rand.nextFloat()) * .7f + 1) * 2);
+        // }
     }
 
     @Override
@@ -586,7 +584,7 @@ public class BlockDrawers extends BlockContainer implements IExtendedBlockClickH
         return side.ordinal() != getTileEntity(world, x, y, z).getDirection();
     }
 
-    private void dropItemStack(World world, int x, int y, int z, ItemStack stack) {
+    public void dropItemStack(World world, int x, int y, int z, ItemStack stack) {
         EntityItem entity = new EntityItem(world, x + .5f, y + .5f, z + .5f, stack);
         entity.addVelocity(-entity.motionX, -entity.motionY, -entity.motionZ);
         world.spawnEntityInWorld(entity);

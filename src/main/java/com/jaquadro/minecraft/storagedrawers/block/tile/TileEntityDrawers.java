@@ -557,6 +557,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         ItemStack stack = getItemsFromSlot(slot, count);
         if (stack == null) return null;
 
+        clickedOnPreviousTick = true;
+        Minecraft.getMinecraft().playerController.curBlockDamageMP = 0.0F;
+
         int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
 
         if (ticksClickedInARow < ticksConsecutiveClickRequirement) return null;
