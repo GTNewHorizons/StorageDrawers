@@ -50,7 +50,6 @@ public abstract class MixinPlayerControllerMP {
                 boolean invertShift = StorageDrawers.config.cache.invertShift;
                 StorageDrawers.network
                         .sendToServer(new BlockClickMessage(x, y, z, side, hitX, hitY, hitZ, invertShift));
-                ted.onClick(bd, mc.thePlayer, x, y, z, side, mc.theWorld, hitX, hitY, hitZ, invertShift);
             }
         }
     }

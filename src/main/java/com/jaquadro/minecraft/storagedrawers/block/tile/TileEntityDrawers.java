@@ -394,8 +394,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         downgraded = state;
     }
 
-    public void onClick(BlockDrawers block, EntityPlayer player, int x, int y, int z, int face, World world, float hitX,
-            float hitY, float hitZ, boolean invertShift) {
+    public void onClick(EntityPlayer player, int x, int y, int z, int face, World world, float hitX, float hitY,
+            float hitZ, boolean invertShift) {
+        BlockDrawers block = (BlockDrawers) world.getBlock(x, y, z);
         int dir = getDirection();
         if (dir == face) {
             int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
