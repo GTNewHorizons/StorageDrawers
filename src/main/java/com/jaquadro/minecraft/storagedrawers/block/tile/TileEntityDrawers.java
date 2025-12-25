@@ -73,7 +73,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     private int ticksClickedInARow = 9;
     private int itemsOutputInARow = 0;
-    public boolean clickedOnPreviousTick = false;
+    private boolean clickedOnPreviousTick = false;
 
     private UUID owner;
     private String securityKey;
@@ -596,7 +596,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
         int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
 
-        if (ticksClickedInARow < ticksConsecutiveClickRequirement) return null;
+        if (ticksClickedInARow < ticksConsecutiveClickRequirement) return stack;
 
         ticksClickedInARow = 0;
         itemsOutputInARow++;
@@ -610,6 +610,23 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         }
 
         // TODO: Reset empty drawer in subclasses
+
+        return stack;
+    }
+
+    public ItemStack takeItemsFromSlotWithDestroy(int slot, int count) {
+        if (slot < 0 || slot >= getDrawerCount()) return null;
+
+        ItemStack stack = getItemsFromSlot(slot, count);
+        if (stack == null) return null;
+
+        IDrawer drawer = drawers[slot];
+        drawer.setStoredItemCount(drawer.getStoredItemCount() - stack.stackSize);
+
+        if (isRedstone() && worldObj != null) {
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, getBlockType());
+        }
 
         return stack;
     }

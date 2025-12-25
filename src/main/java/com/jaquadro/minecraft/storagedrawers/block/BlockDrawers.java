@@ -583,7 +583,7 @@ public class BlockDrawers extends BlockContainer implements INetworked, IExtende
         if (!drawer.isDrawerEnabled(drawerIndex)) return;
         IDrawer subDrawer = drawer.getDrawer(drawerIndex);
         while (subDrawer.getStoredItemCount() > 0) {
-            ItemStack stack = drawer.takeItemsFromSlot(drawerIndex, subDrawer.getStoredItemStackSize());
+            ItemStack stack = drawer.takeItemsFromSlotWithDestroy(drawerIndex, subDrawer.getStoredItemStackSize());
             if (stack == null || stack.stackSize == 0) break;
             action.accept(stack);
         }
