@@ -1,8 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers.mixins.early;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +31,25 @@ public abstract class MixinPlayerControllerMP {
         if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted
                 && mc.theWorld.getBlock(x, y, z) instanceof BlockDrawers bd) {
             if (ted.getDirection() == side) {
-                ted.onClick(bd, mc.thePlayer, x, y, z, side, mc.theWorld);
+                final int reach = 5;
+                double eyeX = mc.thePlayer.posX;
+                double eyeY = mc.thePlayer.posY + mc.thePlayer.getEyeHeight();
+                double eyeZ = mc.thePlayer.posZ;
+
+                Vec3 look = mc.thePlayer.getLookVec();
+
+                Vec3 end = Vec3.createVectorHelper(
+                        eyeX + look.xCoord * reach,
+                        eyeY + look.yCoord * reach,
+                        eyeZ + look.zCoord * reach);
+
+                MovingObjectPosition mop = mc.theWorld.rayTraceBlocks(Vec3.createVectorHelper(eyeX, eyeY, eyeZ), end);
+                float hitX = (float) (mop.hitVec.xCoord - mop.blockX);
+                float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
+                float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
+                boolean invertShift=StorageDrawers.config.cache.invertShift;
+                StorageDrawers.network.sendToServer(new BlockClickMessage(x,y,z,side,hitX,hitY,hitZ,invertShift));
+                ted.onClick(bd, mc.thePlayer, x, y, z, side, mc.theWorld, hitX, hitY, hitZ,invertShift);
             }
         }
     }

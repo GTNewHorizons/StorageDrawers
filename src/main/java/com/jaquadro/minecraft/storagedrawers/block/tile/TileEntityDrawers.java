@@ -396,27 +396,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         downgraded = state;
     }
 
-    public void onClick(BlockDrawers block, EntityPlayer player, int x, int y, int z, int face, World world) {
+    public void onClick(BlockDrawers block, EntityPlayer player, int x, int y, int z, int face, World world, float hitX, float hitY, float hitZ, boolean invertShift) {
         int dir = getDirection();
         if (dir == face) {
-            final int reach = 5;
-            double eyeX = player.posX;
-            double eyeY = player.posY + player.getEyeHeight();
-            double eyeZ = player.posZ;
-
-            Vec3 look = player.getLookVec();
-
-            Vec3 end = Vec3.createVectorHelper(
-                    eyeX + look.xCoord * reach,
-                    eyeY + look.yCoord * reach,
-                    eyeZ + look.zCoord * reach);
-
-            MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(eyeX, eyeY, eyeZ), end);
-            float hitX = (float) (mop.hitVec.xCoord - mop.blockX);
-            float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
-            float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
-            boolean invertShift = StorageDrawers.config.cache.invertShift;
-
             int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
             IDrawer drawer = getDrawer(slot);
             if (drawer == null) return;
