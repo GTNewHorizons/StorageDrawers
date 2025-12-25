@@ -616,13 +616,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
         if (ticksClickedInARow < ticksConsecutiveClickRequirement) return null;
 
-        System.out.println(
-                "Reached tick goal of " + ticksConsecutiveClickRequirement
-                        + "and outputted "
-                        + itemsOutputInARow
-                        + " items. Current player block break progress is at "
-                        + Minecraft.getMinecraft().playerController.curBlockDamageMP);
-
         ticksClickedInARow = 0;
         itemsOutputInARow++;
 
