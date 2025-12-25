@@ -73,7 +73,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private boolean hideUpgrade = false;
     private boolean downgraded = false;
 
-    private int ticksClickedInARow = 10000;
+    private int ticksClickedInARow = 9;
     private int itemsOutputInARow = 0;
     public boolean clickedOnPreviousTick = false;
 
@@ -98,7 +98,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         if (clickedOnPreviousTick) {
             ticksClickedInARow++;
         } else {
-            ticksClickedInARow = 10000; // set high so that it always registers on first click!
+            ticksClickedInARow = 9; // set high so that it always registers on first click!
             itemsOutputInARow = 0;
         }
         clickedOnPreviousTick = false;
