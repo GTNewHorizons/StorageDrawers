@@ -1,20 +1,20 @@
 package com.jaquadro.minecraft.storagedrawers.mixins.early;
 
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
 
 @Mixin(PlayerControllerMP.class)
 public abstract class MixinPlayerControllerMP {
@@ -47,9 +47,10 @@ public abstract class MixinPlayerControllerMP {
                 float hitX = (float) (mop.hitVec.xCoord - mop.blockX);
                 float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
                 float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
-                boolean invertShift=StorageDrawers.config.cache.invertShift;
-                StorageDrawers.network.sendToServer(new BlockClickMessage(x,y,z,side,hitX,hitY,hitZ,invertShift));
-                ted.onClick(bd, mc.thePlayer, x, y, z, side, mc.theWorld, hitX, hitY, hitZ,invertShift);
+                boolean invertShift = StorageDrawers.config.cache.invertShift;
+                StorageDrawers.network
+                        .sendToServer(new BlockClickMessage(x, y, z, side, hitX, hitY, hitZ, invertShift));
+                ted.onClick(bd, mc.thePlayer, x, y, z, side, mc.theWorld, hitX, hitY, hitZ, invertShift);
             }
         }
     }

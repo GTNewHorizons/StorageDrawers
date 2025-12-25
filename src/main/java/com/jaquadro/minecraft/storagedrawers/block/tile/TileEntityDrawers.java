@@ -15,8 +15,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -396,7 +394,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         downgraded = state;
     }
 
-    public void onClick(BlockDrawers block, EntityPlayer player, int x, int y, int z, int face, World world, float hitX, float hitY, float hitZ, boolean invertShift) {
+    public void onClick(BlockDrawers block, EntityPlayer player, int x, int y, int z, int face, World world, float hitX,
+            float hitY, float hitZ, boolean invertShift) {
         int dir = getDirection();
         if (dir == face) {
             int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
