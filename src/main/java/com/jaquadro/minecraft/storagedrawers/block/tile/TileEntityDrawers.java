@@ -596,7 +596,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
         int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
 
-        if (ticksClickedInARow < ticksConsecutiveClickRequirement) return stack;
+        if (ticksClickedInARow < ticksConsecutiveClickRequirement) return null;
 
         ticksClickedInARow = 0;
         itemsOutputInARow++;
