@@ -16,6 +16,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -51,6 +52,9 @@ import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import com.jaquadro.minecraft.storagedrawers.storage.IUpgradeProvider;
 
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -73,7 +77,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     private int ticksClickedInARow = 9;
     private int itemsOutputInARow = 0;
-    private boolean clickedOnPreviousTick = false;
+    private long lastLeftClickTime;
 
     private UUID owner;
     private String securityKey;
@@ -91,19 +95,10 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private ItemStack materialFront;
     private ItemStack materialTrim;
 
-    @Override
-    public void updateEntity() {
-        if (clickedOnPreviousTick) {
-            ticksClickedInARow++;
-        } else {
-            ticksClickedInARow = 9; // set high so that it always registers on first click!
-            itemsOutputInARow = 0;
-        }
-        clickedOnPreviousTick = false;
-    }
-
     protected TileEntityDrawers(int drawerCount) {
         initWithDrawerCount(drawerCount);
+        TileEntityDrawersEvents eventHandler = new TileEntityDrawersEvents();
+        MinecraftForge.EVENT_BUS.register(eventHandler);
     }
 
     protected abstract IDrawer createDrawer(int slot);
@@ -591,7 +586,15 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         ItemStack stack = getItemsFromSlot(slot, count);
         if (stack == null) return null;
 
-        clickedOnPreviousTick = true;
+        if (worldObj.getTotalWorldTime() - lastLeftClickTime > 1) {
+            ticksClickedInARow = 9;
+            itemsOutputInARow = 0;
+        } else {
+            ticksClickedInARow++;
+        }
+
+        lastLeftClickTime = worldObj.getTotalWorldTime();
+
         Minecraft.getMinecraft().playerController.curBlockDamageMP = 0.0F;
 
         int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
@@ -1148,6 +1151,14 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
                     return stack.getStackSize() - toInsert;
                 }
             };
+        }
+    }
+
+    private class TileEntityDrawersEvents {
+
+        @SubscribeEvent(priority = EventPriority.NORMAL)
+        public void whenPlayerChangesDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+            lastLeftClickTime = 0;
         }
     }
 }
