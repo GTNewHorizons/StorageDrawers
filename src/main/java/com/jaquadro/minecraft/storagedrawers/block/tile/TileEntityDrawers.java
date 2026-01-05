@@ -861,6 +861,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     }
 
     @Override
+    public boolean canUpdate() {
+        return false;
+    }
+
+    @Override
     public void markDirty() {
         inventory.markDirty();
         if (isRedstone() && worldObj != null) {
