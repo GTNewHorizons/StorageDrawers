@@ -389,14 +389,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         downgraded = state;
     }
 
-    public void onClick(
-            EntityPlayer player,
-            int x, int y, int z,
-            int face,
-            World world,
-            float hitX, float hitY, float hitZ,
-            boolean invertShift
-    ) {
+    public void onClick(EntityPlayer player, int x, int y, int z, int face, World world, float hitX, float hitY,
+            float hitZ, boolean invertShift) {
         if (getDirection() != face) {
             return;
         }
@@ -421,11 +415,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         handleItemTransfer(player, world, block, item, x, y, z, face);
     }
 
-    private int getTakeAmount(
-            EntityPlayer player,
-            boolean invertShift,
-            IDrawer drawer
-    ) {
+    private int getTakeAmount(EntityPlayer player, boolean invertShift, IDrawer drawer) {
         boolean takeAll = player.isSneaking() != invertShift;
         return takeAll ? drawer.getStoredItemStackSize() : 1;
     }
@@ -435,21 +425,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
             return;
         }
 
-        FMLLog.log(
-                StorageDrawers.MOD_ID,
-                Level.INFO,
-                item == null ? "  null item" : "  " + item
-        );
+        FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, item == null ? "  null item" : "  " + item);
     }
 
-    private void handleItemTransfer(
-            EntityPlayer player,
-            World world,
-            BlockDrawers block,
-            ItemStack item,
-            int x, int y, int z,
-            int face
-    ) {
+    private void handleItemTransfer(EntityPlayer player, World world, BlockDrawers block, ItemStack item, int x, int y,
+            int z, int face) {
         if (player.inventory.addItemStackToInventory(item)) {
             dropFromFace(world, block, item, x, y, z, face);
             world.markBlockForUpdate(x, y, z);
@@ -459,21 +439,9 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         playPopSound(world, x, y, z);
     }
 
-    private void dropFromFace(
-            World world,
-            BlockDrawers block,
-            ItemStack item,
-            int x, int y, int z,
-            int face
-    ) {
+    private void dropFromFace(World world, BlockDrawers block, ItemStack item, int x, int y, int z, int face) {
         ForgeDirection dir = ForgeDirection.getOrientation(face);
-        block.dropItemStack(
-                world,
-                x + dir.offsetX,
-                y,
-                z + dir.offsetZ,
-                item
-        );
+        block.dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
     }
 
     private void playPopSound(World world, int x, int y, int z) {
@@ -483,10 +451,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
                 z + 0.5f,
                 "random.pop",
                 0.2f,
-                ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1) * 2
-        );
+                ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1) * 2);
     }
-
 
     public boolean isVoid() {
         if (!StorageDrawers.config.cache.enableVoidUpgrades) return false;
