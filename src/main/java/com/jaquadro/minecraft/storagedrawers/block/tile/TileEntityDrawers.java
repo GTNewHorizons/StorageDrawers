@@ -586,7 +586,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         ItemStack stack = getItemsFromSlot(slot, count);
         if (stack == null) return null;
 
-        if (worldObj.getTotalWorldTime() - lastLeftClickTime > 1) {
+        if (worldObj.getTotalWorldTime() - lastLeftClickTime > 2) {
             ticksClickedInARow = 9;
             itemsOutputInARow = 0;
         } else {
