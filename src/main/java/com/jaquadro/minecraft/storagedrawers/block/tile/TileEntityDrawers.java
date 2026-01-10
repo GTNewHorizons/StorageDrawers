@@ -391,34 +391,67 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     public void onClick(EntityPlayer player, int x, int y, int z, int face, World world, float hitX, float hitY,
             float hitZ, boolean invertShift) {
-        BlockDrawers block = (BlockDrawers) world.getBlock(x, y, z);
-        int dir = getDirection();
-        if (dir == face) {
-            int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
-            IDrawer drawer = getDrawer(slot);
-            if (drawer == null) return;
-            final ItemStack item;
-            // if invertSHift is true this will happen when the player is not shifting
-            if (player.isSneaking() != invertShift) item = takeItemsFromSlot(slot, drawer.getStoredItemStackSize());
-            else item = takeItemsFromSlot(slot, 1);
-
-            if (StorageDrawers.config.cache.debugTrace)
-                FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, (item == null) ? "  null item" : "  " + item);
-
-            if (item != null && item.stackSize > 0) {
-                if (player.inventory.addItemStackToInventory(item)) {
-                    ForgeDirection dir2 = ForgeDirection.getOrientation(face);
-                    block.dropItemStack(world, x + dir2.offsetX, y, z + dir2.offsetZ, item);
-                    world.markBlockForUpdate(x, y, z);
-                } else world.playSoundEffect(
-                        x + .5f,
-                        y + .5f,
-                        z + .5f,
-                        "random.pop",
-                        .2f,
-                        ((world.rand.nextFloat() - world.rand.nextFloat()) * .7f + 1) * 2);
-            }
+        if (getDirection() != face) {
+            return;
         }
+
+        BlockDrawers block = (BlockDrawers) world.getBlock(x, y, z);
+        int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
+
+        IDrawer drawer = getDrawer(slot);
+        if (drawer == null) {
+            return;
+        }
+
+        int amount = getTakeAmount(player, invertShift, drawer);
+        ItemStack item = takeItemsFromSlot(slot, amount);
+
+        traceItem(item);
+
+        if (item == null || item.stackSize <= 0) {
+            return;
+        }
+
+        handleItemTransfer(player, world, block, item, x, y, z, face);
+    }
+
+    private int getTakeAmount(EntityPlayer player, boolean invertShift, IDrawer drawer) {
+        boolean takeAll = player.isSneaking() != invertShift;
+        return takeAll ? drawer.getStoredItemStackSize() : 1;
+    }
+
+    private void traceItem(ItemStack item) {
+        if (!StorageDrawers.config.cache.debugTrace) {
+            return;
+        }
+
+        FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, item == null ? "  null item" : "  " + item);
+    }
+
+    private void handleItemTransfer(EntityPlayer player, World world, BlockDrawers block, ItemStack item, int x, int y,
+            int z, int face) {
+        if (player.inventory.addItemStackToInventory(item)) {
+            dropFromFace(world, block, item, x, y, z, face);
+            world.markBlockForUpdate(x, y, z);
+            return;
+        }
+
+        playPopSound(world, x, y, z);
+    }
+
+    private void dropFromFace(World world, BlockDrawers block, ItemStack item, int x, int y, int z, int face) {
+        ForgeDirection dir = ForgeDirection.getOrientation(face);
+        block.dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
+    }
+
+    private void playPopSound(World world, int x, int y, int z) {
+        world.playSoundEffect(
+                x + 0.5f,
+                y + 0.5f,
+                z + 0.5f,
+                "random.pop",
+                0.2f,
+                ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1) * 2);
     }
 
     public boolean isVoid() {
@@ -586,7 +619,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         ItemStack stack = getItemsFromSlot(slot, count);
         if (stack == null) return null;
 
-        if (worldObj.getTotalWorldTime() - lastLeftClickTime > 1) {
+        if (worldObj.getTotalWorldTime() - lastLeftClickTime > 2) {
             ticksClickedInARow = 9;
             itemsOutputInARow = 0;
         } else {
@@ -858,6 +891,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
             materialTrim.writeToNBT(itag);
             tag.setTag("MatT", itag);
         }
+    }
+
+    @Override
+    public boolean canUpdate() {
+        return false;
     }
 
     @Override
