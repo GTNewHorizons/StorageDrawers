@@ -12,11 +12,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
 
-@Mixin(PlayerControllerMP.class)
+@Mixin(value = PlayerControllerMP.class, priority = 10000)
 public abstract class MixinPlayerControllerMP {
 
     @Shadow
@@ -25,11 +24,10 @@ public abstract class MixinPlayerControllerMP {
     @Inject(
             method = "onPlayerDamageBlock",
             at = @At(
-                    value = "INVOKE_ASSIGN",
+                    value = "INVOKE",
                     target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
     private void mixin(int x, int y, int z, int side, CallbackInfo ci) {
-        if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted
-                && mc.theWorld.getBlock(x, y, z) instanceof BlockDrawers bd) {
+        if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted) {
             if (ted.getDirection() == side) {
                 final int reach = 5;
                 double eyeX = mc.thePlayer.posX;
