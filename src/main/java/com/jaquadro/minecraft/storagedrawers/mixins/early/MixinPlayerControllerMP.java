@@ -26,7 +26,7 @@ public abstract class MixinPlayerControllerMP {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
-    private void mixin(int x, int y, int z, int side, CallbackInfo ci) {
+    private void StorageDrawers$checkIfClickingDrawer(int x, int y, int z, int side, CallbackInfo ci) {
         if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted) {
             if (ted.getDirection() == side) {
                 final int reach = 5;
