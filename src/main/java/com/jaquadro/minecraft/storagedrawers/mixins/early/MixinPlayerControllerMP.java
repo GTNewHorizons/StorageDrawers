@@ -29,28 +29,24 @@ public abstract class MixinPlayerControllerMP {
                     value = "INVOKE",
                     target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
     private void storageDrawers$checkIfClickingDrawer(int x, int y, int z, int side, CallbackInfo ci) {
-        if (mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted) {
-            if (ted.getDirection() == side) {
-                final int reach = 5;
-                double eyeX = mc.thePlayer.posX;
-                double eyeY = mc.thePlayer.posY + mc.thePlayer.getEyeHeight();
-                double eyeZ = mc.thePlayer.posZ;
+        if (!(mc.theWorld.getTileEntity(x, y, z) instanceof TileEntityDrawers ted)) return;
+        if (ted.getDirection() != side) return;
 
-                Vec3 look = mc.thePlayer.getLookVec();
+        final int reach = 5;
+        double eyeX = mc.thePlayer.posX;
+        double eyeY = mc.thePlayer.posY + mc.thePlayer.getEyeHeight();
+        double eyeZ = mc.thePlayer.posZ;
 
-                Vec3 end = Vec3.createVectorHelper(
-                        eyeX + look.xCoord * reach,
-                        eyeY + look.yCoord * reach,
-                        eyeZ + look.zCoord * reach);
+        Vec3 look = mc.thePlayer.getLookVec();
 
-                MovingObjectPosition mop = mc.theWorld.rayTraceBlocks(Vec3.createVectorHelper(eyeX, eyeY, eyeZ), end);
-                float hitX = (float) (mop.hitVec.xCoord - mop.blockX);
-                float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
-                float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
-                boolean invertShift = StorageDrawers.config.cache.invertShift;
-                StorageDrawers.network
-                        .sendToServer(new BlockClickMessage(x, y, z, side, hitX, hitY, hitZ, invertShift));
-            }
-        }
+        Vec3 end = Vec3
+                .createVectorHelper(eyeX + look.xCoord * reach, eyeY + look.yCoord * reach, eyeZ + look.zCoord * reach);
+
+        MovingObjectPosition mop = mc.theWorld.rayTraceBlocks(Vec3.createVectorHelper(eyeX, eyeY, eyeZ), end);
+        float hitX = (float) (mop.hitVec.xCoord - mop.blockX);
+        float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
+        float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
+        boolean invertShift = StorageDrawers.config.cache.invertShift;
+        StorageDrawers.network.sendToServer(new BlockClickMessage(x, y, z, side, hitX, hitY, hitZ, invertShift));
     }
 }
