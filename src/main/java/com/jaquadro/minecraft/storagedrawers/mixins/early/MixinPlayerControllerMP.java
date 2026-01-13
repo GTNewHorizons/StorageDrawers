@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,6 +19,7 @@ import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
 @Mixin(value = PlayerControllerMP.class, priority = 10000)
 public abstract class MixinPlayerControllerMP {
 
+    @Final
     @Shadow
     private Minecraft mc;
 
