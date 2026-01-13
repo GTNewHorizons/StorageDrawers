@@ -40,7 +40,7 @@ public class EarlyMixinsLoader implements IFMLLoadingPlugin, IEarlyMixinLoader {
         // rename the associated .json file by replacing the "mymodid" with your own mod ID
         // in the .json file edit the "package" and "refmap" properties to match your mod
         // also edit the "refmap" property in the "mixins.mymodid.json" file
-        return "mixins.storagedrawers.early.json";
+        return "mixins.StorageDrawers.early.json";
     }
 
     @Override
