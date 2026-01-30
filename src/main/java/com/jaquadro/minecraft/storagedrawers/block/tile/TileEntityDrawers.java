@@ -44,6 +44,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ISealable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawersCustom;
+import com.jaquadro.minecraft.storagedrawers.common.DrawerClickProperty;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.inventory.ISideManager;
@@ -77,7 +78,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     private int ticksClickedInARow = 9;
     private int itemsOutputInARow = 0;
-    private long lastLeftClickTime;
+
+    private static boolean eventsRegistered = false;
 
     private UUID owner;
     private String securityKey;
@@ -97,8 +99,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     protected TileEntityDrawers(int drawerCount) {
         initWithDrawerCount(drawerCount);
-        TileEntityDrawersEvents eventHandler = new TileEntityDrawersEvents();
-        MinecraftForge.EVENT_BUS.register(eventHandler);
+        if (!eventsRegistered) {
+            TileEntityDrawersEvents eventHandler = new TileEntityDrawersEvents();
+            MinecraftForge.EVENT_BUS.register(eventHandler);
+            eventsRegistered = true;
+        }
     }
 
     protected abstract IDrawer createDrawer(int slot);
@@ -404,7 +409,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         }
 
         int amount = getTakeAmount(player, invertShift, drawer);
-        ItemStack item = takeItemsFromSlot(slot, amount);
+        ItemStack item = takeItemsFromSlot(slot, amount, player);
 
         traceItem(item);
 
@@ -610,23 +615,31 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         materialTrim = material;
     }
 
+    private DrawerClickProperty getProperties(EntityPlayer player) {
+        return (DrawerClickProperty) player.getExtendedProperties(DrawerClickProperty.PROP_KEY);
+    }
+
     /**
      * Returns an ItemStack that will have a maximum size of {@link ItemStack#getMaxStackSize()}
      */
-    public ItemStack takeItemsFromSlot(int slot, int count) {
+    public ItemStack takeItemsFromSlot(int slot, int count, EntityPlayer player) {
         if (slot < 0 || slot >= getDrawerCount()) return null;
 
         ItemStack stack = getItemsFromSlot(slot, count);
         if (stack == null) return null;
 
-        if (worldObj.getTotalWorldTime() - lastLeftClickTime > 2) {
+        DrawerClickProperty property = getProperties(player);
+
+        if (property == null) return null;
+
+        if (worldObj.getTotalWorldTime() - property.lastLeftClickTime > 2) {
             ticksClickedInARow = 9;
             itemsOutputInARow = 0;
         } else {
             ticksClickedInARow++;
         }
 
-        lastLeftClickTime = worldObj.getTotalWorldTime();
+        property.lastLeftClickTime = worldObj.getTotalWorldTime();
 
         Minecraft.getMinecraft().playerController.curBlockDamageMP = 0.0F;
 
@@ -1216,7 +1229,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
         @SubscribeEvent(priority = EventPriority.NORMAL)
         public void whenPlayerChangesDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-            lastLeftClickTime = 0;
+            DrawerClickProperty property = getProperties(event.player);
+            property.lastLeftClickTime = 0;
         }
     }
 }
