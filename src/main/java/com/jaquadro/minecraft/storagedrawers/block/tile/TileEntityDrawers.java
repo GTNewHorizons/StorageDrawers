@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -640,8 +639,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         }
 
         property.lastLeftClickTime = worldObj.getTotalWorldTime();
-
-        Minecraft.getMinecraft().playerController.curBlockDamageMP = 0.0F;
 
         int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
 
