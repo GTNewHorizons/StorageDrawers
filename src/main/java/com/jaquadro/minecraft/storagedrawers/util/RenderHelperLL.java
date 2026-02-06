@@ -147,17 +147,17 @@ public class RenderHelperLL {
     private void setFaceYNegUV(IIcon icon, double minX, double minZ, double maxX, double maxZ) {
         int rotate = state.uvRotate[RenderHelper.YNEG];
         if (rotate == RenderHelperState.ROTATE0)
-            setUV(icon, minX + state.shiftU, maxX + state.shiftU, maxZ + state.shiftV, minZ + state.shiftV);
+            setUV(icon, maxX + state.shiftU, minX + state.shiftU, maxZ + state.shiftV, minZ + state.shiftV);
         if (rotate == RenderHelperState.ROTATE90)
-            setUV(icon, 1 - maxZ + state.shiftU, 1 - minZ + state.shiftU, minX + state.shiftV, maxX + state.shiftV);
+            setUV(icon, 1 - minZ + state.shiftU, 1 - maxZ + state.shiftU, minX + state.shiftV, maxX + state.shiftV);
         if (rotate == RenderHelperState.ROTATE180) setUV(
                 icon,
-                1 - minX + state.shiftU,
                 1 - maxX + state.shiftU,
+                1 - minX + state.shiftU,
                 1 - maxZ + state.shiftV,
                 1 - minZ + state.shiftV);
         if (rotate == RenderHelperState.ROTATE270)
-            setUV(icon, maxZ + state.shiftU, minZ + state.shiftU, 1 - minX + state.shiftV, 1 - maxX + state.shiftV);
+            setUV(icon, minZ + state.shiftU, maxZ + state.shiftU, 1 - minX + state.shiftV, 1 - maxX + state.shiftV);
     }
 
     private void setFaceYPosUV(IIcon icon, double minX, double minZ, double maxX, double maxZ) {

@@ -75,7 +75,9 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
         int meta = world.getBlockMetadata(x, y, z);
 
         renderHelper.state
-                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
+                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.YPOS][side]);
+        renderHelper.state
+                .setUVRotation(RenderHelper.YNEG, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.YNEG][side]);
 
         boxRenderer.setUnit(block.getTrimWidth());
         boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
