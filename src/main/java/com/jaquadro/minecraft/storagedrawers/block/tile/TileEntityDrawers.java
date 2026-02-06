@@ -1009,73 +1009,93 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
         @Override
         protected @NotNull InventoryIterator iterator(int[] allowedSlots) {
-            return new AbstractInventoryIterator(presentSlots, allowedSlots) {
+            return new DrawerInventoryIterator(this.presentSlots, allowedSlots, false);
+        }
 
-                @Override
-                protected ItemStack getStackInSlot(int slot) {
-                    if (slot < 0 || slot >= drawers.length) return null;
+        @Override
+        public @Nullable InventoryIterator simulatedSinkIterator() {
+            return new DrawerInventoryIterator(this.presentSlots, allowedSinkSlots, true);
+        }
 
-                    return drawers[slot].getStoredItemCopy();
-                }
+        private class DrawerInventoryIterator extends AbstractInventoryIterator {
 
-                @Override
-                public ItemStack extract(int amount, boolean forced) {
-                    int slot = getCurrentSlot();
+            private final boolean simulated;
 
-                    if (slot < 0 || slot >= drawers.length) return null;
+            public DrawerInventoryIterator(int[] presentSlots, int[] allowedSlots, boolean simulated) {
+                super(presentSlots, allowedSlots);
+                this.simulated = simulated;
+            }
 
-                    IDrawer drawer = drawers[slot];
+            @Override
+            protected ItemStack getStackInSlot(int slot) {
+                if (slot < 0 || slot >= drawers.length) return null;
 
-                    ItemStack stored = drawer.getStoredItemCopy();
+                return drawers[slot].getStoredItemCopy();
+            }
 
-                    if (stored == null) return null;
+            @Override
+            public ItemStack extract(int amount, boolean forced) {
+                int slot = getCurrentSlot();
 
-                    int toExtract = Math.min(stored.stackSize, amount);
+                if (slot < 0 || slot >= drawers.length) return null;
 
-                    stored.stackSize = toExtract;
+                IDrawer drawer = drawers[slot];
+
+                ItemStack stored = drawer.getStoredItemCopy();
+
+                if (stored == null) return null;
+
+                int toExtract = Math.min(stored.stackSize, amount);
+
+                stored.stackSize = toExtract;
+                if (!simulated) {
                     drawer.setStoredItemCount(drawer.getStoredItemCount() - toExtract);
-
-                    return stored;
                 }
 
-                @Override
-                public int insert(ImmutableItemStack stack, boolean forced) {
-                    int slot = getCurrentSlot();
+                return stored;
+            }
 
-                    if (slot < 0 || slot >= drawers.length) return stack.getStackSize();
+            @Override
+            public int insert(ImmutableItemStack stack, boolean forced) {
+                int slot = getCurrentSlot();
 
-                    IDrawer drawer = drawers[slot];
+                if (slot < 0 || slot >= drawers.length) return stack.getStackSize();
 
-                    if (drawer.isVendingUnlimited()
-                            && ItemUtil.areStacksEqual(stack.toStackFast(), drawer.getStoredItemPrototype()))
-                        return 0;
+                IDrawer drawer = drawers[slot];
 
-                    ItemStack insertExample = stack.toStackFast();
+                if (drawer.isVendingUnlimited()
+                        && ItemUtil.areStacksEqual(stack.toStackFast(), drawer.getStoredItemPrototype()))
+                    return 0;
 
-                    if (!drawer.canItemBeStored(insertExample)) return stack.getStackSize();
+                ItemStack insertExample = stack.toStackFast();
 
-                    int capacity = forced ? Integer.MAX_VALUE : drawer.getMaxCapacity(insertExample);
-                    int remaining = capacity - drawer.getStoredItemCount();
-                    int toInsert = Math.min(remaining, stack.getStackSize());
+                if (!drawer.canItemBeStored(insertExample)) return stack.getStackSize();
 
-                    if (isVoid()) {
+                int capacity = forced ? Integer.MAX_VALUE : drawer.getMaxCapacity(insertExample);
+                int remaining = capacity - drawer.getStoredItemCount();
+                int toInsert = Math.min(remaining, stack.getStackSize());
+
+                if (isVoid()) {
+                    if (!simulated) {
                         if (drawer.getStoredItemPrototype() == null) {
                             drawer.setStoredItemRedir(stack.toStack(1), toInsert);
                         } else {
                             drawer.setStoredItemCount(drawer.getStoredItemCount() + toInsert);
                         }
-                        return 0;
                     }
+                    return 0;
+                }
 
+                if (!simulated) {
                     if (drawer.getStoredItemPrototype() == null) {
                         drawer.setStoredItemRedir(stack.toStack(1), toInsert);
                     } else {
                         drawer.setStoredItemCount(drawer.getStoredItemCount() + toInsert);
                     }
-
-                    return stack.getStackSize() - toInsert;
                 }
-            };
+
+                return stack.getStackSize() - toInsert;
+            }
         }
     }
 }
