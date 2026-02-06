@@ -23,11 +23,16 @@ public abstract class MixinPlayerControllerMP {
     @Shadow
     private Minecraft mc;
 
+    @Shadow
+    public float curBlockDamageMP;
+
     @Inject(
             method = "onPlayerDamageBlock",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;curBlockDamageMP:F",
+                    opcode = org.objectweb.asm.Opcodes.PUTFIELD,
+                    shift = At.Shift.AFTER))
     private void storageDrawers$checkIfClickingDrawer(int x, int y, int z, int clickedSide, CallbackInfo ci) {
         final var thisTile = mc.theWorld.getTileEntity(x, y, z);
         if (!(thisTile instanceof TileEntityDrawers drawer)) return;
@@ -50,6 +55,7 @@ public abstract class MixinPlayerControllerMP {
         float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
         float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
         boolean invertShift = StorageDrawers.config.cache.invertShift;
+        curBlockDamageMP = 0.0F;
         StorageDrawers.network.sendToServer(new BlockClickMessage(x, y, z, clickedSide, hitX, hitY, hitZ, invertShift));
     }
 }
