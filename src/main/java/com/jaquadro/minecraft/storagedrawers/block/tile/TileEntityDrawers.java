@@ -14,6 +14,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -39,7 +41,9 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ILockable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IProtectable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ISealable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
+import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawersCustom;
+import com.jaquadro.minecraft.storagedrawers.common.DrawerClickProperty;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.inventory.ISideManager;
@@ -48,6 +52,9 @@ import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import com.jaquadro.minecraft.storagedrawers.storage.IUpgradeProvider;
 
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -68,6 +75,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private boolean hideUpgrade = false;
     private boolean downgraded = false;
 
+    private int ticksClickedInARow = 9;
+    private int itemsOutputInARow = 0;
+
+    private static boolean eventsRegistered = false;
+
     private UUID owner;
     private String securityKey;
 
@@ -86,6 +98,11 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
     protected TileEntityDrawers(int drawerCount) {
         initWithDrawerCount(drawerCount);
+        if (!eventsRegistered) {
+            TileEntityDrawersEvents eventHandler = new TileEntityDrawersEvents();
+            MinecraftForge.EVENT_BUS.register(eventHandler);
+            eventsRegistered = true;
+        }
     }
 
     protected abstract IDrawer createDrawer(int slot);
@@ -376,6 +393,71 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         downgraded = state;
     }
 
+    public void onClick(EntityPlayer player, int x, int y, int z, int face, World world, float hitX, float hitY,
+            float hitZ, boolean invertShift) {
+        if (getDirection() != face) {
+            return;
+        }
+
+        BlockDrawers block = (BlockDrawers) world.getBlock(x, y, z);
+        int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
+
+        IDrawer drawer = getDrawer(slot);
+        if (drawer == null) {
+            return;
+        }
+
+        int amount = getTakeAmount(player, invertShift, drawer);
+        ItemStack item = takeItemsFromSlot(slot, amount, player);
+
+        traceItem(item);
+
+        if (item == null || item.stackSize <= 0) {
+            return;
+        }
+
+        handleItemTransfer(player, world, block, item, x, y, z, face);
+    }
+
+    private int getTakeAmount(EntityPlayer player, boolean invertShift, IDrawer drawer) {
+        boolean takeAll = player.isSneaking() != invertShift;
+        return takeAll ? drawer.getStoredItemStackSize() : 1;
+    }
+
+    private void traceItem(ItemStack item) {
+        if (!StorageDrawers.config.cache.debugTrace) {
+            return;
+        }
+
+        FMLLog.log(StorageDrawers.MOD_ID, Level.INFO, item == null ? "  null item" : "  " + item);
+    }
+
+    private void handleItemTransfer(EntityPlayer player, World world, BlockDrawers block, ItemStack item, int x, int y,
+            int z, int face) {
+        if (player.inventory.addItemStackToInventory(item)) {
+            dropFromFace(world, block, item, x, y, z, face);
+            world.markBlockForUpdate(x, y, z);
+            return;
+        }
+
+        playPopSound(world, x, y, z);
+    }
+
+    private void dropFromFace(World world, BlockDrawers block, ItemStack item, int x, int y, int z, int face) {
+        ForgeDirection dir = ForgeDirection.getOrientation(face);
+        block.dropItemStack(world, x + dir.offsetX, y, z + dir.offsetZ, item);
+    }
+
+    private void playPopSound(World world, int x, int y, int z) {
+        world.playSoundEffect(
+                x + 0.5f,
+                y + 0.5f,
+                z + 0.5f,
+                "random.pop",
+                0.2f,
+                ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7f + 1) * 2);
+    }
+
     public boolean isVoid() {
         if (!StorageDrawers.config.cache.enableVoidUpgrades) return false;
 
@@ -532,10 +614,53 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         materialTrim = material;
     }
 
+    private DrawerClickProperty getProperties(EntityPlayer player) {
+        return (DrawerClickProperty) player.getExtendedProperties(DrawerClickProperty.PROP_KEY);
+    }
+
     /**
      * Returns an ItemStack that will have a maximum size of {@link ItemStack#getMaxStackSize()}
      */
-    public ItemStack takeItemsFromSlot(int slot, int count) {
+    public ItemStack takeItemsFromSlot(int slot, int count, EntityPlayer player) {
+        if (slot < 0 || slot >= getDrawerCount()) return null;
+
+        ItemStack stack = getItemsFromSlot(slot, count);
+        if (stack == null) return null;
+
+        DrawerClickProperty property = getProperties(player);
+
+        if (property == null) return null;
+
+        if (worldObj.getTotalWorldTime() - property.lastLeftClickTime > 2) {
+            ticksClickedInARow = 9;
+            itemsOutputInARow = 0;
+        } else {
+            ticksClickedInARow++;
+        }
+
+        property.lastLeftClickTime = worldObj.getTotalWorldTime();
+
+        int ticksConsecutiveClickRequirement = 50 / (itemsOutputInARow + 5);
+
+        if (ticksClickedInARow < ticksConsecutiveClickRequirement) return null;
+
+        ticksClickedInARow = 0;
+        itemsOutputInARow++;
+
+        IDrawer drawer = drawers[slot];
+        drawer.setStoredItemCount(drawer.getStoredItemCount() - stack.stackSize);
+
+        if (isRedstone() && worldObj != null) {
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, getBlockType());
+        }
+
+        // TODO: Reset empty drawer in subclasses
+
+        return stack;
+    }
+
+    public ItemStack takeItemsFromSlotWithDestroy(int slot, int count) {
         if (slot < 0 || slot >= getDrawerCount()) return null;
 
         ItemStack stack = getItemsFromSlot(slot, count);
@@ -548,8 +673,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, getBlockType());
         }
-
-        // TODO: Reset empty drawer in subclasses
 
         return stack;
     }
@@ -1096,6 +1219,15 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
 
                 return stack.getStackSize() - toInsert;
             }
+        }
+    }
+
+    private class TileEntityDrawersEvents {
+
+        @SubscribeEvent(priority = EventPriority.NORMAL)
+        public void whenPlayerChangesDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+            DrawerClickProperty property = getProperties(event.player);
+            property.lastLeftClickTime = 0;
         }
     }
 }
