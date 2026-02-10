@@ -436,7 +436,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
             int z, int face) {
         if (!player.inventory.addItemStackToInventory(item)) {
             dropFromFace(world, block, item, x, y, z, face);
-            world.markBlockForUpdate(x, y, z);
             return;
         }
 
