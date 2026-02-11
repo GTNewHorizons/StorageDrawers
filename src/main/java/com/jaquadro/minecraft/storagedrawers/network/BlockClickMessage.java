@@ -1,6 +1,6 @@
 package com.jaquadro.minecraft.storagedrawers.network;
 
-import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.block.IExtendedBlockClickHandler;
@@ -21,10 +21,12 @@ public class BlockClickMessage implements IMessage {
     private float hitY;
     private float hitZ;
     private boolean invertShift;
+    private boolean isHolding;
 
     public BlockClickMessage() {}
 
-    public BlockClickMessage(int x, int y, int z, int side, float hitX, float hitY, float hitZ, boolean invertShift) {
+    public BlockClickMessage(int x, int y, int z, int side, float hitX, float hitY, float hitZ, boolean invertShift,
+            boolean isHolding) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -33,6 +35,7 @@ public class BlockClickMessage implements IMessage {
         this.hitY = hitY;
         this.hitZ = hitZ;
         this.invertShift = invertShift;
+        this.isHolding = isHolding;
     }
 
     @Override
@@ -45,6 +48,7 @@ public class BlockClickMessage implements IMessage {
         hitY = buf.readFloat();
         hitZ = buf.readFloat();
         invertShift = buf.readBoolean();
+        isHolding = buf.readBoolean();
     }
 
     @Override
@@ -57,6 +61,7 @@ public class BlockClickMessage implements IMessage {
         buf.writeFloat(hitY);
         buf.writeFloat(hitZ);
         buf.writeBoolean(invertShift);
+        buf.writeBoolean(isHolding);
     }
 
     public static class Handler implements IMessageHandler<BlockClickMessage, IMessage> {
@@ -65,18 +70,17 @@ public class BlockClickMessage implements IMessage {
         public IMessage onMessage(BlockClickMessage message, MessageContext ctx) {
             if (ctx.side == Side.SERVER) {
                 World world = ctx.getServerHandler().playerEntity.getEntityWorld();
-                Block block = world.getBlock(message.x, message.y, message.z);
-                if (block instanceof IExtendedBlockClickHandler) ((IExtendedBlockClickHandler) block).onBlockClicked(
-                        world,
-                        message.x,
-                        message.y,
-                        message.z,
-                        ctx.getServerHandler().playerEntity,
-                        message.side,
-                        message.hitX,
-                        message.hitY,
-                        message.hitZ,
-                        message.invertShift);
+                TileEntity tile = world.getTileEntity(message.x, message.y, message.z);
+                if (tile instanceof IExtendedBlockClickHandler handler) {
+                    handler.onBlockClicked(
+                            ctx.getServerHandler().playerEntity,
+                            message.side,
+                            message.hitX,
+                            message.hitY,
+                            message.hitZ,
+                            message.invertShift,
+                            message.isHolding);
+                }
             }
 
             return null;
