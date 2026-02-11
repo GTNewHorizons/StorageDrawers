@@ -615,7 +615,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
             }
 
             takeWhileHoldingInterval = Math.max(takeWhileHoldingInterval - 0.2F, 1);
-            takeWhileHoldingCountdown = (int)takeWhileHoldingInterval;
+            takeWhileHoldingCountdown = (int) takeWhileHoldingInterval;
         } else {
             takeWhileHoldingInterval = 6;
             takeWhileHoldingCountdown = 6;
