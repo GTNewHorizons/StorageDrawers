@@ -65,8 +65,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
     private IDrawer[] drawers;
     private IDrawerInventory inventory;
 
-    private int[] autoSides = new int[] { 0, 1, 2, 3, 4, 5 };
-
     private int direction;
     private int drawerCapacity = 1;
     private boolean shrouded = false;
@@ -1104,11 +1102,13 @@ public abstract class TileEntityDrawers extends BaseTileEntity implements IDrawe
         return inventory.isItemValidForSlot(slot, stack);
     }
 
-    private class DefaultSideManager implements ISideManager {
+    private static class DefaultSideManager implements ISideManager {
+
+        private static final int[] accessibleSides = new int[] { 0, 1, 2, 3, 4, 5 };
 
         @Override
-        public int[] getSlotsForSide(int side) {
-            return autoSides;
+        public int[] getAccessibleSides() {
+            return accessibleSides;
         }
     }
 

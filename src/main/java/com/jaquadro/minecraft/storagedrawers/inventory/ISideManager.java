@@ -5,5 +5,5 @@ package com.jaquadro.minecraft.storagedrawers.inventory;
  */
 public interface ISideManager {
 
-    public int[] getSlotsForSide(int side);
+    int[] getAccessibleSides();
 }
