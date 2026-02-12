@@ -7,6 +7,7 @@ import net.minecraft.util.MovingObjectPosition;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,7 +27,8 @@ public abstract class MixinPlayerControllerMP {
     @Shadow
     public float curBlockDamageMP;
 
-    private boolean isHoldingClick = false;
+    @Unique
+    private boolean storageDrawers$isHoldingClick = false;
 
     @ModifyExpressionValue(
             method = "onPlayerDamageBlock",
@@ -44,9 +46,9 @@ public abstract class MixinPlayerControllerMP {
         float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
         float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
         boolean invertShift = StorageDrawers.config.cache.invertShift;
-        boolean isHolding = this.isHoldingClick;
+        boolean isHolding = this.storageDrawers$isHoldingClick;
 
-        this.isHoldingClick = true;
+        this.storageDrawers$isHoldingClick = true;
         StorageDrawers.network
                 .sendToServer(new BlockClickMessage(x, y, z, clickedSide, hitX, hitY, hitZ, invertShift, isHolding));
 
@@ -56,6 +58,6 @@ public abstract class MixinPlayerControllerMP {
 
     @Inject(method = "resetBlockRemoving", at = @At(value = "HEAD"))
     private void storageDrawers$resetHoldingClick(CallbackInfo ci) {
-        this.isHoldingClick = false;
+        this.storageDrawers$isHoldingClick = false;
     }
 }
