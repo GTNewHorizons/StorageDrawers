@@ -69,7 +69,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import fox.spiteful.avaritia.items.ItemMatterCluster;
 import xonin.backhand.api.core.BackhandUtils;
 
-public class BlockDrawers extends BlockContainer implements INetworked, IExtendedBlockClickHandler {
+public class BlockDrawers extends BlockContainer implements INetworked {
 
     private static final ResourceLocation blockConfig = new ResourceLocation(
             StorageDrawers.MOD_ID + ":textures/blocks/block_config.mcmeta");
@@ -494,13 +494,6 @@ public class BlockDrawers extends BlockContainer implements INetworked, IExtende
         if (world.isRemote) ignoreEventTime = Minecraft.getSystemTime();
 
         return true;
-    }
-
-    @Override
-    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY,
-            float hitZ, boolean invertShift) {
-        TileEntityDrawers ted = getTileEntitySafe(world, x, y, z);
-        ted.onClick(player, x, y, z, side, world, hitX, hitY, hitZ, invertShift);
     }
 
     @Override

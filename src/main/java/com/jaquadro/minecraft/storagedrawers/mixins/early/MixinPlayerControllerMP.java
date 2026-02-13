@@ -3,11 +3,11 @@ package com.jaquadro.minecraft.storagedrawers.mixins.early;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.network.BlockClickMessage;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 @Mixin(value = PlayerControllerMP.class, priority = 10000)
 public abstract class MixinPlayerControllerMP {
@@ -26,36 +27,37 @@ public abstract class MixinPlayerControllerMP {
     @Shadow
     public float curBlockDamageMP;
 
-    @Inject(
+    @Unique
+    private boolean storageDrawers$isHoldingClick = false;
+
+    @ModifyExpressionValue(
             method = "onPlayerDamageBlock",
             at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;curBlockDamageMP:F",
-                    opcode = org.objectweb.asm.Opcodes.PUTFIELD,
-                    shift = At.Shift.AFTER))
-    private void storageDrawers$checkIfClickingDrawer(int x, int y, int z, int clickedSide, CallbackInfo ci) {
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
+    private float storageDrawers$checkIfClickingDrawer(float originalHardness, int x, int y, int z, int clickedSide) {
         final var thisTile = mc.theWorld.getTileEntity(x, y, z);
-        if (!(thisTile instanceof TileEntityDrawers drawer)) return;
-        if (drawer.getDirection() != clickedSide) return;
+        if (!(thisTile instanceof TileEntityDrawers drawer) || drawer.getDirection() != clickedSide) {
+            return originalHardness;
+        }
 
-        final int reach = 5;
-        double eyeX = mc.thePlayer.posX;
-        double eyeY = mc.thePlayer.posY + mc.thePlayer.getEyeHeight();
-        double eyeZ = mc.thePlayer.posZ;
-
-        Vec3 lookVec = mc.thePlayer.getLookVec();
-
-        Vec3 end = Vec3.createVectorHelper(
-                eyeX + lookVec.xCoord * reach,
-                eyeY + lookVec.yCoord * reach,
-                eyeZ + lookVec.zCoord * reach);
-
-        MovingObjectPosition mop = mc.theWorld.rayTraceBlocks(Vec3.createVectorHelper(eyeX, eyeY, eyeZ), end);
+        MovingObjectPosition mop = mc.objectMouseOver;
         float hitX = (float) (mop.hitVec.xCoord - mop.blockX);
         float hitY = (float) (mop.hitVec.yCoord - mop.blockY);
         float hitZ = (float) (mop.hitVec.zCoord - mop.blockZ);
         boolean invertShift = StorageDrawers.config.cache.invertShift;
-        curBlockDamageMP = 0.0F;
-        StorageDrawers.network.sendToServer(new BlockClickMessage(x, y, z, clickedSide, hitX, hitY, hitZ, invertShift));
+        boolean isHolding = this.storageDrawers$isHoldingClick;
+
+        this.storageDrawers$isHoldingClick = true;
+        StorageDrawers.network
+                .sendToServer(new BlockClickMessage(x, y, z, clickedSide, hitX, hitY, hitZ, invertShift, isHolding));
+
+        // Set curBlockDamageMP to 0 by cancelling itself out
+        return -curBlockDamageMP;
+    }
+
+    @Inject(method = "resetBlockRemoving", at = @At(value = "HEAD"))
+    private void storageDrawers$resetHoldingClick(CallbackInfo ci) {
+        this.storageDrawers$isHoldingClick = false;
     }
 }

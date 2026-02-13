@@ -88,9 +88,9 @@ public class StorageInventory implements IDrawerInventory {
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        int[] autoSides = sideMan.getSlotsForSide(side);
-        for (int aside : autoSides) {
-            if (side == aside) return inventorySlots;
+        int[] accessibleSides = sideMan.getAccessibleSides();
+        for (int aSide : accessibleSides) {
+            if (side == aSide) return inventorySlots;
         }
 
         return emptySlots;
