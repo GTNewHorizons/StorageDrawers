@@ -2,6 +2,8 @@ package com.jaquadro.minecraft.storagedrawers.integration;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -29,21 +31,26 @@ import mcp.mobius.waila.api.IWailaRegistrar;
  * @author dmillerw
  * @author jaquadro
  */
-public class Waila extends IntegrationModule {
+public final class Waila extends IntegrationModule {
 
+    @Nonnull
     @Override
     public String getModID() {
         return "Waila";
     }
 
     @Override
-    public void init() throws Throwable {
-        FMLInterModComms
-                .sendMessage("Waila", "register", StorageDrawers.SOURCE_PATH + "integration.Waila.registerProvider");
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.cache.enableWailaIntegration;
     }
 
     @Override
-    public void postInit() {}
+    public void init() throws Throwable {
+        FMLInterModComms.sendMessage(
+                "Waila",
+                "register",
+                "com.jaquadro.minecraft.storagedrawers.integration.Waila.registerProvider");
+    }
 
     public static void registerProvider(IWailaRegistrar registrar) {
         registrar.registerBodyProvider(new WailaDrawer(), BlockDrawers.class);

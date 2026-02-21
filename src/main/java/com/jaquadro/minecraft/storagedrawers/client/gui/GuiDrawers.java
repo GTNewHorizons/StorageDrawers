@@ -165,18 +165,12 @@ public class GuiDrawers extends GuiContainer {
     }
 
     private RenderItem setItemRender(RenderItem renderItem) {
-        if (IntegrationRegistry.instance().isModLoaded("NotEnoughItems"))
+        if (IntegrationRegistry.instance().isModuleLoaded("NotEnoughItems")) {
             return NotEnoughItems.setItemRender(renderItem);
-        else {
+        } else {
             RenderItem prev = itemRender;
             itemRender = renderItem;
-
             return prev;
         }
     }
-
-    /*
-     * @Override public void func_146977_a (Slot slot) { RenderItem ri = setItemRender(storageItemRender);
-     * super.func_146977_a(slot); setItemRender(ri); }
-     */
 }

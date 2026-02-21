@@ -2,6 +2,8 @@ package com.jaquadro.minecraft.storagedrawers.integration;
 
 import java.lang.reflect.Method;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -12,19 +14,24 @@ import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class ThermalFoundation extends IntegrationModule {
-
-    private Class classRegistrySocial;
+public final class ThermalFoundation extends IntegrationModule {
 
     private Method methodPlayerHasAccess;
 
+    @Nonnull
     @Override
     public String getModID() {
         return "ThermalFoundation";
     }
 
     @Override
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.cache.enableThermalFoundationIntegration;
+    }
+
+    @Override
     public void init() throws Throwable {
+        Class<?> classRegistrySocial;
         try {
             classRegistrySocial = Class.forName("cofh.core.RegistrySocial");
         } catch (ClassNotFoundException e) {
@@ -38,7 +45,6 @@ public class ThermalFoundation extends IntegrationModule {
     @Override
     public void postInit() {
         StorageDrawers.securityRegistry.registerProvider(new CoFHSecurityProvider(this));
-
         if (StorageDrawers.config.cache.enablePersonalUpgrades) {
             GameRegistry.addRecipe(
                     new ShapedOreRecipe(

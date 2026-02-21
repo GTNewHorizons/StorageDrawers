@@ -75,7 +75,7 @@ public class ItemPersonalKey extends Item {
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list) {
         list.add(new ItemStack(item, 1, 0));
         if (StorageDrawers.config.cache.enableThermalFoundationIntegration
-                && IntegrationRegistry.instance().isModLoaded("ThermalFoundation"))
+                && IntegrationRegistry.instance().isModuleLoaded("ThermalFoundation"))
             list.add(new ItemStack(item, 1, 1));
     }
 

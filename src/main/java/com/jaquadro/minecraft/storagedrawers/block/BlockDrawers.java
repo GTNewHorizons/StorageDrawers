@@ -54,7 +54,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandar
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.core.handlers.GuiHandler;
-import com.jaquadro.minecraft.storagedrawers.integration.BackhandIntegrationModule;
+import com.jaquadro.minecraft.storagedrawers.integration.IntegrationRegistry;
 import com.jaquadro.minecraft.storagedrawers.item.ItemPersonalKey;
 import com.jaquadro.minecraft.storagedrawers.item.ItemTrim;
 import com.jaquadro.minecraft.storagedrawers.item.ItemUpgrade;
@@ -313,7 +313,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
 
         if (itemStack.hasDisplayName()) tile.setInventoryName(itemStack.getDisplayName());
 
-        if (BackhandIntegrationModule.isEnabled() && entity instanceof EntityPlayer) {
+        if (entity instanceof EntityPlayer && IntegrationRegistry.instance().isModuleLoaded("backhand")) {
             ItemStack offhandItem = BackhandUtils.getOffhandItem((EntityPlayer) entity);
             useKey(tile, (EntityPlayer) entity, offhandItem, 0, 0, 0, 0);
         }

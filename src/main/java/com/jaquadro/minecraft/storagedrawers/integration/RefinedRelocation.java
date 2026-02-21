@@ -1,5 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.BlockWood;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -27,7 +29,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class RefinedRelocation extends IntegrationModule {
+public final class RefinedRelocation extends IntegrationModule {
 
     public static BlockSortingDrawers fullDrawers1;
     public static BlockSortingDrawers fullDrawers2;
@@ -48,9 +50,15 @@ public class RefinedRelocation extends IntegrationModule {
         }
     };
 
+    @Nonnull
     @Override
     public String getModID() {
         return "RefinedRelocation";
+    }
+
+    @Override
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.cache.enableRefinedRelocationIntegration;
     }
 
     @Override

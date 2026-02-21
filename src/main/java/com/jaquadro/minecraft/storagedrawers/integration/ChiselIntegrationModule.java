@@ -1,5 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockWood;
 
@@ -12,25 +14,39 @@ import com.jaquadro.minecraft.storagedrawers.block.pack.BlockTrimPack;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class ChiselIntegrationModule extends IntegrationModule {
+public final class ChiselIntegrationModule extends IntegrationModule {
 
     private static final String chiselModID = "chisel";
     private static final String addVariation = "variation:add";
 
-    private static final boolean chiselEnabled = (Loader.isModLoaded(chiselModID)
-            && StorageDrawers.config.integrationConfig.isChiselEnabled());
+    @Nonnull
+    @Override
+    public String getModID() {
+        return chiselModID;
+    }
 
-    public static boolean isEnabled() {
-        return chiselEnabled;
+    @Override
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.integrationConfig.isChiselEnabled();
+    }
+
+    @Override
+    public void init() throws Throwable {
+        final ConfigManager config = StorageDrawers.config;
+        for (int meta = 0; meta < BlockWood.field_150096_a.length; meta++) {
+            if (config.isBlockEnabled("fulldrawers1")) registerBlock(ModBlocks.fullDrawers1, meta, "basicFull1");
+            if (config.isBlockEnabled("fulldrawers2")) registerBlock(ModBlocks.fullDrawers2, meta, "basicFull2");
+            if (config.isBlockEnabled("fulldrawers4")) registerBlock(ModBlocks.fullDrawers4, meta, "basicFull4");
+            if (config.isBlockEnabled("halfdrawers2")) registerBlock(ModBlocks.halfDrawers2, meta, "basicHalf2");
+            if (config.isBlockEnabled("halfdrawers4")) registerBlock(ModBlocks.halfDrawers4, meta, "basicHalf4");
+            if (config.isBlockEnabled("trim")) registerBlock(ModBlocks.trim, meta, "trim");
+        }
     }
 
     public static void registerPackBlock(Block block) {
-        if (!chiselEnabled) return;
-
         final String blockGroupName;
         final IPackDataResolver resolver;
 
@@ -78,29 +94,5 @@ public class ChiselIntegrationModule extends IntegrationModule {
                         "StorageDrawers_" + blockGroupName,
                         GameRegistry.findUniqueIdentifierFor(block).toString(),
                         Integer.toString(meta)));
-    }
-
-    @Override
-    public String getModID() {
-        return chiselModID;
-    }
-
-    @Override
-    public void init() throws Throwable {
-        final ConfigManager config = StorageDrawers.config;
-
-        for (int meta = 0; meta < BlockWood.field_150096_a.length; meta++) {
-            if (config.isBlockEnabled("fulldrawers1")) registerBlock(ModBlocks.fullDrawers1, meta, "basicFull1");
-            if (config.isBlockEnabled("fulldrawers2")) registerBlock(ModBlocks.fullDrawers2, meta, "basicFull2");
-            if (config.isBlockEnabled("fulldrawers4")) registerBlock(ModBlocks.fullDrawers4, meta, "basicFull4");
-            if (config.isBlockEnabled("halfdrawers2")) registerBlock(ModBlocks.halfDrawers2, meta, "basicHalf2");
-            if (config.isBlockEnabled("halfdrawers4")) registerBlock(ModBlocks.halfDrawers4, meta, "basicHalf4");
-            if (config.isBlockEnabled("trim")) registerBlock(ModBlocks.trim, meta, "trim");
-        }
-    }
-
-    @Override
-    public void postInit() {
-        /* nothing */
     }
 }
