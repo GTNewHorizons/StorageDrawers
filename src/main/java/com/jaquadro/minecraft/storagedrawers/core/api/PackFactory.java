@@ -52,7 +52,7 @@ public class PackFactory implements IPackBlockFactory {
     }
 
     private static String getConfigName(BlockConfiguration blockConfig) {
-        return (blockConfig.isHalfDepth() ? "half" : "full") + "Drawer" + blockConfig.getDrawerCount();
+        return (blockConfig.isHalfDepth() ? "half" : "full") + "Drawers" + blockConfig.getDrawerCount();
     }
 
     @Override
