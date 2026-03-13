@@ -1,30 +1,19 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
+import javax.annotation.Nonnull;
+
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 
-import cpw.mods.fml.common.Loader;
+public final class BackhandIntegrationModule extends IntegrationModule {
 
-public class BackhandIntegrationModule extends IntegrationModule {
-
-    private static final boolean BACKHAND_ENABLED = Loader.isModLoaded("backhand")
-            && StorageDrawers.config.integrationConfig.isBackhandEnabled();
-
+    @Nonnull
     @Override
     public String getModID() {
         return "backhand";
     }
 
-    public static boolean isEnabled() {
-        return BACKHAND_ENABLED;
-    }
-
     @Override
-    public void init() throws Throwable {
-
-    }
-
-    @Override
-    public void postInit() {
-
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.integrationConfig.isBackhandEnabled();
     }
 }

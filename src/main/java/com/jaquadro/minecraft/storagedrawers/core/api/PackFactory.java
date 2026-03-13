@@ -35,15 +35,16 @@ public class PackFactory implements IPackBlockFactory {
                 return new BlockDrawersPack(dataResolver, blockConfig.getDrawerCount(), blockConfig.isHalfDepth())
                         .setConfigName(getConfigName(blockConfig));
             case DrawersSorting:
-                if (IntegrationRegistry.instance().isModLoaded("RefinedRelocation")) return new BlockSortingDrawersPack(
-                        dataResolver,
-                        blockConfig.getDrawerCount(),
-                        blockConfig.isHalfDepth()).setConfigName(getConfigName(blockConfig));
+                if (IntegrationRegistry.instance().isModuleLoaded("RefinedRelocation"))
+                    return new BlockSortingDrawersPack(
+                            dataResolver,
+                            blockConfig.getDrawerCount(),
+                            blockConfig.isHalfDepth()).setConfigName(getConfigName(blockConfig));
                 return null;
             case Trim:
                 return new BlockTrimPack(dataResolver);
             case TrimSorting:
-                if (IntegrationRegistry.instance().isModLoaded("RefinedRelocation"))
+                if (IntegrationRegistry.instance().isModuleLoaded("RefinedRelocation"))
                     return new BlockSortingTrimPack(dataResolver);
                 return null;
             default:
@@ -67,7 +68,9 @@ public class PackFactory implements IPackBlockFactory {
         } else if (block instanceof BlockSortingTrimPack)
             GameRegistry.registerBlock(block, ItemSortingTrimPack.class, name);
         else if (block instanceof BlockTrimPack) GameRegistry.registerBlock(block, ItemTrimPack.class, name);
-        ChiselIntegrationModule.registerPackBlock(block);
+        if (IntegrationRegistry.instance().isModuleLoaded("chisel")) {
+            ChiselIntegrationModule.registerPackBlock(block);
+        }
     }
 
     @Override

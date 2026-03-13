@@ -2,6 +2,8 @@ package com.jaquadro.minecraft.storagedrawers.integration;
 
 import java.lang.reflect.Method;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,32 +21,32 @@ import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.GameData;
 
-public class ThermalExpansion extends IntegrationModule {
+public final class ThermalExpansion extends IntegrationModule {
 
     private static final String MOD_ID = "ThermalExpansion";
 
-    static Class clSawmillManager;
-    static Class clPulverizerManager;
-    static Method mtSawmillAddRecipe;
-    static Method mtPulverizerAddRecipe;
+    private static Method mtSawmillAddRecipe;
+    private static ItemStack itemSawdust;
+    private static boolean initialized;
 
-    static ItemStack itemSawdust;
-
-    static boolean initialized;
-
+    @Nonnull
     @Override
     public String getModID() {
         return MOD_ID;
     }
 
     @Override
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.cache.enableThermalExpansionIntegration;
+    }
+
+    @Override
     public void init() throws Throwable {
-        clSawmillManager = Class.forName("cofh.thermalexpansion.util.crafting.SawmillManager");
-        clPulverizerManager = Class.forName("cofh.thermalexpansion.util.crafting.PulverizerManager");
+        Class<?> clSawmillManager = Class.forName("cofh.thermalexpansion.util.crafting.SawmillManager");
 
         mtSawmillAddRecipe = clSawmillManager
                 .getMethod("addRecipe", int.class, ItemStack.class, ItemStack.class, ItemStack.class, int.class);
-        mtPulverizerAddRecipe = clSawmillManager
+        Method mtPulverizerAddRecipe = clSawmillManager
                 .getMethod("addRecipe", int.class, ItemStack.class, ItemStack.class, ItemStack.class, int.class);
 
         Item itemMaterial = GameData.getItemRegistry().getObject(MOD_ID + ":material");
@@ -206,9 +208,6 @@ public class ThermalExpansion extends IntegrationModule {
         initialized = true;
     }
 
-    @Override
-    public void postInit() {}
-
     public static void registerPackBlock(IExtendedDataResolver resolver) {
         if (!initialized || resolver == null) return;
 
@@ -332,11 +331,7 @@ public class ThermalExpansion extends IntegrationModule {
                 }
             }
         } catch (Throwable t) {
-            FMLLog.log(
-                    StorageDrawers.MOD_ID,
-                    Level.WARN,
-                    t,
-                    "Error registering pack block in module: " + ThermalExpansion.class.getName());
+            FMLLog.log(StorageDrawers.MOD_ID, Level.WARN, t, "Error registering pack block");
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.Level;
 
@@ -10,57 +12,43 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 
-public class IntegrationRegistry {
+public final class IntegrationRegistry {
 
-    private static IntegrationRegistry instance;
+    private static IntegrationRegistry INSTANCE;
+    private final List<IntegrationModule> registry = new ArrayList<>();
+    private final Set<String> loadedMods = new HashSet<>();
 
-    private List<IntegrationModule> registry;
-
-    static {
-        IntegrationRegistry reg = instance();
-        if (Loader.isModLoaded("appliedenergistics2") && StorageDrawers.config.cache.enableAE2Integration)
-            reg.add(new AppliedEnergistics());
-        if (Loader.isModLoaded("Waila") && StorageDrawers.config.cache.enableWailaIntegration) reg.add(new Waila());
-        if (Loader.isModLoaded("Thaumcraft") && StorageDrawers.config.cache.enableThaumcraftIntegration)
-            reg.add(new Thaumcraft());
-        if (Loader.isModLoaded("MineTweaker3") && StorageDrawers.config.cache.enableMineTweakerIntegration)
-            reg.add(new MineTweaker());
-        if (Loader.isModLoaded("RefinedRelocation") && StorageDrawers.config.cache.enableRefinedRelocationIntegration)
-            reg.add(new RefinedRelocation());
-        if (Loader.isModLoaded("NotEnoughItems")) reg.add(new NotEnoughItems());
-        if (Loader.isModLoaded("ThermalExpansion") && StorageDrawers.config.cache.enableThermalExpansionIntegration)
-            reg.add(new ThermalExpansion());
-        if (Loader.isModLoaded("ThermalFoundation") && StorageDrawers.config.cache.enableThermalFoundationIntegration)
-            reg.add(new ThermalFoundation());
-        if (ChiselIntegrationModule.isEnabled()) reg.add(new ChiselIntegrationModule());
-        if (GTNHIntegrationModule.isEnabled()) reg.add(new GTNHIntegrationModule());
-        if (BackhandIntegrationModule.isEnabled()) reg.add(new BackhandIntegrationModule());
+    public static IntegrationRegistry instance() {
+        if (INSTANCE == null) INSTANCE = new IntegrationRegistry();
+        return INSTANCE;
     }
 
     private IntegrationRegistry() {
-        registry = new ArrayList<IntegrationModule>();
+        if (Loader.isModLoaded("appliedenergistics2")) this.register(new AppliedEnergistics());
+        if (Loader.isModLoaded("Waila")) this.register(new Waila());
+        if (Loader.isModLoaded("Thaumcraft")) this.register(new Thaumcraft());
+        if (Loader.isModLoaded("MineTweaker3")) this.register(new MineTweaker());
+        if (Loader.isModLoaded("RefinedRelocation")) this.register(new RefinedRelocation());
+        if (Loader.isModLoaded("NotEnoughItems")) this.register(new NotEnoughItems());
+        if (Loader.isModLoaded("ThermalExpansion")) this.register(new ThermalExpansion());
+        if (Loader.isModLoaded("ThermalFoundation")) this.register(new ThermalFoundation());
+        if (Loader.isModLoaded("chisel")) this.register(new ChiselIntegrationModule());
+        if (Loader.isModLoaded("dreamcraft")) this.register(new GTNHIntegrationModule());
+        if (Loader.isModLoaded("backhand")) this.register(new BackhandIntegrationModule());
     }
 
-    public static IntegrationRegistry instance() {
-        if (instance == null) instance = new IntegrationRegistry();
-
-        return instance;
-    }
-
-    public void add(IntegrationModule module) {
-        if (module.versionCheck()) registry.add(module);
+    private void register(IntegrationModule module) {
+        if (module.shouldLoadModule()) {
+            registry.add(module);
+        }
     }
 
     public void init() {
         for (int i = 0; i < registry.size(); i++) {
             IntegrationModule module = registry.get(i);
-            if (module.getModID() != null && !Loader.isModLoaded(module.getModID())) {
-                registry.remove(i--);
-                continue;
-            }
-
             try {
                 module.init();
+                loadedMods.add(module.getModID());
             } catch (Throwable t) {
                 registry.remove(i--);
                 FMLLog.log(
@@ -72,14 +60,12 @@ public class IntegrationRegistry {
     }
 
     public void postInit() {
-        for (IntegrationModule module : registry) module.postInit();
+        for (IntegrationModule module : registry) {
+            module.postInit();
+        }
     }
 
-    public boolean isModLoaded(String mod_id) {
-        for (IntegrationModule module : registry) {
-            if (module.getModID().equals(mod_id)) return true;
-        }
-
-        return false;
+    public boolean isModuleLoaded(String modId) {
+        return this.loadedMods.contains(modId);
     }
 }

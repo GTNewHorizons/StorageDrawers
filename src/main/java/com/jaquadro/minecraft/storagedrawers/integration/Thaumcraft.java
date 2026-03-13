@@ -1,5 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -15,6 +17,7 @@ import net.minecraftforge.common.util.Constants;
 
 import org.lwjgl.opengl.GL11;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.StorageDrawersApi;
 import com.jaquadro.minecraft.storagedrawers.api.event.DrawerPopulatedEvent;
 import com.jaquadro.minecraft.storagedrawers.api.registry.IWailaTooltipHandler;
@@ -28,13 +31,19 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
-public class Thaumcraft extends IntegrationModule {
+public final class Thaumcraft extends IntegrationModule {
 
     private Item[] aspectItems;
 
+    @Nonnull
     @Override
     public String getModID() {
         return "Thaumcraft";
+    }
+
+    @Override
+    protected boolean moduleConfig() {
+        return StorageDrawers.config.cache.enableThaumcraftIntegration;
     }
 
     @Override
@@ -50,9 +59,6 @@ public class Thaumcraft extends IntegrationModule {
         StorageDrawersApi.instance().renderRegistry().registerPreLabelRenderHandler(new LabelRenderHandler());
         StorageDrawersApi.instance().wailaRegistry().registerTooltipHandler(new WailaTooltipHandler());
     }
-
-    @Override
-    public void postInit() {}
 
     @SubscribeEvent
     public void onDrawerPopulated(DrawerPopulatedEvent event) {

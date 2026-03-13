@@ -8,8 +8,8 @@ import com.mojang.authlib.GameProfile;
 
 public class CoFHSecurityProvider implements ISecurityProvider {
 
-    ThermalFoundation foundation;
-    private DefaultSecurityProvider defaultProvider = new DefaultSecurityProvider();
+    private final ThermalFoundation foundation;
+    private final DefaultSecurityProvider defaultProvider = new DefaultSecurityProvider();
 
     public CoFHSecurityProvider(ThermalFoundation foundation) {
         this.foundation = foundation;
