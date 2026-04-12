@@ -9,16 +9,12 @@ import static net.minecraftforge.fluids.FluidRegistry.getFluidStack;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import com.google.common.collect.ImmutableList;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
-import com.jaquadro.minecraft.storagedrawers.item.ItemDrawers;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
@@ -65,9 +61,6 @@ public class ModRecipes {
     private static final String ORE_stickWood = "stickWood";
     private static final String ORE_stoneConcrete = "stoneConcrete";
     private static final String NAME_blockCarpentersBlock = "blockCarpentersBlock";
-
-    // Lists of Wildcard Meta slabWood ItemStacks suitable to optimize the number of Gregtech Assembler recipes
-    // registered
 
     // Ingredients for Drawers recipes
     private static final ItemStack chest1 = new ItemStack(Blocks.chest, 1);
@@ -175,9 +168,7 @@ public class ModRecipes {
                 new ShapedOreRecipe(fullCustom1, "bbb", "bcb", "bbb", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Full 1x1 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock8, chest1)
-                .circuit(1)
-                .itemOutputs(fullCustom1)
+        GTValues.RA.stdBuilder().itemInputs(carpentersBlock8, chest1).circuit(1).itemOutputs(fullCustom1)
                 .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
     }
 
@@ -208,9 +199,7 @@ public class ModRecipes {
                 new ShapedOreRecipe(fullCustom2, "bcb", "bbb", "bcb", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Full 1x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock7, chest2)
-                .circuit(2)
-                .itemOutputs(fullCustom2)
+        GTValues.RA.stdBuilder().itemInputs(carpentersBlock7, chest2).circuit(2).itemOutputs(fullCustom2)
                 .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
     }
 
@@ -241,9 +230,7 @@ public class ModRecipes {
                 new ShapedOreRecipe(fullCustom4, "cbc", "bbb", "cbc", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Full 2x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock5, chest4)
-                .circuit(4)
-                .itemOutputs(fullCustom4)
+        GTValues.RA.stdBuilder().itemInputs(carpentersBlock5, chest4).circuit(4).itemOutputs(fullCustom4)
                 .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
     }
 
@@ -274,9 +261,7 @@ public class ModRecipes {
                 new ShapedOreRecipe(halfCustom2, "bbb", "cbc", "bbb", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Half 1x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock7, chest2)
-                .circuit(12)
-                .itemOutputs(halfCustom2)
+        GTValues.RA.stdBuilder().itemInputs(carpentersBlock7, chest2).circuit(12).itemOutputs(halfCustom2)
                 .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
     }
 
@@ -305,9 +290,7 @@ public class ModRecipes {
                 new ShapedOreRecipe(halfCustom4, "cbc", "bcb", "cbc", 'b', carpentersBlock1, 'c', ORE_chestWood));
 
         // Framed Drawer Half 2x2 Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock4, chest5)
-                .circuit(14)
-                .itemOutputs(halfCustom4)
+        GTValues.RA.stdBuilder().itemInputs(carpentersBlock4, chest5).circuit(14).itemOutputs(halfCustom4)
                 .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
     }
 
@@ -337,9 +320,7 @@ public class ModRecipes {
                 new ShapedOreRecipe(trimCustom, "tbt", "bbb", "tbt", 'b', carpentersBlock1, 't', ORE_stickWood));
 
         // Framed Trim Gregtech Assembler recipe
-        GTValues.RA.stdBuilder().itemInputs(carpentersBlock5, stick4)
-                .circuit(1)
-                .itemOutputs(trimCustom)
+        GTValues.RA.stdBuilder().itemInputs(carpentersBlock5, stick4).circuit(1).itemOutputs(trimCustom)
                 .duration(10 * SECONDS).eut(16).addTo(assemblerRecipes);
     }
 
@@ -445,8 +426,8 @@ public class ModRecipes {
                         't',
                         ORE_craftingToolScrewdriver));
 
-        GTValues.RA.stdBuilder().itemInputs(new OreDictItemStack("drawerBasic",1), piston)
-                .itemOutputs(upgradeTemplate).duration(1 * MINUTES).eut(16).addTo(assemblerRecipes);
+        GTValues.RA.stdBuilder().itemInputs(new OreDictItemStack("drawerBasic", 1), piston).itemOutputs(upgradeTemplate)
+                .duration(1 * MINUTES).eut(16).addTo(assemblerRecipes);
     }
 
     private static void storageUpgradeRecipes() {
@@ -725,13 +706,11 @@ public class ModRecipes {
         if (!config.cache.enableTape) return;
 
         // Packing Tape
-        GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper))
-                .circuit(1)
+        GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper)).circuit(1)
                 .fluidInputs(getFluidStack("glue", 144)).itemOutputs(new ItemStack(ModItems.tape))
                 .duration(10 * SECONDS).eut(TierEU.RECIPE_LV).addTo(assemblerRecipes);
 
-        GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper))
-                .circuit(1)
+        GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper)).circuit(1)
                 .fluidInputs(Materials.Glue.getFluid(144)).itemOutputs(new ItemStack(ModItems.tape))
                 .duration(10 * SECONDS).eut(TierEU.RECIPE_LV).addTo(assemblerRecipes);
     }
