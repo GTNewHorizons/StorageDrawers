@@ -23,7 +23,6 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
-import gregtech.api.util.GTUtility;
 
 public class ModRecipes {
 
@@ -69,21 +68,12 @@ public class ModRecipes {
 
     // Lists of Wildcard Meta slabWood ItemStacks suitable to optimize the number of Gregtech Assembler recipes
     // registered
-    private static final ImmutableList<ItemStack> slabWood8WList;
-    private static final ImmutableList<ItemStack> slabWood7WList;
-    private static final ImmutableList<ItemStack> slabWood5WList;
-    private static final ImmutableList<ItemStack> slabWood4WList;
 
     // Ingredients for Drawers recipes
     private static final ItemStack chest1 = new ItemStack(Blocks.chest, 1);
     private static final ItemStack chest2 = new ItemStack(Blocks.chest, 2);
     private static final ItemStack chest4 = new ItemStack(Blocks.chest, 4);
     private static final ItemStack chest5 = new ItemStack(Blocks.chest, 5);
-    private static final ItemStack integratedCircuit1 = GTUtility.getIntegratedCircuit(1);
-    private static final ItemStack integratedCircuit2 = GTUtility.getIntegratedCircuit(2);
-    private static final ItemStack integratedCircuit4 = GTUtility.getIntegratedCircuit(4);
-    private static final ItemStack integratedCircuit12 = GTUtility.getIntegratedCircuit(12);
-    private static final ItemStack integratedCircuit14 = GTUtility.getIntegratedCircuit(14);
 
     // Ingredients for Framed Drawers recipes
     private static final ItemStack carpentersBlock8 = GameRegistry
@@ -116,55 +106,6 @@ public class ModRecipes {
     private static final ItemStack upgradeLock = new ItemStack(ModItems.upgradeLock);
     private static final ItemStack piston = new ItemStack(Blocks.piston, 1);
     private static final ItemStack upgradeTemplate = new ItemStack(ModItems.upgradeTemplate);
-    private static final ImmutableList<ItemStack> drawerBasicW;
-
-    static {
-        final ImmutableList.Builder<String> slabWoodRegistryNameListBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<ItemStack> slabWood8WListBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<ItemStack> slabWood7WListBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<ItemStack> slabWood5WListBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<ItemStack> slabWood4WListBuilder = new ImmutableList.Builder<>();
-
-        // Build a list of unique slabWood Items's Registry Names ("MOD_ID:ItemName")
-        for (ItemStack slabWood : OreDictionary.getOres(ORE_slabWood)) {
-            slabWoodRegistryNameListBuilder.add(GameRegistry.findUniqueIdentifierFor(slabWood.getItem()).toString());
-        }
-
-        // Build lists of unique slabWood ItemStacks of different size with Wildcard Meta from the RegistryNames list
-        // above
-        for (String slabName : slabWoodRegistryNameListBuilder.build()) {
-            slabWood8WListBuilder.add(makeItemStack(slabName, OreDictionary.WILDCARD_VALUE, 8, null));
-            slabWood7WListBuilder.add(makeItemStack(slabName, OreDictionary.WILDCARD_VALUE, 7, null));
-            slabWood5WListBuilder.add(makeItemStack(slabName, OreDictionary.WILDCARD_VALUE, 5, null));
-            slabWood4WListBuilder.add(makeItemStack(slabName, OreDictionary.WILDCARD_VALUE, 4, null));
-        }
-
-        slabWood8WList = slabWood8WListBuilder.build();
-        slabWood7WList = slabWood7WListBuilder.build();
-        slabWood5WList = slabWood5WListBuilder.build();
-        slabWood4WList = slabWood4WListBuilder.build();
-
-        final ImmutableList.Builder<ItemStack> drawerBasic1RegistryNameListBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<String> drawerBasicRefs = new ImmutableList.Builder<>();
-
-        // Build a list of unique drawerBasic Items's Registry Names ("MOD_ID:ItemName")
-        for (ItemStack drawerBasicStack : OreDictionary.getOres(ORE_drawerBasic)) {
-            UniqueIdentifier drawerID = GameRegistry.findUniqueIdentifierFor(drawerBasicStack.getItem());
-            // Keeps only fullDrawer1 to limit the amount of distinct items
-            if (drawerID.name.matches("fullDrawers1.*")) drawerBasicRefs.add(drawerID.toString());
-        }
-
-        // Build the list of unique drawerBasic ItemStacks with Wildcard Meta from the RegistryNames list above
-        for (String drawerName : drawerBasicRefs.build()) {
-            final ItemStack drawerStack = makeItemStack(drawerName, OreDictionary.WILDCARD_VALUE, 1, null);
-            // Be sure to only keep the ItemDrawers and not some other mod's drawerBasic1
-            if (drawerStack.getItem() instanceof ItemDrawers) {
-                drawerBasic1RegistryNameListBuilder.add(drawerStack);
-            }
-        }
-
-        drawerBasicW = drawerBasic1RegistryNameListBuilder.build();
-    }
 
     private ModRecipes() {
         throw new IllegalStateException("Utility class");
@@ -504,7 +445,7 @@ public class ModRecipes {
                         't',
                         ORE_craftingToolScrewdriver));
 
-        for (ItemStack drawer : drawerBasicW) GTValues.RA.stdBuilder().itemInputs(drawer, piston)
+        GTValues.RA.stdBuilder().itemInputs(new OreDictItemStack("drawerBasic",1), piston)
                 .itemOutputs(upgradeTemplate).duration(1 * MINUTES).eut(16).addTo(assemblerRecipes);
     }
 
