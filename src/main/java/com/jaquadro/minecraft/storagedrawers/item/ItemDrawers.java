@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +24,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
+import com.jaquadro.minecraft.storagedrawers.util.ItemStackConversion;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -253,16 +253,9 @@ public class ItemDrawers extends ItemBlock {
 
     /** Read ItemStack from NBT when representing drawer slot. */
     protected ItemStack getItemStackFromDrawer(NBTTagCompound slot) {
-        // Logic copied from readNBT method of DrawerData class.
-        ItemStack stack = null;
-        if (slot.hasKey("Item") && slot.hasKey("Count")) {
-            Item item = Item.getItemById(slot.getShort("Item"));
-            if (item != null) { // p_i1881_2_ - stackSize
-                stack = new ItemStack(item, 1, slot.getShort("Meta"));
-                if (slot.hasKey("Tags")) stack.setTagCompound(slot.getCompoundTag("Tags"));
-            }
-        }
-        return stack;
+        final ItemStack stack = ItemStackConversion.readFromNBT(slot);
+        if (stack != null) stack.stackSize = 1;
+        return null;
     }
 
     /** Read upgrades and drawer capacity from NBT when representing drawers. */
