@@ -255,7 +255,7 @@ public class ItemDrawers extends ItemBlock {
     protected ItemStack getItemStackFromDrawer(NBTTagCompound slot) {
         final ItemStack stack = ItemStackConversion.readFromNBT(slot);
         if (stack != null) stack.stackSize = 1;
-        return null;
+        return stack;
     }
 
     /** Read upgrades and drawer capacity from NBT when representing drawers. */
