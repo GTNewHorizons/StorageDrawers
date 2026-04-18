@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -26,6 +25,7 @@ import com.jaquadro.minecraft.storagedrawers.storage.BaseDrawerData;
 import com.jaquadro.minecraft.storagedrawers.storage.CompDrawerData;
 import com.jaquadro.minecraft.storagedrawers.storage.DrawerData;
 import com.jaquadro.minecraft.storagedrawers.storage.ICentralInventory;
+import com.jaquadro.minecraft.storagedrawers.util.ItemStackConversion;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -667,27 +667,16 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
         @Override
         public void writeToNBT(int slot, NBTTagCompound tag) {
-            ItemStack protoStack = getStoredItemPrototype(slot);
-            if (protoStack != null && protoStack.getItem() != null) {
-                tag.setShort("Item", (short) Item.getIdFromItem(protoStack.getItem()));
-                tag.setShort("Meta", (short) protoStack.getItemDamage());
-                tag.setInteger("Count", 0); // TODO: Remove when ready to break 1.1.7 compat
-
-                if (protoStack.getTagCompound() != null) tag.setTag("Tags", protoStack.getTagCompound());
-            }
+            final ItemStack protoStack = getStoredItemPrototype(slot);
+            ItemStackConversion.writeToNBT(tag, protoStack, 0);
         }
 
         @Override
         public void readFromNBT(int slot, NBTTagCompound tag) {
-            if (tag.hasKey("Item")) {
-                Item item = Item.getItemById(tag.getShort("Item"));
-                if (item != null) {
-                    ItemStack stack = new ItemStack(item);
-                    stack.setItemDamage(tag.getShort("Meta"));
-                    if (tag.hasKey("Tags")) stack.setTagCompound(tag.getCompoundTag("Tags"));
-
-                    protoStack[slot] = stack;
-                }
+            final ItemStack stack = ItemStackConversion.readFromNBT(tag);
+            if (stack != null) {
+                stack.stackSize = 1;
+                protoStack[slot] = stack;
             }
         }
 

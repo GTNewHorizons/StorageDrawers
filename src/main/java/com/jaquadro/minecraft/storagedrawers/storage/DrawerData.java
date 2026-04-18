@@ -12,6 +12,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IQuantifiable
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IShroudable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IVoidable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
+import com.jaquadro.minecraft.storagedrawers.util.ItemStackConversion;
 
 public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable, ILockable, IQuantifiable {
 
@@ -163,29 +164,17 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
     }
 
     public void writeToNBT(NBTTagCompound tag) {
-        if (protoStack.getItem() != null) {
-            tag.setShort("Item", (short) Item.getIdFromItem(protoStack.getItem()));
-            tag.setShort("Meta", (short) protoStack.getItemDamage());
-            tag.setInteger("Count", count);
-
-            if (protoStack.getTagCompound() != null) tag.setTag("Tags", protoStack.getTagCompound());
-        }
+        ItemStackConversion.writeToNBT(tag, protoStack, count);
     }
 
     public void readFromNBT(NBTTagCompound tag) {
-        if (tag.hasKey("Item") && tag.hasKey("Count")) {
-            Item item = Item.getItemById(tag.getShort("Item"));
-            if (item != null) {
-                ItemStack stack = new ItemStack(item);
-                stack.setItemDamage(tag.getShort("Meta"));
-                if (tag.hasKey("Tags")) stack.setTagCompound(tag.getCompoundTag("Tags"));
-
-                setStoredItem(stack, tag.getInteger("Count"), false);
-            } else {
-                reset();
-            }
-        } else {
+        final ItemStack stack = ItemStackConversion.readFromNBT(tag);
+        if (stack == null) {
             reset();
+        } else {
+            final int count = stack.stackSize;
+            stack.stackSize = 1;
+            setStoredItem(stack, count, false);
         }
     }
 
