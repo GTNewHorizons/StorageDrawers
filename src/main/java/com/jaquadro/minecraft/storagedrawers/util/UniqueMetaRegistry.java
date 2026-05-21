@@ -8,10 +8,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class UniqueMetaRegistry<E> {
 
-    private Map<UniqueMetaIdentifier, E> registry;
+    private final Map<UniqueMetaIdentifier, E> registry;
 
     public UniqueMetaRegistry() {
-        registry = new HashMap<UniqueMetaIdentifier, E>();
+        registry = new HashMap<>();
     }
 
     public void register(UniqueMetaIdentifier id, E entry) {

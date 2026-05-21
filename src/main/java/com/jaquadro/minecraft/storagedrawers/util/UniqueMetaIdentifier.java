@@ -19,20 +19,20 @@ public final class UniqueMetaIdentifier {
     private GameRegistry.UniqueIdentifier cachedUID;
 
     public UniqueMetaIdentifier(String modId, String name) {
-        this.modId = modId;
+        this.modId = modId.intern();
         this.name = name;
         this.meta = OreDictionary.WILDCARD_VALUE;
     }
 
     public UniqueMetaIdentifier(String modId, String name, int meta) {
-        this.modId = modId;
+        this.modId = modId.intern();
         this.name = name;
         this.meta = meta;
     }
 
     public UniqueMetaIdentifier(String qualifiedName, int meta) {
         String[] parts = qualifiedName.split(":");
-        this.modId = parts[0];
+        this.modId = parts[0].intern();
         this.name = parts[1];
         this.meta = meta;
     }
@@ -40,7 +40,7 @@ public final class UniqueMetaIdentifier {
     public UniqueMetaIdentifier(String compoundName) {
         String[] parts1 = compoundName.split(";");
         String[] parts2 = parts1[0].split(":");
-        this.modId = parts2[0];
+        this.modId = parts2[0].intern();
 
         if (parts2.length >= 2) this.name = parts2[1];
         else this.name = "";
@@ -53,7 +53,7 @@ public final class UniqueMetaIdentifier {
     public UniqueMetaIdentifier(String compoundName, char separator) {
         String[] parts1 = compoundName.split("[ ]*" + separator + "[ ]*");
         String[] parts2 = parts1[0].split(":");
-        this.modId = parts2[0];
+        this.modId = parts2[0].intern();
 
         if (parts2.length >= 2) this.name = parts2[1];
         else this.name = "";
