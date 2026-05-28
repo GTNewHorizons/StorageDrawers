@@ -40,6 +40,7 @@ public final class IntegrationRegistry {
     private void register(IntegrationModule module) {
         if (module.shouldLoadModule()) {
             registry.add(module);
+            loadedMods.add(module.getModID());
         }
     }
 
@@ -48,9 +49,9 @@ public final class IntegrationRegistry {
             IntegrationModule module = registry.get(i);
             try {
                 module.init();
-                loadedMods.add(module.getModID());
             } catch (Throwable t) {
                 registry.remove(i--);
+                loadedMods.remove(module.getModID());
                 FMLLog.log(
                         StorageDrawers.MOD_ID,
                         Level.INFO,
