@@ -95,7 +95,6 @@ public class StorageDrawers {
 
         blocks.init();
         items.init();
-        IntegrationRegistry.instance().init();
     }
 
     @Mod.EventHandler
@@ -105,6 +104,8 @@ public class StorageDrawers {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         FMLCommonHandler.instance().bus().register(instance);
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
+
+        IntegrationRegistry.instance().init();
     }
 
     @Mod.EventHandler
