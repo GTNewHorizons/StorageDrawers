@@ -56,8 +56,9 @@ public final class IntegrationRegistry {
                     registry.remove(i--);
                     FMLLog.log(
                             StorageDrawers.MOD_ID,
-                            Level.INFO,
+                            Level.ERROR,
                             "Could not load integration module: " + module.getClass().getName());
+                    t.printStackTrace();
                 }
             }
         } finally {

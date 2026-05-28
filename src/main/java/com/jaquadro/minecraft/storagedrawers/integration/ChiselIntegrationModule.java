@@ -1,5 +1,8 @@
 package com.jaquadro.minecraft.storagedrawers.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
@@ -35,6 +38,9 @@ public final class ChiselIntegrationModule extends IntegrationModule {
 
     @Override
     public void init() throws Throwable {
+        final List<Block> toRegister = pendingRegistration;
+        pendingRegistration = null;
+        toRegister.forEach(ChiselIntegrationModule::registerPackBlock);
         final ConfigManager config = StorageDrawers.config;
         for (int meta = 0; meta < BlockWood.field_150096_a.length; meta++) {
             if (config.isBlockEnabled("fulldrawers1")) registerBlock(ModBlocks.fullDrawers1, meta, "basicFull1");
@@ -46,7 +52,13 @@ public final class ChiselIntegrationModule extends IntegrationModule {
         }
     }
 
+    private static List<Block> pendingRegistration = new ArrayList<>();
+
     public static void registerPackBlock(Block block) {
+        if (pendingRegistration != null) {
+            pendingRegistration.add(block);
+            return;
+        }
         final String blockGroupName;
         final IPackDataResolver resolver;
 
@@ -85,7 +97,7 @@ public final class ChiselIntegrationModule extends IntegrationModule {
         }
     }
 
-    public static void registerBlock(final Block block, final int meta, final String blockGroupName) {
+    private static void registerBlock(final Block block, final int meta, final String blockGroupName) {
         FMLInterModComms.sendMessage(
                 chiselModID,
                 addVariation,
