@@ -65,12 +65,12 @@ public class PackFactory implements IPackBlockFactory {
             GameRegistry.registerBlock(block, ItemDrawersPack.class, name);
             OreDictionary.registerOre("drawerBasic", new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
             StorageDrawers.proxy.registerDrawer(block);
-        } else if (block instanceof BlockSortingTrimPack)
+        } else if (block instanceof BlockSortingTrimPack) {
             GameRegistry.registerBlock(block, ItemSortingTrimPack.class, name);
-        else if (block instanceof BlockTrimPack) GameRegistry.registerBlock(block, ItemTrimPack.class, name);
-        if (IntegrationRegistry.instance().isModuleLoaded("chisel")) {
-            ChiselIntegrationModule.registerPackBlock(block);
+        } else if (block instanceof BlockTrimPack) {
+            GameRegistry.registerBlock(block, ItemTrimPack.class, name);
         }
+        ChiselIntegrationModule.registerPackBlock(block);
     }
 
     @Override
