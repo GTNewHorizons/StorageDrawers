@@ -15,8 +15,10 @@ import cpw.mods.fml.common.Loader;
 public final class IntegrationRegistry {
 
     private static IntegrationRegistry INSTANCE;
+
     private final List<IntegrationModule> registry = new ArrayList<>();
     private final Set<String> loadedMods = new HashSet<>();
+    private boolean hasInit = false;
 
     public static IntegrationRegistry instance() {
         if (INSTANCE == null) INSTANCE = new IntegrationRegistry();
@@ -44,18 +46,22 @@ public final class IntegrationRegistry {
     }
 
     public void init() {
-        for (int i = 0; i < registry.size(); i++) {
-            IntegrationModule module = registry.get(i);
-            try {
-                module.init();
-                loadedMods.add(module.getModID());
-            } catch (Throwable t) {
-                registry.remove(i--);
-                FMLLog.log(
-                        StorageDrawers.MOD_ID,
-                        Level.INFO,
-                        "Could not load integration module: " + module.getClass().getName());
+        try {
+            for (int i = 0; i < registry.size(); i++) {
+                IntegrationModule module = registry.get(i);
+                try {
+                    module.init();
+                    loadedMods.add(module.getModID());
+                } catch (Throwable t) {
+                    registry.remove(i--);
+                    FMLLog.log(
+                            StorageDrawers.MOD_ID,
+                            Level.INFO,
+                            "Could not load integration module: " + module.getClass().getName());
+                }
             }
+        } finally {
+            this.hasInit = true;
         }
     }
 
@@ -66,6 +72,9 @@ public final class IntegrationRegistry {
     }
 
     public boolean isModuleLoaded(String modId) {
+        if (!this.hasInit) {
+            throw new IllegalStateException("Integration registry has not initialized yet!");
+        }
         return this.loadedMods.contains(modId);
     }
 }
