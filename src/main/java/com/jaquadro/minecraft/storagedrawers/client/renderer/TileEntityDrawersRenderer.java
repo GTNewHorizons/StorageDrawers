@@ -233,9 +233,9 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         double dx = tile.xCoord + 0.5 - player.posX;
         double dy = tile.yCoord + 0.5 - player.posY;
         double dz = tile.zCoord + 0.5 - player.posZ;
-        double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        double distance = dx * dx + dy * dy + dz * dz;
 
-        float range = StorageDrawers.config.getItemRenderDistance();
+        double range = StorageDrawers.config.getItemRenderDistance();
         if (distance > range * range) return;
 
         ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
@@ -284,11 +284,12 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
             float alpha = 1.0f;
-            if (distance > 4.0) {
-                alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
+            if (distance > 16.0) {
+                double distanceSq = Math.sqrt(distance);
+                alpha = Math.max(1.0f - (float) ((distanceSq - 4.0) / 6.0), 0.05f);
             }
 
-            if (distance < 10.0) {
+            if (distance < 100.0) {
                 for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
                     if (!tileDrawers.isDrawerEnabled(i)) continue;
 
