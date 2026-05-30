@@ -362,7 +362,7 @@ public class ConfigManager {
         cache.itemRenderType = config
                 .get(Configuration.CATEGORY_GENERAL, "itemRenderType", "fast", null, new String[] { "fancy", "fast" })
                 .setLanguageKey(LANG_PREFIX + "prop.itemRenderType").getString();
-        cache.itemRenderDistance = config.get(Configuration.CATEGORY_GENERAL, "itemRenderDistance", 256.0)
+        cache.itemRenderDistance = config.get(Configuration.CATEGORY_GENERAL, "itemRenderDistance", 128.0)
                 .setLanguageKey(LANG_PREFIX + "prop.itemRenderDistance").getDouble();
 
         cache.renderStorageUpgrades = config.get(Configuration.CATEGORY_GENERAL, "renderStorageUpgrades", true)
