@@ -223,9 +223,22 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTickTime) {
+        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return;
+
         TileEntityDrawers tileDrawers = (TileEntityDrawers) tile;
         if (tileDrawers == null) return;
         if (tileDrawers.isShrouded() || tileDrawers.isSealed()) return;
+
+        double dx = tile.xCoord + 0.5 - player.posX;
+        double dy = tile.yCoord + 0.5 - player.posY;
+        double dz = tile.zCoord + 0.5 - player.posZ;
+        double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance > StorageDrawers.config.getItemRenderDistance()) return;
+
+        ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
+        if (isPlayerBehindBlock(player, tile, side)) return;
 
         float depth;
         Block block = tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
@@ -240,7 +253,6 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         itemRenderer.setRenderManager(RenderManager.instance);
 
-        ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
         int ambLight = tile.getWorldObj().getLightBrightnessForSkyBlocks(
                 tile.xCoord + side.offsetX,
                 tile.yCoord + side.offsetY,
@@ -270,12 +282,6 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         }
 
         if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
-            EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-            double dx = tile.xCoord + 0.5 - player.posX;
-            double dy = tile.yCoord + 0.5 - player.posY;
-            double dz = tile.zCoord + 0.5 - player.posZ;
-            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
             float alpha = 1.0f;
             if (distance > 4.0) {
                 alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
@@ -582,6 +588,19 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     private boolean isItemBlockType(ItemStack itemStack) {
         return itemStack.getItemSpriteNumber() == 0 && itemStack.getItem() instanceof ItemBlock
                 && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(itemStack.getItem()).getRenderType());
+    }
+
+    private boolean isPlayerBehindBlock(EntityClientPlayerMP player, TileEntity tile, ForgeDirection side) {
+        if (player == null) return false;
+        if (tile == null) return false;
+
+        return switch (side) {
+            case NORTH -> player.posZ > tile.zCoord;
+            case SOUTH -> player.posZ < tile.zCoord;
+            case WEST -> player.posX > tile.xCoord;
+            case EAST -> player.posX < tile.xCoord;
+            default -> false;
+        };
     }
 
     private float getXOffset(int drawerCount, int slot) {
