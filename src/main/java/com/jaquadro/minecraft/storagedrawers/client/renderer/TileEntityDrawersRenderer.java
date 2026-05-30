@@ -285,8 +285,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
             float alpha = 1.0f;
             if (distance > 16.0) {
-                double distanceSq = Math.sqrt(distance);
-                alpha = Math.max(1.0f - (float) ((distanceSq - 4.0) / 6.0), 0.05f);
+                alpha = Math.max(1.0f - (float) ((distance - 16.0) / 36.0), 0.05f);
             }
 
             if (distance < 100.0) {
