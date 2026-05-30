@@ -235,7 +235,8 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         double dz = tile.zCoord + 0.5 - player.posZ;
         double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        if (distance > StorageDrawers.config.getItemRenderDistance()) return;
+        float range = StorageDrawers.config.getItemRenderDistance();
+        if (distance > range * range) return;
 
         ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
         if (isPlayerBehindBlock(player, tile, side)) return;
