@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -239,7 +240,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         if (distanceSq > range * range) return;
 
         ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
-        if (isPlayerBehindBlock(player, tile, side)) return;
+        if (isRenderViewEntityBehindBlock(tile, side)) return;
 
         float depth;
         Block block = tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
@@ -284,11 +285,12 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
             float alpha = 1.0f;
-            if (distanceSq > 16.0) {
-                alpha = Math.max(1.0f - (float) ((distanceSq - 16.0) / 36.0), 0.05f);
+            double distance = Math.sqrt(distanceSq);
+            if (distance > 4.0) {
+                alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
             }
 
-            if (distanceSq < 100.0) {
+            if (distance < 10.0) {
                 for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
                     if (!tileDrawers.isDrawerEnabled(i)) continue;
 
@@ -591,15 +593,16 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
                 && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(itemStack.getItem()).getRenderType());
     }
 
-    private boolean isPlayerBehindBlock(EntityClientPlayerMP player, TileEntity tile, ForgeDirection side) {
-        if (player == null) return false;
+    private boolean isRenderViewEntityBehindBlock(TileEntity tile, ForgeDirection side) {
+        EntityLivingBase renderViewEntity = Minecraft.getMinecraft().renderViewEntity;
+        if (renderViewEntity == null) return false;
         if (tile == null) return false;
 
         return switch (side) {
-            case NORTH -> player.posZ > tile.zCoord;
-            case SOUTH -> player.posZ < tile.zCoord;
-            case WEST -> player.posX > tile.xCoord;
-            case EAST -> player.posX < tile.xCoord;
+            case NORTH -> renderViewEntity.posZ > tile.zCoord;
+            case SOUTH -> renderViewEntity.posZ < tile.zCoord;
+            case WEST -> renderViewEntity.posX > tile.xCoord;
+            case EAST -> renderViewEntity.posX < tile.xCoord;
             default -> false;
         };
     }
