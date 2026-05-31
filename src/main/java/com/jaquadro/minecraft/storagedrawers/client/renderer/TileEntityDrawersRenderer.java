@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -15,6 +14,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -223,9 +223,23 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTickTime) {
+        EntityLivingBase renderViewEntity = Minecraft.getMinecraft().renderViewEntity;
+        if (renderViewEntity == null) return;
+
         TileEntityDrawers tileDrawers = (TileEntityDrawers) tile;
         if (tileDrawers == null) return;
         if (tileDrawers.isShrouded() || tileDrawers.isSealed()) return;
+
+        double dx = tile.xCoord + 0.5 - renderViewEntity.posX;
+        double dy = tile.yCoord + 0.5 - renderViewEntity.posY;
+        double dz = tile.zCoord + 0.5 - renderViewEntity.posZ;
+        double distanceSq = dx * dx + dy * dy + dz * dz;
+
+        double range = StorageDrawers.config.getItemRenderDistance();
+        if (distanceSq > range * range) return;
+
+        ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
+        if (isRenderViewEntityBehindBlock(tile, side)) return;
 
         float depth;
         Block block = tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
@@ -240,7 +254,6 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         itemRenderer.setRenderManager(RenderManager.instance);
 
-        ForgeDirection side = ForgeDirection.getOrientation(tileDrawers.getDirection());
         int ambLight = tile.getWorldObj().getLightBrightnessForSkyBlocks(
                 tile.xCoord + side.offsetX,
                 tile.yCoord + side.offsetY,
@@ -270,13 +283,8 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         }
 
         if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
-            EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-            double dx = tile.xCoord + 0.5 - player.posX;
-            double dy = tile.yCoord + 0.5 - player.posY;
-            double dz = tile.zCoord + 0.5 - player.posZ;
-            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
             float alpha = 1.0f;
+            double distance = Math.sqrt(distanceSq);
             if (distance > 4.0) {
                 alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
             }
@@ -582,6 +590,20 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     private boolean isItemBlockType(ItemStack itemStack) {
         return itemStack.getItemSpriteNumber() == 0 && itemStack.getItem() instanceof ItemBlock
                 && RenderBlocks.renderItemIn3d(Block.getBlockFromItem(itemStack.getItem()).getRenderType());
+    }
+
+    private boolean isRenderViewEntityBehindBlock(TileEntity tile, ForgeDirection side) {
+        EntityLivingBase renderViewEntity = Minecraft.getMinecraft().renderViewEntity;
+        if (renderViewEntity == null) return false;
+        if (tile == null) return false;
+
+        return switch (side) {
+            case NORTH -> renderViewEntity.posZ > tile.zCoord;
+            case SOUTH -> renderViewEntity.posZ < tile.zCoord;
+            case WEST -> renderViewEntity.posX > tile.xCoord;
+            case EAST -> renderViewEntity.posX < tile.xCoord;
+            default -> false;
+        };
     }
 
     private float getXOffset(int drawerCount, int slot) {

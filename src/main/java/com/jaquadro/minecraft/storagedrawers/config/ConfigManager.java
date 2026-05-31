@@ -69,6 +69,7 @@ public class ConfigManager {
         public boolean renderStorageUpgrades;
         public boolean enableDrawerUI;
         public String itemRenderType;
+        public double itemRenderDistance;
         public String breakDrawerDropMode;
         public boolean creativeTabVanillaWoods;
         public boolean enableSidedInput;
@@ -361,6 +362,10 @@ public class ConfigManager {
         cache.itemRenderType = config
                 .get(Configuration.CATEGORY_GENERAL, "itemRenderType", "fast", null, new String[] { "fancy", "fast" })
                 .setLanguageKey(LANG_PREFIX + "prop.itemRenderType").getString();
+        cache.itemRenderDistance = config
+                .get(Configuration.CATEGORY_GENERAL, "itemRenderDistance", 48.0, null, 0.0, 1024.0)
+                .setLanguageKey(LANG_PREFIX + "prop.itemRenderDistance").getDouble();
+
         cache.renderStorageUpgrades = config.get(Configuration.CATEGORY_GENERAL, "renderStorageUpgrades", true)
                 .setLanguageKey(LANG_PREFIX + "prop.renderStorageUpgrades").getBoolean();
         cache.creativeTabVanillaWoods = config.get(Configuration.CATEGORY_GENERAL, "creativeTabVanillaWoods", true)
@@ -538,6 +543,10 @@ public class ConfigManager {
 
     public boolean isFancyItemRenderEnabled() {
         return cache.itemRenderType.equals("fancy");
+    }
+
+    public double getItemRenderDistance() {
+        return cache.itemRenderDistance;
     }
 
     public String getPath() {
