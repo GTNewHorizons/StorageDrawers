@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -224,16 +223,16 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTickTime) {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        if (player == null) return;
+        EntityLivingBase renderViewEntity = Minecraft.getMinecraft().renderViewEntity;
+        if (renderViewEntity == null) return;
 
         TileEntityDrawers tileDrawers = (TileEntityDrawers) tile;
         if (tileDrawers == null) return;
         if (tileDrawers.isShrouded() || tileDrawers.isSealed()) return;
 
-        double dx = tile.xCoord + 0.5 - player.posX;
-        double dy = tile.yCoord + 0.5 - player.posY;
-        double dz = tile.zCoord + 0.5 - player.posZ;
+        double dx = tile.xCoord + 0.5 - renderViewEntity.posX;
+        double dy = tile.yCoord + 0.5 - renderViewEntity.posY;
+        double dz = tile.zCoord + 0.5 - renderViewEntity.posZ;
         double distanceSq = dx * dx + dy * dy + dz * dz;
 
         double range = StorageDrawers.config.getItemRenderDistance();
