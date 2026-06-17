@@ -100,6 +100,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         for (int i = 0; i < drawerCount; i++) drawers[i] = createDrawer(i);
 
         inventory = new StorageInventory(this, getSideManager(), this);
+
+        io = null; // Rebuild ItemIO after drawer slots are recreated.
     }
 
     public int getDirection() {
@@ -817,6 +819,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity
 
         materialTrim = null;
         if (tag.hasKey("MatT")) materialTrim = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatT"));
+
+        io = null; // Rebuild ItemIO after drawer slots are recreated.
     }
 
     @Override
