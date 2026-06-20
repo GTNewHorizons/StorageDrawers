@@ -442,11 +442,12 @@ public class BlockDrawers extends BlockContainer implements INetworked {
     public int getDrawerSlot(int side, int rotation, float hitX, float hitY, float hitZ) {
         if (drawerCount == 1) return 0;
 
-        float[] uv = faceLocalUV(side, rotation, hitX, hitY, hitZ);
-        boolean top = uv[1] > .5f;
+        float u = faceLocalU(side, rotation, hitX, hitY, hitZ);
+        float v = faceLocalV(side, rotation, hitX, hitY, hitZ);
+        boolean top = v > .5f;
         if (drawerCount == 2) return top ? 0 : 1;
 
-        boolean left = uv[0] < .5f;
+        boolean left = u < .5f;
         if (left) return top ? 0 : 1;
         else return top ? 2 : 3;
     }
@@ -457,72 +458,97 @@ public class BlockDrawers extends BlockContainer implements INetworked {
      * the legacy hit mapping exactly; up/down cases honor the placement {@code rotation} so slot picking matches what
      * is rendered.
      */
-    protected static float[] faceLocalUV(int direction, int rotation, float hitX, float hitY, float hitZ) {
-        float u, v;
-        int rot = ((rotation % 4) + 4) % 4;
+    protected static float faceLocalU(int direction, int rotation, float hitX, float hitY, float hitZ) {
+        int rot = normalizeQuarterTurn(rotation);
         switch (direction) {
             case 1: // UP: front is the top face; mapping is the inverse of the item/texture rigid tilt.
                 switch (rot) {
                     case 1 -> {
-                        u = 1 - hitZ;
-                        v = 1 - hitX;
+                        return 1 - hitZ;
                     }
                     case 2 -> {
-                        u = 1 - hitX;
-                        v = hitZ;
+                        return 1 - hitX;
                     }
                     case 3 -> {
-                        u = hitZ;
-                        v = hitX;
+                        return hitZ;
                     }
                     default -> {
-                        u = hitX;
-                        v = 1 - hitZ;
+                        return hitX;
                     }
                 }
-                break;
             case 0: // DOWN: front is the bottom face.
                 switch (rot) {
                     case 1 -> {
-                        u = 1 - hitZ;
-                        v = hitX;
+                        return 1 - hitZ;
                     }
                     case 2 -> {
-                        u = 1 - hitX;
-                        v = 1 - hitZ;
+                        return 1 - hitX;
                     }
                     case 3 -> {
-                        u = hitZ;
-                        v = 1 - hitX;
+                        return hitZ;
                     }
                     default -> {
-                        u = hitX;
-                        v = hitZ;
+                        return hitX;
                     }
                 }
-                break;
             case 2:
-                u = 1 - hitX;
-                v = hitY;
-                break;
+                return 1 - hitX;
             case 3:
-                u = hitX;
-                v = hitY;
-                break;
+                return hitX;
             case 4:
-                u = hitZ;
-                v = hitY;
-                break;
+                return hitZ;
             case 5:
-                u = 1 - hitZ;
-                v = hitY;
-                break;
+                return 1 - hitZ;
             default:
-                u = hitX;
-                v = hitY;
-                break;
+                return hitX;
         }
-        return new float[] { u, v };
+    }
+
+    protected static float faceLocalV(int direction, int rotation, float hitX, float hitY, float hitZ) {
+        int rot = normalizeQuarterTurn(rotation);
+        switch (direction) {
+            case 1: // UP: front is the top face; mapping is the inverse of the item/texture rigid tilt.
+                switch (rot) {
+                    case 1 -> {
+                        return 1 - hitX;
+                    }
+                    case 2 -> {
+                        return hitZ;
+                    }
+                    case 3 -> {
+                        return hitX;
+                    }
+                    default -> {
+                        return 1 - hitZ;
+                    }
+                }
+            case 0: // DOWN: front is the bottom face.
+                switch (rot) {
+                    case 1 -> {
+                        return hitX;
+                    }
+                    case 2 -> {
+                        return 1 - hitZ;
+                    }
+                    case 3 -> {
+                        return 1 - hitX;
+                    }
+                    default -> {
+                        return hitZ;
+                    }
+                }
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            default:
+                return hitY;
+        }
+    }
+
+    protected static int normalizeQuarterTurn(int rotation) {
+        int normalized = rotation % 4;
+        return normalized >= 0 ? normalized : normalized + 4;
     }
 
     @Override

@@ -19,7 +19,9 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 @ThreadSafeISBRH(perThread = true)
 public class ControllerRenderer implements ISimpleBlockRenderingHandler {
 
-    private static final double unit = .0625f;
+    private static final double UNIT = .0625f;
+    private static final int INVENTORY_SIDE = 4;
+
     private ModularBoxRenderer boxRenderer = new ModularBoxRenderer();
 
     private RenderHelper renderHelper = RenderHelper.instances.get();
@@ -32,24 +34,19 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
     }
 
     private void renderInventoryBlock(BlockController block, int metadata, int modelId, RenderBlocks renderer) {
-        int side = 4;
-
-        boxRenderer.setUnit(unit);
-        boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
-        for (int i = 0; i < 6; i++) boxRenderer.setIcon(block.getIcon(i, metadata), i);
+        initInventoryBoxRenderer(block, metadata);
 
         GL11.glRotatef(90, 0, 1, 0);
         GL11.glTranslatef(-.5f, -.5f, -.5f);
 
-        renderHelper.state
-                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
+        applyTopUvRotation(INVENTORY_SIDE, 0);
 
-        renderExterior(block, 0, 0, 0, side, renderer);
+        renderExterior(block, 0, 0, 0, INVENTORY_SIDE, renderer);
 
         boxRenderer.setUnit(0);
-        boxRenderer.setInteriorIcon(block.getIcon(side, metadata), ForgeDirection.OPPOSITES[side]);
+        boxRenderer.setInteriorIcon(block.getIcon(INVENTORY_SIDE, metadata), ForgeDirection.OPPOSITES[INVENTORY_SIDE]);
 
-        renderInterior(block, 0, 0, 0, side, renderer);
+        renderInterior(block, 0, 0, 0, INVENTORY_SIDE, renderer);
 
         renderHelper.state.clearUVRotation(RenderHelper.YPOS);
 
@@ -72,13 +69,9 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         int side = tile.getDirection();
         int rotation = tile.getRotation();
 
-        if (side <= 1) renderHelper.state.setUVRotation(RenderHelper.YPOS, rotation);
-        else renderHelper.state
-                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
+        applyTopUvRotation(side, rotation);
 
-        boxRenderer.setUnit(unit);
-        boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
-        for (int i = 0; i < 6; i++) boxRenderer.setExteriorIcon(block.getIcon(world, x, y, z, i), i);
+        initWorldBoxRenderer(world, x, y, z, block);
 
         boxRenderer.setCutIcon(block.getIconTrim(0));
         boxRenderer.setInteriorIcon(block.getIconTrim(0));
@@ -93,6 +86,23 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         renderHelper.state.clearUVRotation(RenderHelper.YPOS);
 
         return true;
+    }
+
+    private void initInventoryBoxRenderer(BlockController block, int metadata) {
+        boxRenderer.setUnit(UNIT);
+        boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
+        for (int i = 0; i < 6; i++) boxRenderer.setIcon(block.getIcon(i, metadata), i);
+    }
+
+    private void initWorldBoxRenderer(IBlockAccess world, int x, int y, int z, BlockController block) {
+        boxRenderer.setUnit(UNIT);
+        boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
+        for (int i = 0; i < 6; i++) boxRenderer.setExteriorIcon(block.getIcon(world, x, y, z, i), i);
+    }
+
+    private void applyTopUvRotation(int side, int rotation) {
+        int uvRotation = side <= 1 ? rotation : RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side];
+        renderHelper.state.setUVRotation(RenderHelper.YPOS, uvRotation);
     }
 
     private void renderExterior(BlockController block, int x, int y, int z, int side, RenderBlocks renderer) {
@@ -113,7 +123,7 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
     }
 
     private void renderInterior(BlockController block, int x, int y, int z, int side, RenderBlocks renderer) {
-        double unit = .0625;
+        double unit = UNIT;
         double xMin = unit, xMax = 1 - unit, yMin = unit, yMax = 1 - unit, zMin = unit, zMax = 1 - unit;
 
         switch (side) {

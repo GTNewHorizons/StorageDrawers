@@ -24,22 +24,13 @@ public class DrawersCustomRenderer extends DrawersRenderer {
             RenderBlocks renderer) {
         BlockDrawersCustom custom = (BlockDrawersCustom) block;
 
-        ItemStack materialSide = tile.getMaterialSide();
-        if (materialSide == null) materialSide = new ItemStack(block);
+        ItemStack materialSide = getMaterialOrDefault(tile.getMaterialSide(), new ItemStack(block));
+        ItemStack materialFront = getMaterialOrDefault(tile.getMaterialFront(), materialSide);
+        ItemStack materialTrim = getMaterialOrDefault(tile.getMaterialTrim(), materialSide);
 
-        ItemStack materialFront = tile.getMaterialFront();
-        if (materialFront == null) materialFront = materialSide;
-
-        ItemStack materialTrim = tile.getMaterialTrim();
-        if (materialTrim == null) materialTrim = materialSide;
-
-        IIcon trimIcon = Block.getBlockFromItem(materialTrim.getItem()).getIcon(4, materialTrim.getItemDamage());
-        IIcon panelIcon = Block.getBlockFromItem(materialSide.getItem()).getIcon(4, materialSide.getItemDamage());
-        IIcon frontIcon = Block.getBlockFromItem(materialFront.getItem()).getIcon(4, materialFront.getItemDamage());
-
-        if (trimIcon == null) trimIcon = custom.getDefaultTrimIcon();
-        if (panelIcon == null) panelIcon = custom.getDefaultFaceIcon();
-        if (frontIcon == null) frontIcon = custom.getDefaultFaceIcon();
+        IIcon trimIcon = getIconOrDefault(materialTrim, custom.getDefaultTrimIcon());
+        IIcon panelIcon = getIconOrDefault(materialSide, custom.getDefaultFaceIcon());
+        IIcon frontIcon = getIconOrDefault(materialFront, custom.getDefaultFaceIcon());
 
         if (ForgeHooksClient.getWorldRenderPass() == 0) commonRender.renderBasePass(
                 world,
@@ -67,5 +58,14 @@ public class DrawersCustomRenderer extends DrawersRenderer {
     @Override
     public int getRenderId() {
         return StorageDrawers.proxy.drawersCustomRenderID;
+    }
+
+    private ItemStack getMaterialOrDefault(ItemStack material, ItemStack fallback) {
+        return material != null ? material : fallback;
+    }
+
+    private IIcon getIconOrDefault(ItemStack material, IIcon fallback) {
+        IIcon icon = Block.getBlockFromItem(material.getItem()).getIcon(4, material.getItemDamage());
+        return icon != null ? icon : fallback;
     }
 }

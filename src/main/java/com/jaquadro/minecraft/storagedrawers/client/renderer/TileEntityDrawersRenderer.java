@@ -284,34 +284,35 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         mc.gameSettings.fancyGraphics = true;
 
         try {
-            if (StorageDrawers.config.isFancyItemRenderEnabled()) {
-                renderFancyItemSet(tileDrawers, renderSide, depth);
-            } else {
-                renderFastItemSet(tileDrawers, renderSide, depth, partialTickTime);
-            }
-        } catch (Exception e) {
-            // Swallow exception
-        }
-
-        if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
-            float alpha = 1.0f;
-            double distance = Math.sqrt(distanceSq);
-            if (distance > 4.0) {
-                alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
+            try {
+                if (StorageDrawers.config.isFancyItemRenderEnabled()) {
+                    renderFancyItemSet(tileDrawers, renderSide, depth);
+                } else {
+                    renderFastItemSet(tileDrawers, renderSide, depth, partialTickTime);
+                }
+            } catch (Exception e) {
+                // Swallow exception
             }
 
-            if (distance < 10.0) {
-                for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
-                    if (!tileDrawers.isDrawerEnabled(i)) continue;
+            if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
+                float alpha = 1.0f;
+                double distance = Math.sqrt(distanceSq);
+                if (distance > 4.0) {
+                    alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
+                }
 
-                    drawDrawerTexts(tileDrawers, i, renderSide, depth, alpha);
+                if (distance < 10.0) {
+                    for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
+                        if (!tileDrawers.isDrawerEnabled(i)) continue;
+
+                        drawDrawerTexts(tileDrawers, i, renderSide, depth, alpha);
+                    }
                 }
             }
+        } finally {
+            mc.gameSettings.fancyGraphics = cache;
+            GL11.glPopMatrix();
         }
-
-        mc.gameSettings.fancyGraphics = cache;
-
-        GL11.glPopMatrix();
     }
 
     private void renderFancyItemSet(TileEntityDrawers tile, ForgeDirection side, float depth) {

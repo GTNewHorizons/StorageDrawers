@@ -11,22 +11,20 @@ import com.jaquadro.minecraft.storagedrawers.util.RenderHelperState;
 
 public class CommonDrawerRenderer {
 
+    private static final double UNIT_7_16 = 0.4375;
+    private static final double UNIT_9_16 = 0.5625;
+
     private PanelBoxRenderer panelRenderer = new PanelBoxRenderer();
 
     private double depth;
     private double trimWidth;
     private double trimDepth;
 
-    private static double unit7 = 0.4375;
-    private static double unit9 = 0.5625;
-
     private RenderHelper start(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
             int rotation) {
         depth = block.halfDepth ? .5 : 0;
         trimWidth = block.getTrimWidth();
         trimDepth = block.getTrimDepth();
-        unit7 = 0.4375;
-        unit9 = 0.5625;
 
         panelRenderer.setTrimWidth(trimWidth);
         panelRenderer.setTrimDepth(0);
@@ -58,6 +56,18 @@ public class CommonDrawerRenderer {
         renderHelper.state.clearUVRotation(RenderHelper.YNEG);
     }
 
+    private void renderFrontFace(RenderHelper renderHelper, IBlockAccess world, int x, int y, int z,
+            BlockDrawersCustom block, double xMin, double yMin, double xMax, double yMax, IIcon icon) {
+        renderHelper.setRenderBounds(xMin, yMin, depth + trimDepth, xMax, yMax, 1);
+        renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, icon);
+    }
+
+    private void renderFrontOverlay(RenderHelper renderHelper, IBlockAccess world, int x, int y, int z,
+            BlockDrawersCustom block, double xMin, double yMin, double xMax, double yMax) {
+        renderFrontFace(renderHelper, world, x, y, z, block, xMin, yMin, xMax, yMax, block.getHandleOverlay());
+        renderFrontFace(renderHelper, world, x, y, z, block, xMin, yMin, xMax, yMax, block.getFaceShadowOverlay());
+    }
+
     public void renderBasePass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
             IIcon iconSide, IIcon iconTrim, IIcon iconFront) {
         renderBasePass(world, x, y, z, block, direction, 0, iconSide, iconTrim, iconFront);
@@ -79,37 +89,122 @@ public class CommonDrawerRenderer {
         panelRenderer.renderInteriorTrim(RenderHelper.ZNEG, world, block, x, y, z, 0, 0, depth, 1, 1, 1);
 
         if (block.drawerCount == 1) {
-            renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    trimWidth,
+                    1 - trimWidth,
+                    1 - trimWidth,
+                    iconFront);
         } else if (block.drawerCount == 2) {
-            renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
-            renderHelper.setRenderBounds(trimWidth, unit9, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
-
-            renderHelper.setRenderBounds(trimWidth, unit7, depth + trimDepth, 1 - trimWidth, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconTrim);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    trimWidth,
+                    1 - trimWidth,
+                    UNIT_7_16,
+                    iconFront);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    UNIT_9_16,
+                    1 - trimWidth,
+                    1 - trimWidth,
+                    iconFront);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    UNIT_7_16,
+                    1 - trimWidth,
+                    UNIT_9_16,
+                    iconTrim);
         } else if (block.drawerCount == 4) {
             renderHelper.state.flipTexture = true;
-            renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, unit7, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
-            renderHelper.setRenderBounds(trimWidth, unit9, depth + trimDepth, unit7, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
-            renderHelper.setRenderBounds(unit9, trimWidth, depth + trimDepth, 1 - trimWidth, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
-            renderHelper.setRenderBounds(unit9, unit9, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconFront);
+            renderFrontFace(renderHelper, world, x, y, z, block, trimWidth, trimWidth, UNIT_7_16, UNIT_7_16, iconFront);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    UNIT_9_16,
+                    UNIT_7_16,
+                    1 - trimWidth,
+                    iconFront);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_9_16,
+                    trimWidth,
+                    1 - trimWidth,
+                    UNIT_7_16,
+                    iconFront);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_9_16,
+                    UNIT_9_16,
+                    1 - trimWidth,
+                    1 - trimWidth,
+                    iconFront);
 
-            renderHelper.setRenderBounds(trimWidth, unit7, depth + trimDepth, unit7, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconTrim);
-            renderHelper.setRenderBounds(unit9, unit7, depth + trimDepth, 1 - trimWidth, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconTrim);
-            renderHelper.setRenderBounds(unit7, trimWidth, depth + trimDepth, unit9, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconTrim);
-            renderHelper.setRenderBounds(unit7, unit9, depth + trimDepth, unit9, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconTrim);
-            renderHelper.setRenderBounds(unit7, unit7, depth + trimDepth, unit9, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, iconTrim);
+            renderFrontFace(renderHelper, world, x, y, z, block, trimWidth, UNIT_7_16, UNIT_7_16, UNIT_9_16, iconTrim);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_9_16,
+                    UNIT_7_16,
+                    1 - trimWidth,
+                    UNIT_9_16,
+                    iconTrim);
+            renderFrontFace(renderHelper, world, x, y, z, block, UNIT_7_16, trimWidth, UNIT_9_16, UNIT_7_16, iconTrim);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_7_16,
+                    UNIT_9_16,
+                    UNIT_9_16,
+                    1 - trimWidth,
+                    iconTrim);
+            renderFrontFace(renderHelper, world, x, y, z, block, UNIT_7_16, UNIT_7_16, UNIT_9_16, UNIT_9_16, iconTrim);
             renderHelper.state.flipTexture = false;
         }
 
@@ -131,47 +226,88 @@ public class CommonDrawerRenderer {
         panelRenderer.renderFaceTrim(RenderHelper.ZNEG, world, block, x, y, z, 0, 0, depth, 1, 1, 1);
 
         if (block.drawerCount == 1) {
-            renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
+            renderFrontOverlay(renderHelper, world, x, y, z, block, trimWidth, trimWidth, 1 - trimWidth, 1 - trimWidth);
         } else if (block.drawerCount == 2) {
-            renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
-
-            renderHelper.setRenderBounds(trimWidth, unit9, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
-
-            renderHelper.setRenderBounds(trimWidth, unit7, depth + trimDepth, 1 - trimWidth, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
+            renderFrontOverlay(renderHelper, world, x, y, z, block, trimWidth, trimWidth, 1 - trimWidth, UNIT_7_16);
+            renderFrontOverlay(renderHelper, world, x, y, z, block, trimWidth, UNIT_9_16, 1 - trimWidth, 1 - trimWidth);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    UNIT_7_16,
+                    1 - trimWidth,
+                    UNIT_9_16,
+                    trimShadow);
         } else if (block.drawerCount == 4) {
-            renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, unit7, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
+            renderFrontOverlay(renderHelper, world, x, y, z, block, trimWidth, trimWidth, UNIT_7_16, UNIT_7_16);
+            renderFrontOverlay(renderHelper, world, x, y, z, block, trimWidth, UNIT_9_16, UNIT_7_16, 1 - trimWidth);
+            renderFrontOverlay(renderHelper, world, x, y, z, block, UNIT_9_16, trimWidth, 1 - trimWidth, UNIT_7_16);
+            renderFrontOverlay(renderHelper, world, x, y, z, block, UNIT_9_16, UNIT_9_16, 1 - trimWidth, 1 - trimWidth);
 
-            renderHelper.setRenderBounds(trimWidth, unit9, depth + trimDepth, unit7, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
-
-            renderHelper.setRenderBounds(unit9, trimWidth, depth + trimDepth, 1 - trimWidth, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
-
-            renderHelper.setRenderBounds(unit9, unit9, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getHandleOverlay());
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, block.getFaceShadowOverlay());
-
-            renderHelper.setRenderBounds(trimWidth, unit7, depth + trimDepth, unit7, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
-            renderHelper.setRenderBounds(unit9, unit7, depth + trimDepth, 1 - trimWidth, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
-            renderHelper.setRenderBounds(unit7, trimWidth, depth + trimDepth, unit9, unit7, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
-            renderHelper.setRenderBounds(unit7, unit9, depth + trimDepth, unit9, 1 - trimWidth, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
-            renderHelper.setRenderBounds(unit7, unit7, depth + trimDepth, unit9, unit9, 1);
-            renderHelper.renderFace(RenderHelper.ZNEG, world, block, x, y, z, trimShadow);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    trimWidth,
+                    UNIT_7_16,
+                    UNIT_7_16,
+                    UNIT_9_16,
+                    trimShadow);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_9_16,
+                    UNIT_7_16,
+                    1 - trimWidth,
+                    UNIT_9_16,
+                    trimShadow);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_7_16,
+                    trimWidth,
+                    UNIT_9_16,
+                    UNIT_7_16,
+                    trimShadow);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_7_16,
+                    UNIT_9_16,
+                    UNIT_9_16,
+                    1 - trimWidth,
+                    trimShadow);
+            renderFrontFace(
+                    renderHelper,
+                    world,
+                    x,
+                    y,
+                    z,
+                    block,
+                    UNIT_7_16,
+                    UNIT_7_16,
+                    UNIT_9_16,
+                    UNIT_9_16,
+                    trimShadow);
         } else RenderHelper.instances.get().renderEmptyPlane(x, y, z);
 
         end();

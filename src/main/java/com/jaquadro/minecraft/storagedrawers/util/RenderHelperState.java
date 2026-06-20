@@ -26,6 +26,8 @@ public class RenderHelperState {
     private static final int[] ROT_Y90 = { 0, 0, -1, 0, 1, 0, 1, 0, 0 };
     // Quarter-turn about the X axis (sends +Z to -Y).
     private static final int[] ROT_X90 = { 1, 0, 0, 0, 0, -1, 0, 1, 0 };
+    private static final int[][] ROT_Y_POWERS = buildRotationPowers(ROT_Y90);
+    private static final int[][] ROT_X_POWERS = buildRotationPowers(ROT_X90);
 
     public double renderMinX;
     public double renderMinY;
@@ -260,23 +262,23 @@ public class RenderHelperState {
     }
 
     private static int[] rotYPow(int times) {
-        int[] result = IDENTITY.clone();
-        for (int i = 0; i < times; i++) {
-            int[] next = new int[9];
-            matMul(ROT_Y90, result, next);
-            result = next;
-        }
-        return result;
+        return ROT_Y_POWERS[normalizeQuarterTurn(times)];
     }
 
     private static int[] rotXPow(int times) {
-        int[] result = IDENTITY.clone();
-        for (int i = 0; i < times; i++) {
-            int[] next = new int[9];
-            matMul(ROT_X90, result, next);
-            result = next;
-        }
-        return result;
+        return ROT_X_POWERS[normalizeQuarterTurn(times)];
+    }
+
+    private static int[][] buildRotationPowers(int[] quarterTurn) {
+        int[][] powers = new int[4][9];
+        System.arraycopy(IDENTITY, 0, powers[0], 0, 9);
+        for (int i = 1; i < powers.length; i++) matMul(quarterTurn, powers[i - 1], powers[i]);
+        return powers;
+    }
+
+    private static int normalizeQuarterTurn(int times) {
+        int normalized = times % 4;
+        return normalized >= 0 ? normalized : normalized + 4;
     }
 
     private static void matMul(int[] a, int[] b, int[] out) {
