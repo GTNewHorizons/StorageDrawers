@@ -148,7 +148,7 @@ public class RenderHelper {
             float r, float g, float b) {
         setupColorMult(face, blockAccess, block, x, y, z, r, g, b);
 
-        face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
+        face = state.mapFace(face);
         llHelper.drawFace(face, x, y, z, icon);
 
         if (blockAccess == null) Tessellator.instance.draw();
@@ -158,7 +158,7 @@ public class RenderHelper {
             float r, float g, float b) {
         state.enableAO = true;
 
-        face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
+        face = state.mapFace(face);
 
         switch (face) {
             case YNEG:
@@ -234,7 +234,7 @@ public class RenderHelper {
             IIcon icon, double uMin, double vMin, double uMax, double vMax, float r, float g, float b) {
         state.enableAO = true;
 
-        switch (RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform]) {
+        switch (state.mapFace(face)) {
             case YNEG:
                 aoHelper.setupYNegAOPartial(blockAccess, block, x, y, z, r, g, b);
                 break;
@@ -261,13 +261,13 @@ public class RenderHelper {
 
     public void renderPartialFace(int face, IIcon icon, double uMin, double vMin, double uMax, double vMax) {
         state.enableAO = false;
-        face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
+        face = state.mapFace(face);
         llHelper.drawPartialFace(face, 0, 0, 0, icon, uMin, vMin, uMax, vMax);
     }
 
     public void renderPartialFace(int face, double x, double y, double z, IIcon icon, double uMin, double vMin,
             double uMax, double vMax) {
-        face = RenderHelperState.FACE_BY_FACE_ROTATION[face][state.rotateTransform];
+        face = state.mapFace(face);
         llHelper.drawPartialFace(face, x, y, z, icon, uMin, vMin, uMax, vMax);
     }
 

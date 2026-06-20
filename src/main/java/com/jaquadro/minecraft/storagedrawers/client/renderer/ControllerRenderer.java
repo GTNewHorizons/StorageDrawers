@@ -70,8 +70,10 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
         if (tile == null) return false;
 
         int side = tile.getDirection();
+        int rotation = tile.getRotation();
 
-        renderHelper.state
+        if (side <= 1) renderHelper.state.setUVRotation(RenderHelper.YPOS, rotation);
+        else renderHelper.state
                 .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][side]);
 
         boxRenderer.setUnit(unit);
@@ -94,81 +96,50 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
     }
 
     private void renderExterior(BlockController block, int x, int y, int z, int side, RenderBlocks renderer) {
-        double depth = 1;
-        double xMin = 0, xMax = 0, zMin = 0, zMax = 0;
-
-        switch (side) {
-            case 2:
-                xMin = 0;
-                xMax = 1;
-                zMin = 1 - depth;
-                zMax = 1;
-                break;
-            case 3:
-                xMin = 0;
-                xMax = 1;
-                zMin = 0;
-                zMax = depth;
-                break;
-            case 4:
-                xMin = 1 - depth;
-                xMax = 1;
-                zMin = 0;
-                zMax = 1;
-                break;
-            case 5:
-                xMin = 0;
-                xMax = depth;
-                zMin = 0;
-                zMax = 1;
-                break;
-        }
-
         boxRenderer.renderExterior(
                 renderer.blockAccess,
                 block,
                 x,
                 y,
                 z,
-                xMin,
                 0,
-                zMin,
-                xMax,
+                0,
+                0,
                 1,
-                zMax,
+                1,
+                1,
                 0,
                 ModularBoxRenderer.sideCut[side]);
     }
 
     private void renderInterior(BlockController block, int x, int y, int z, int side, RenderBlocks renderer) {
         double unit = .0625;
-        double depth = 1;
-        double xMin = 0, xMax = 0, zMin = 0, zMax = 0;
+        double xMin = unit, xMax = 1 - unit, yMin = unit, yMax = 1 - unit, zMin = unit, zMax = 1 - unit;
 
         switch (side) {
+            case 0:
+                yMin = 0;
+                yMax = unit;
+                break;
+            case 1:
+                yMin = 1 - unit;
+                yMax = 1;
+                break;
             case 2:
-                xMin = unit;
-                xMax = 1 - unit;
-                zMin = 1 - depth;
-                zMax = 1 - depth + unit;
+                zMin = 0;
+                zMax = unit;
                 break;
             case 3:
-                xMin = unit;
-                xMax = 1 - unit;
-                zMin = depth - unit;
-                zMax = depth;
+                zMin = 1 - unit;
+                zMax = 1;
                 break;
             case 4:
-                xMin = 1 - depth;
-                xMax = 1 - depth + unit;
-                zMin = unit;
-                zMax = 1 - unit;
+                xMin = 0;
+                xMax = unit;
                 break;
             case 5:
-                xMin = depth - unit;
-                xMax = depth;
-                zMin = unit;
-                zMax = 1 - unit;
+                xMin = 1 - unit;
+                xMax = 1;
                 break;
         }
 
@@ -179,10 +150,10 @@ public class ControllerRenderer implements ISimpleBlockRenderingHandler {
                 y,
                 z,
                 xMin,
-                unit,
+                yMin,
                 zMin,
                 xMax,
-                1 - unit,
+                yMax,
                 zMax,
                 0,
                 ModularBoxRenderer.sideCut[side]);

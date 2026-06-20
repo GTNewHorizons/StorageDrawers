@@ -41,10 +41,27 @@ public class DrawersCustomRenderer extends DrawersRenderer {
         if (panelIcon == null) panelIcon = custom.getDefaultFaceIcon();
         if (frontIcon == null) frontIcon = custom.getDefaultFaceIcon();
 
-        if (ForgeHooksClient.getWorldRenderPass() == 0)
-            commonRender.renderBasePass(world, x, y, z, custom, tile.getDirection(), panelIcon, trimIcon, frontIcon);
-        else if (ForgeHooksClient.getWorldRenderPass() == 1)
-            commonRender.renderOverlayPass(world, x, y, z, custom, tile.getDirection(), trimIcon, frontIcon);
+        if (ForgeHooksClient.getWorldRenderPass() == 0) commonRender.renderBasePass(
+                world,
+                x,
+                y,
+                z,
+                custom,
+                tile.getDirection(),
+                tile.getRotation(),
+                panelIcon,
+                trimIcon,
+                frontIcon);
+        else if (ForgeHooksClient.getWorldRenderPass() == 1) commonRender.renderOverlayPass(
+                world,
+                x,
+                y,
+                z,
+                custom,
+                tile.getDirection(),
+                tile.getRotation(),
+                trimIcon,
+                frontIcon);
     }
 
     @Override

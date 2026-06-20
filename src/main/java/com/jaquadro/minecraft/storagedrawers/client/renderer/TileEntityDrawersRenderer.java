@@ -252,6 +252,17 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
 
+        // Up/down placements reuse the horizontal rendering path: rotate the block-local frame so the canonical south
+        // face maps onto the top or bottom face, spun by the placement rotation, then render as if facing south.
+        ForgeDirection renderSide = side;
+        if (side == ForgeDirection.UP || side == ForgeDirection.DOWN) {
+            GL11.glTranslatef(.5f, .5f, .5f);
+            GL11.glRotatef(tileDrawers.getRotation() * 90f, 0, 1, 0);
+            GL11.glRotatef(side == ForgeDirection.UP ? -90f : 90f, 1, 0, 0);
+            GL11.glTranslatef(-.5f, -.5f, -.5f);
+            renderSide = ForgeDirection.SOUTH;
+        }
+
         itemRenderer.setRenderManager(RenderManager.instance);
 
         int ambLight = tile.getWorldObj().getLightBrightnessForSkyBlocks(
@@ -274,9 +285,9 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         try {
             if (StorageDrawers.config.isFancyItemRenderEnabled()) {
-                renderFancyItemSet(tileDrawers, side, depth);
+                renderFancyItemSet(tileDrawers, renderSide, depth);
             } else {
-                renderFastItemSet(tileDrawers, side, depth, partialTickTime);
+                renderFastItemSet(tileDrawers, renderSide, depth, partialTickTime);
             }
         } catch (Exception e) {
             // Swallow exception
@@ -293,7 +304,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
                 for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
                     if (!tileDrawers.isDrawerEnabled(i)) continue;
 
-                    drawDrawerTexts(tileDrawers, i, side, depth, alpha);
+                    drawDrawerTexts(tileDrawers, i, renderSide, depth, alpha);
                 }
             }
         }
@@ -483,7 +494,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             } catch (Exception e) {}
         }
 
-        switch (tile.getDirection()) {
+        switch (side.ordinal()) {
             case 3:
                 xc = xunit;
                 zc = itemDepth - zunit;
@@ -520,6 +531,9 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
+        // The block-local frame may be tilted for up/down drawers; renormalize so directional item lighting is not
+        // skewed by the rotation and does not bleed into adjacent slots.
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
         IDrawer drawer = tile.getDrawer(slot);
         try {
@@ -527,6 +541,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             itemRenderer.doRender(itemEnt, 0, 0, 0, 0, 0);
         } catch (Exception ignored) {}
 
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
     }
 
@@ -575,14 +590,23 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glDisable(GL11.GL_NORMALIZE);
+        // For up/down drawers the whole frame is tilted; block-type items rendered here need their normals renormalized
+        // so the standard item lighting set up above is not skewed by that rotation.
+        boolean tilted = isItemBlockType(itemStack) && tile.getDirection() <= 1;
+        if (tilted) {
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        } else {
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GL11.glDisable(GL11.GL_NORMALIZE);
+        }
 
         try {
             if (skipRenderHook || !ForgeHooksClient
                     .renderInventoryItem(this.renderBlocks, mc.renderEngine, itemStack, true, 0, 0, 0))
                 itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, 0, 0, true);
         } catch (Exception e) {}
+
+        if (tilted) GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
         GL11.glPopMatrix();
     }

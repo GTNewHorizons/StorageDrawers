@@ -62,6 +62,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     private IDrawerInventory inventory;
 
     private int direction;
+    private int rotation;
     private int drawerCapacity = 1;
     private boolean shrouded = false;
     private boolean quantified = false;
@@ -110,6 +111,14 @@ public abstract class TileEntityDrawers extends BaseTileEntity
 
     public void setDirection(int direction) {
         this.direction = direction % 6;
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(int rotation) {
+        this.rotation = ((rotation % 4) + 4) % 4;
     }
 
     public int getMaxStorageLevel() {
@@ -387,7 +396,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         }
 
         BlockDrawers block = (BlockDrawers) worldObj.getBlock(xCoord, yCoord, zCoord);
-        int slot = block.getDrawerSlot(face, hitX, hitY, hitZ);
+        int slot = block.getDrawerSlot(face, getRotation(), hitX, hitY, hitZ);
 
         IDrawer drawer = getDrawer(slot);
         if (drawer == null) {
@@ -739,6 +748,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         super.readFromFixedNBT(tag);
 
         setDirection(tag.getByte("Dir"));
+        rotation = tag.hasKey("Rot") ? tag.getByte("Rot") : 0;
 
         taped = false;
         if (tag.hasKey("Tape")) taped = tag.getBoolean("Tape");
@@ -754,6 +764,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         super.writeToFixedNBT(tag);
 
         tag.setByte("Dir", (byte) direction);
+        if (rotation != 0) tag.setByte("Rot", (byte) rotation);
 
         if (taped) tag.setBoolean("Tape", taped);
 

@@ -12,7 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -80,23 +79,6 @@ public class BlockController extends BlockContainer implements INetworked {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
         TileEntityController tile = getTileEntitySafe(world, x, y, z);
-        if (tile.getDirection() > 1) return;
-
-        int quadrant = MathHelper.floor_double((entity.rotationYaw * 4f / 360f) + .5) & 3;
-        switch (quadrant) {
-            case 0:
-                tile.setDirection(2);
-                break;
-            case 1:
-                tile.setDirection(5);
-                break;
-            case 2:
-                tile.setDirection(3);
-                break;
-            case 3:
-                tile.setDirection(4);
-                break;
-        }
 
         if (itemStack.hasDisplayName()) tile.setInventoryName(itemStack.getDisplayName());
 
@@ -161,9 +143,8 @@ public class BlockController extends BlockContainer implements INetworked {
 
         if (tile.getDirection() == axis.ordinal()) return false;
 
-        if (axis == ForgeDirection.UP || axis == ForgeDirection.DOWN) return false;
-
         tile.setDirection(axis.ordinal());
+        tile.setRotation(0);
         world.markBlockForUpdate(x, y, z);
 
         return true;

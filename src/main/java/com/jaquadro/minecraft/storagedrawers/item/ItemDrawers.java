@@ -24,6 +24,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
+import com.jaquadro.minecraft.storagedrawers.util.DrawerOrientation;
 import com.jaquadro.minecraft.storagedrawers.util.ItemStackConversion;
 
 import cpw.mods.fml.relauncher.Side;
@@ -52,7 +53,9 @@ public class ItemDrawers extends ItemBlock {
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("tile"))
                 tile.readFromPortableNBT(stack.getTagCompound().getCompoundTag("tile"));
 
-            if (side > 1) tile.setDirection(side);
+            DrawerOrientation orientation = DrawerOrientation.forEntity(player);
+            tile.setDirection(orientation.direction());
+            tile.setRotation(orientation.rotation());
 
             tile.setIsSealed(false);
         }

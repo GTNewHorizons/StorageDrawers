@@ -20,7 +20,8 @@ public class CommonDrawerRenderer {
     private static double unit7 = 0.4375;
     private static double unit9 = 0.5625;
 
-    private RenderHelper start(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction) {
+    private RenderHelper start(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
+            int rotation) {
         depth = block.halfDepth ? .5 : 0;
         trimWidth = block.getTrimWidth();
         trimDepth = block.getTrimDepth();
@@ -35,10 +36,16 @@ public class CommonDrawerRenderer {
         RenderHelper renderHelper = RenderHelper.instances.get();
         if (world != null) renderHelper.setColorAndBrightness(world, block, x, y, z);
 
-        renderHelper.state.setRotateTransform(RenderHelper.ZNEG, direction);
-        renderHelper.state.setUVRotation(
-                RenderHelper.YPOS,
-                RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][direction]);
+        renderHelper.state.setOrientation(RenderHelper.ZNEG, direction, rotation);
+        if (direction > 1) {
+            renderHelper.state.setUVRotation(
+                    RenderHelper.YPOS,
+                    RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.ZNEG][direction]);
+        } else if (direction == RenderHelper.YPOS) {
+            renderHelper.state.setUVRotation(RenderHelper.YPOS, (4 - rotation) % 4);
+        } else {
+            renderHelper.state.setUVRotation(RenderHelper.YNEG, (rotation + 2) % 4);
+        }
 
         return renderHelper;
     }
@@ -48,11 +55,17 @@ public class CommonDrawerRenderer {
 
         renderHelper.state.clearRotateTransform();
         renderHelper.state.clearUVRotation(RenderHelper.YPOS);
+        renderHelper.state.clearUVRotation(RenderHelper.YNEG);
     }
 
     public void renderBasePass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
             IIcon iconSide, IIcon iconTrim, IIcon iconFront) {
-        RenderHelper renderHelper = start(world, x, y, z, block, direction);
+        renderBasePass(world, x, y, z, block, direction, 0, iconSide, iconTrim, iconFront);
+    }
+
+    public void renderBasePass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
+            int rotation, IIcon iconSide, IIcon iconTrim, IIcon iconFront) {
+        RenderHelper renderHelper = start(world, x, y, z, block, direction, rotation);
 
         panelRenderer.setTrimIcon(iconTrim);
         panelRenderer.setPanelIcon(iconSide);
@@ -105,7 +118,12 @@ public class CommonDrawerRenderer {
 
     public void renderOverlayPass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
             IIcon iconTrim, IIcon iconFront) {
-        RenderHelper renderHelper = start(world, x, y, z, block, direction);
+        renderOverlayPass(world, x, y, z, block, direction, 0, iconTrim, iconFront);
+    }
+
+    public void renderOverlayPass(IBlockAccess world, int x, int y, int z, BlockDrawersCustom block, int direction,
+            int rotation, IIcon iconTrim, IIcon iconFront) {
+        RenderHelper renderHelper = start(world, x, y, z, block, direction, rotation);
 
         IIcon trimShadow = block.getTrimShadowOverlay(iconTrim == iconFront);
 

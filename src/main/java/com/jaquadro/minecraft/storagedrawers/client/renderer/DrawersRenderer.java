@@ -50,21 +50,25 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
             return true;
 
         int side = tile.getDirection();
+        int rotation = tile.getRotation();
         if (StorageDrawers.config.cache.enableIndicatorUpgrades)
-            renderIndicator(block, x, y, z, side, renderer, tile.getEffectiveStatusLevel());
+            renderIndicator(block, x, y, z, side, rotation, renderer, tile.getEffectiveStatusLevel());
         if (StorageDrawers.config.cache.enableLockUpgrades) renderLock(
                 block,
                 x,
                 y,
                 z,
                 side,
+                rotation,
                 renderer,
                 tile.isLocked(LockAttribute.LOCK_POPULATED),
                 tile.getOwner() != null);
-        if (StorageDrawers.config.cache.enableVoidUpgrades) renderVoid(block, x, y, z, side, renderer, tile.isVoid());
-        if (StorageDrawers.config.cache.enableTape) renderTape(block, x, y, z, side, renderer, tile.isSealed());
+        if (StorageDrawers.config.cache.enableVoidUpgrades)
+            renderVoid(block, x, y, z, side, rotation, renderer, tile.isVoid());
+        if (StorageDrawers.config.cache.enableTape)
+            renderTape(block, x, y, z, side, rotation, renderer, tile.isSealed());
 
-        renderShroud(block, x, y, z, side, renderer, tile.isShrouded());
+        renderShroud(block, x, y, z, side, rotation, renderer, tile.isShrouded());
 
         return true;
     }
@@ -72,12 +76,20 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
     protected void renderBaseBlock(IBlockAccess world, TileEntityDrawers tile, int x, int y, int z, BlockDrawers block,
             RenderBlocks renderer) {
         int side = tile.getDirection();
+        int rotation = tile.getRotation();
         int meta = world.getBlockMetadata(x, y, z);
 
-        renderHelper.state
-                .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.YPOS][side]);
-        renderHelper.state
-                .setUVRotation(RenderHelper.YNEG, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.YNEG][side]);
+        if (side <= 1) {
+            // Front points up or down; the front/back Y faces carry the front grain spun to match the rigid tilt that
+            // the item and decoration renderers use (see RenderHelperState orientation matrix).
+            if (side == 1) renderHelper.state.setUVRotation(RenderHelper.YPOS, (4 - rotation) % 4);
+            else renderHelper.state.setUVRotation(RenderHelper.YNEG, (rotation + 2) % 4);
+        } else {
+            renderHelper.state
+                    .setUVRotation(RenderHelper.YPOS, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.YPOS][side]);
+            renderHelper.state
+                    .setUVRotation(RenderHelper.YNEG, RenderHelperState.ROTATION_BY_FACE_FACE[RenderHelper.YNEG][side]);
+        }
 
         boxRenderer.setUnit(block.getTrimWidth());
         boxRenderer.setColor(ModularBoxRenderer.COLOR_WHITE);
@@ -87,8 +99,6 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
         boxRenderer.setInteriorIcon(block.getIconTrim(meta));
 
         renderExterior(block, x, y, z, side, renderer);
-
-        renderHelper.state.clearUVRotation(RenderHelper.YPOS);
 
         int maxStorageLevel = tile.getMaxStorageLevel();
         if (maxStorageLevel > 1 && StorageDrawers.config.cache.renderStorageUpgrades && !tile.shouldHideUpgrades()) {
@@ -107,41 +117,133 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
         renderInterior(block, x, y, z, side, renderer);
     }
 
-    private void renderLock(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer, boolean locked,
-            boolean owned) {
+    private void renderLock(BlockDrawers block, int x, int y, int z, int side, int rotation, RenderBlocks renderer,
+            boolean locked, boolean owned) {
         if (!locked && !owned) return;
 
-        double depth = block.halfDepth ? .5 : 1;
         IIcon iconLock = block.getLockIcon(locked, owned);
-
-        renderHelper.setRenderBounds(0.46875, 0.9375, 0, 0.53125, 1, depth + .005);
-        renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
-        renderHelper.renderPartialFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconLock, 0, 0, 1, 1);
-        renderHelper.state.clearRotateTransform();
+        renderFrontDecoration(block, x, y, z, side, rotation, renderer, iconLock, 0.46875, 0.9375, 0.53125, 1);
     }
 
-    private void renderVoid(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer, boolean voided) {
+    private void renderVoid(BlockDrawers block, int x, int y, int z, int side, int rotation, RenderBlocks renderer,
+            boolean voided) {
         if (!voided) return;
 
-        double depth = block.halfDepth ? .5 : 1;
         IIcon iconVoid = block.getVoidIcon();
-
-        renderHelper.setRenderBounds(1 - .0625, 0.9375, 0, 1, 1, depth + .005);
-        renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
-        renderHelper.renderPartialFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconVoid, 0, 0, 1, 1);
-        renderHelper.state.clearRotateTransform();
+        renderFrontDecoration(block, x, y, z, side, rotation, renderer, iconVoid, 1 - .0625, 0.9375, 1, 1);
     }
 
-    private void renderTape(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer, boolean taped) {
+    private void renderTape(BlockDrawers block, int x, int y, int z, int side, int rotation, RenderBlocks renderer,
+            boolean taped) {
         if (!taped) return;
 
         double depth = block.halfDepth ? .5 : 1;
         IIcon iconTape = block.getTapeIcon();
 
         renderHelper.setRenderBounds(0, 0, 0, 1, 1, depth + .005);
-        renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
+        renderHelper.state.setOrientation(RenderHelper.ZPOS, side, rotation);
         renderHelper.renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconTape);
         renderHelper.state.clearRotateTransform();
+    }
+
+    private void renderFrontDecoration(BlockDrawers block, int x, int y, int z, int side, int rotation,
+            RenderBlocks renderer, IIcon icon, double uMin, double vMin, double uMax, double vMax) {
+        double depth = block.halfDepth ? .5 : 1;
+
+        if (side > 1) {
+            renderHelper.setRenderBounds(uMin, vMin, 0, uMax, vMax, depth + .005);
+            renderHelper.state.setOrientation(RenderHelper.ZPOS, side, rotation);
+            renderHelper.renderPartialFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, icon, 0, 0, 1, 1);
+            renderHelper.state.clearRotateTransform();
+            return;
+        }
+
+        setVerticalFrontDecorationBounds(depth, side, rotation, uMin, vMin, uMax, vMax);
+        applyVerticalFrontDecorationRotation(side, rotation);
+        renderHelper.renderPartialFace(side, renderer.blockAccess, block, x, y, z, icon, 0, 0, 1, 1);
+        clearVerticalFrontDecorationRotation(side);
+    }
+
+    private void setVerticalFrontDecorationBounds(double depth, int side, int rotation, double uMin, double vMin,
+            double uMax, double vMax) {
+        double[] min = new double[2];
+        double[] max = new double[2];
+
+        mapVerticalFrontPoint(side, rotation, uMin, vMin, min);
+        mapVerticalFrontPoint(side, rotation, uMax, vMax, max);
+
+        double minX = Math.min(min[0], max[0]);
+        double maxX = Math.max(min[0], max[0]);
+        double minZ = Math.min(min[1], max[1]);
+        double maxZ = Math.max(min[1], max[1]);
+
+        if (side == RenderHelper.YPOS) {
+            renderHelper.setRenderBounds(minX, 0, minZ, maxX, depth + .005, maxZ);
+        } else {
+            renderHelper.setRenderBounds(minX, 1 - depth - .005, minZ, maxX, 1, maxZ);
+        }
+    }
+
+    private void mapVerticalFrontPoint(int side, int rotation, double u, double v, double[] out) {
+        int rot = ((rotation % 4) + 4) % 4;
+
+        if (side == RenderHelper.YPOS) {
+            switch (rot) {
+                case 1:
+                    out[0] = 1 - v;
+                    out[1] = 1 - u;
+                    return;
+                case 2:
+                    out[0] = 1 - u;
+                    out[1] = v;
+                    return;
+                case 3:
+                    out[0] = v;
+                    out[1] = u;
+                    return;
+                default:
+                    out[0] = u;
+                    out[1] = 1 - v;
+                    return;
+            }
+        }
+
+        switch (rot) {
+            case 1:
+                out[0] = v;
+                out[1] = 1 - u;
+                return;
+            case 2:
+                out[0] = 1 - u;
+                out[1] = 1 - v;
+                return;
+            case 3:
+                out[0] = 1 - v;
+                out[1] = u;
+                return;
+            default:
+                out[0] = u;
+                out[1] = v;
+                return;
+        }
+    }
+
+    private void applyVerticalFrontDecorationRotation(int side, int rotation) {
+        int uvRotation;
+        if (side == RenderHelper.YPOS) {
+            uvRotation = (4 - rotation) % 4;
+            if ((rotation & 1) == 1) uvRotation = (uvRotation + 2) % 4;
+            renderHelper.state.setUVRotation(RenderHelper.YPOS, uvRotation);
+        } else {
+            uvRotation = (rotation + 2) % 4;
+            if ((rotation & 1) == 1) uvRotation = (uvRotation + 2) % 4;
+            renderHelper.state.setUVRotation(RenderHelper.YNEG, uvRotation);
+        }
+    }
+
+    private void clearVerticalFrontDecorationRotation(int side) {
+        renderHelper.state.clearRotateTransform();
+        renderHelper.state.clearUVRotation(side);
     }
 
     private static final int[] cut = new int[] {
@@ -171,9 +273,9 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
 
     private static final float[][] drawerXYWH3 = new float[][] { { 0, 8, 16, 8 }, { 0, 0, 8, 8 }, { 8, 0, 8, 8 }, };
 
-    private void renderShroud(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer,
+    private void renderShroud(BlockDrawers block, int x, int y, int z, int side, int rotation, RenderBlocks renderer,
             boolean shrouded) {
-        if (!shrouded || side < 2 || side > 5) return;
+        if (!shrouded) return;
 
         TileEntityDrawers tile = block.getTileEntity(renderer.blockAccess, x, y, z);
 
@@ -218,14 +320,15 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                     (subX + w) * unit,
                     (subY + h) * unit,
                     (depth - depthAdj + .05) * unit);
-            renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
+            renderHelper.state.setOrientation(RenderHelper.ZPOS, side, rotation);
             renderHelper.renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, icon);
             renderHelper.state.clearRotateTransform();
         }
     }
 
-    private void renderIndicator(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer, int level) {
-        if (level <= 0 || side < 2 || side > 5) return;
+    private void renderIndicator(BlockDrawers block, int x, int y, int z, int side, int rotation, RenderBlocks renderer,
+            int level) {
+        if (level <= 0) return;
 
         TileEntityDrawers tile = block.getTileEntity(renderer.blockAccess, x, y, z);
 
@@ -263,7 +366,7 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                     (xywh[0] + xywh[2]) * unit,
                     (xywh[1] + xywh[3]) * unit,
                     (depth - depthAdj + .05) * unit);
-            renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
+            renderHelper.state.setOrientation(RenderHelper.ZPOS, side, rotation);
             renderHelper.renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOff);
             renderHelper.state.clearRotateTransform();
 
@@ -276,7 +379,7 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                         (xywh[0] + xywh[2]) * unit,
                         (xywh[1] + xywh[3]) * unit,
                         (depth - depthAdj + .06) * unit);
-                renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
+                renderHelper.state.setOrientation(RenderHelper.ZPOS, side, rotation);
                 renderHelper.renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOn);
                 renderHelper.state.clearRotateTransform();
                 renderHelper.state.resetColorMult();
@@ -299,7 +402,7 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                             indXCur * unit,
                             indYCur * unit,
                             (depth - depthAdj + .06) * unit);
-                    renderHelper.state.setRotateTransform(RenderHelper.ZPOS, side);
+                    renderHelper.state.setOrientation(RenderHelper.ZPOS, side, rotation);
                     renderHelper.renderFace(RenderHelper.ZPOS, renderer.blockAccess, block, x, y, z, iconOn);
                     renderHelper.state.clearRotateTransform();
                     renderHelper.state.resetColorMult();
@@ -324,32 +427,32 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
 
     private void renderExterior(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer) {
         double depth = block.halfDepth ? .5 : 1;
-        double xMin = 0, xMax = 0, zMin = 0, zMax = 0;
+        double xMin = 0, xMax = 1, yMin = 0, yMax = 1, zMin = 0, zMax = 1;
 
         switch (side) {
+            case 0:
+                yMin = 1 - depth;
+                yMax = 1;
+                break;
+            case 1:
+                yMin = 0;
+                yMax = depth;
+                break;
             case 2:
-                xMin = 0;
-                xMax = 1;
                 zMin = 1 - depth;
                 zMax = 1;
                 break;
             case 3:
-                xMin = 0;
-                xMax = 1;
                 zMin = 0;
                 zMax = depth;
                 break;
             case 4:
                 xMin = 1 - depth;
                 xMax = 1;
-                zMin = 0;
-                zMax = 1;
                 break;
             case 5:
                 xMin = 0;
                 xMax = depth;
-                zMin = 0;
-                zMax = 1;
                 break;
         }
 
@@ -360,10 +463,10 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                 y,
                 z,
                 xMin,
-                0,
+                yMin,
                 zMin,
                 xMax,
-                1,
+                yMax,
                 zMax,
                 0,
                 ModularBoxRenderer.sideCut[side]);
@@ -372,32 +475,32 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
     private void renderInterior(BlockDrawers block, int x, int y, int z, int side, RenderBlocks renderer) {
         double unit = block.getTrimDepth();
         double depth = block.halfDepth ? .5 : 1;
-        double xMin = 0, xMax = 0, zMin = 0, zMax = 0;
+        double xMin = unit, xMax = 1 - unit, yMin = unit, yMax = 1 - unit, zMin = unit, zMax = 1 - unit;
 
         switch (side) {
+            case 0:
+                yMin = 1 - depth;
+                yMax = 1 - depth + unit;
+                break;
+            case 1:
+                yMin = depth - unit;
+                yMax = depth;
+                break;
             case 2:
-                xMin = unit;
-                xMax = 1 - unit;
                 zMin = 1 - depth;
                 zMax = 1 - depth + unit;
                 break;
             case 3:
-                xMin = unit;
-                xMax = 1 - unit;
                 zMin = depth - unit;
                 zMax = depth;
                 break;
             case 4:
                 xMin = 1 - depth;
                 xMax = 1 - depth + unit;
-                zMin = unit;
-                zMax = 1 - unit;
                 break;
             case 5:
                 xMin = depth - unit;
                 xMax = depth;
-                zMin = unit;
-                zMax = 1 - unit;
                 break;
         }
 
@@ -408,10 +511,10 @@ public class DrawersRenderer implements ISimpleBlockRenderingHandler {
                 y,
                 z,
                 xMin,
-                unit,
+                yMin,
                 zMin,
                 xMax,
-                1 - unit,
+                yMax,
                 zMax,
                 0,
                 ModularBoxRenderer.sideCut[side]);
