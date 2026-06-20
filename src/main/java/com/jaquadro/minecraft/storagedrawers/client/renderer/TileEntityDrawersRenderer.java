@@ -147,16 +147,15 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
                 Tessellator tessellator = Tessellator.instance;
                 tessellator.startDrawingQuads();
-                tessellator
-                        .addVertexWithUV(x + 0, y + h, 0, (u + (float) h * hScale) * uScale, (v + (float) h) * vScale);
+                tessellator.addVertexWithUV(x, y + h, 0, (u + (float) h * hScale) * uScale, (v + (float) h) * vScale);
                 tessellator.addVertexWithUV(
                         x + w,
                         y + h,
                         0,
                         (u + (float) w + (float) h * hScale) * uScale,
                         (v + (float) h) * vScale);
-                tessellator.addVertexWithUV(x + w, y + 0, 0, (u + (float) w) * uScale, (v + 0.0F) * vScale);
-                tessellator.addVertexWithUV(x + 0, y + 0, 0, (u + 0.0F) * uScale, (v + 0.0F) * vScale);
+                tessellator.addVertexWithUV(x + w, y, 0, (u + (float) w) * uScale, (v + 0.0F) * vScale);
+                tessellator.addVertexWithUV(x, y, 0, (u + 0.0F) * uScale, (v + 0.0F) * vScale);
                 tessellator.draw();
             }
         }
@@ -492,27 +491,28 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
                 double zDepth = 1 / relScale - itemBlock.getBlockBoundsMaxZ();
                 itemDepth += zDepth * zunit;
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
 
-        switch (side.ordinal()) {
-            case 3:
+        zc = switch (side.ordinal()) {
+            case 3 -> {
                 xc = xunit;
-                zc = itemDepth - zunit;
-                break;
-            case 2:
+                yield itemDepth - zunit;
+            }
+            case 2 -> {
                 xc = 1 - xunit;
-                zc = 1 - itemDepth + zunit;
-                break;
-            case 5:
+                yield 1 - itemDepth + zunit;
+            }
+            case 5 -> {
                 xc = itemDepth - zunit;
-                zc = 1 - xunit;
-                break;
-            case 4:
+                yield 1 - xunit;
+            }
+            case 4 -> {
                 xc = 1 - itemDepth + zunit;
-                zc = xunit;
-                break;
-        }
+                yield xunit;
+            }
+            default -> zc;
+        };
 
         float yAdj = 0;
         if (drawerCount == 2 || drawerCount == 4) yAdj = -.5f;
@@ -573,8 +573,8 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
                 1f - depth + block.getTrimDepth() - .005f);
 
         List<IRenderLabel> renderHandlers = StorageDrawers.renderRegistry.getRenderHandlers();
-        for (int i = 0, n = renderHandlers.size(); i < n; i++) {
-            renderHandlers.get(i).render(tile, tile, slot, brightness, partialTickTime);
+        for (IRenderLabel renderHandler : renderHandlers) {
+            renderHandler.render(tile, tile, slot, brightness, partialTickTime);
         }
 
         GL11.glPushMatrix();
@@ -591,23 +591,14 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        // For up/down drawers the whole frame is tilted; block-type items rendered here need their normals renormalized
-        // so the standard item lighting set up above is not skewed by that rotation.
-        boolean tilted = isItemBlockType(itemStack) && tile.getDirection() <= 1;
-        if (tilted) {
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        } else {
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glDisable(GL11.GL_NORMALIZE);
-        }
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_NORMALIZE);
 
         try {
             if (skipRenderHook || !ForgeHooksClient
                     .renderInventoryItem(this.renderBlocks, mc.renderEngine, itemStack, true, 0, 0, 0))
                 itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, 0, 0, true);
-        } catch (Exception e) {}
-
-        if (tilted) GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        } catch (Exception ignored) {}
 
         GL11.glPopMatrix();
     }
@@ -632,33 +623,23 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     }
 
     private float getXOffset(int drawerCount, int slot) {
-        switch (drawerCount) {
-            case 1:
-                return 0.5f;
-            case 2:
-                return itemOffset2X[slot];
-            case 3:
-                return itemOffset3X[slot];
-            case 4:
-                return itemOffset4X[slot];
-            default:
-                return 0;
-        }
+        return switch (drawerCount) {
+            case 1 -> 0.5f;
+            case 2 -> itemOffset2X[slot];
+            case 3 -> itemOffset3X[slot];
+            case 4 -> itemOffset4X[slot];
+            default -> 0;
+        };
     }
 
     private float getYOffset(int drawerCount, int slot) {
-        switch (drawerCount) {
-            case 1:
-                return 8.25f;
-            case 2:
-                return itemOffset2Y[slot];
-            case 3:
-                return itemOffset3Y[slot];
-            case 4:
-                return itemOffset4Y[slot];
-            default:
-                return 0;
-        }
+        return switch (drawerCount) {
+            case 1 -> 8.25f;
+            case 2 -> itemOffset2Y[slot];
+            case 3 -> itemOffset3Y[slot];
+            case 4 -> itemOffset4Y[slot];
+            default -> 0;
+        };
     }
 
     private void alignRendering(ForgeDirection side) {
