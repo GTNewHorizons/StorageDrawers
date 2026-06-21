@@ -2,7 +2,6 @@ package com.jaquadro.minecraft.storagedrawers.util;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
 
 /**
  * Resolved placement orientation of a drawer block.
@@ -15,8 +14,8 @@ import net.minecraft.util.Vec3;
  */
 public class DrawerOrientation {
 
-    /** Minimum magnitude of the look vector's vertical component required to place facing up or down. */
-    private static final double VERTICAL_THRESHOLD = 0.6;
+    /** Minimum pitch magnitude in degrees required to place facing up or down. */
+    private static final float VERTICAL_PITCH_THRESHOLD = 65f;
 
     private final int direction;
     private final int rotation;
@@ -47,12 +46,12 @@ public class DrawerOrientation {
             default -> 4;
         };
 
-        Vec3 look = entity.getLookVec();
+        float pitch = entity.rotationPitch;
         // Looking up places the drawer overhead with its front pointing back down at the player; looking down places it
         // underfoot facing up. The spin is chosen so the front's bottom edge faces the player (matching how a
         // horizontal drawer's bottom points down), derived from the rigid render tilt.
-        if (look.yCoord >= VERTICAL_THRESHOLD) return new DrawerOrientation(0, (4 - quadrant) % 4);
-        if (look.yCoord <= -VERTICAL_THRESHOLD) return new DrawerOrientation(1, (2 - quadrant + 4) % 4);
+        if (pitch < -VERTICAL_PITCH_THRESHOLD) return new DrawerOrientation(0, (4 - quadrant) % 4);
+        if (pitch > VERTICAL_PITCH_THRESHOLD) return new DrawerOrientation(1, (2 - quadrant + 4) % 4);
 
         return new DrawerOrientation(horizontal, 0);
     }
