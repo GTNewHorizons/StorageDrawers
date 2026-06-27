@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -58,8 +59,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         implements IDrawerGroupInteractive, ISidedInventory, IUpgradeProvider, ILockable, ISealable, IProtectable,
         IDowngradable, CapabilityProvider, IExtendedBlockClickHandler {
 
-    private IDrawer[] drawers;
-    private IDrawerInventory inventory;
+    protected IDrawer[] drawers;
+    protected IDrawerInventory inventory;
 
     private int direction;
     private int drawerCapacity = 1;
@@ -84,6 +85,72 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     private ItemStack materialSide;
     private ItemStack materialFront;
     private ItemStack materialTrim;
+
+    private boolean isFirstTick = true;
+    protected TileEntityController controller = null;
+    protected BlockCoord controllerCoord = null;
+
+    @Override
+    public void controllerFullUpdate() {
+
+        if (controller != null && !controller.isInvalid()) {
+            controller.scheduleFullUpdate();
+        }
+    }
+
+    @Override
+    public BlockCoord getControllerCoord() {
+        return controllerCoord;
+    }
+
+    @Override
+    public void setControllerCoord(int sourceControllerX, int sourceControllerY, int sourceControllerZ) {
+
+        if (controllerCoord == null || controllerCoord.x() != sourceControllerX
+                || controllerCoord.y() != sourceControllerY
+                || controllerCoord.z() != sourceControllerZ) {
+            controllerCoord = new BlockCoord(sourceControllerX, sourceControllerY, sourceControllerZ);
+            markDirty();
+        }
+
+        if (worldObj == null) return;
+
+        TileEntity te = worldObj.getTileEntity(controllerCoord.x(), controllerCoord.y(), controllerCoord.z());
+        if (te instanceof TileEntityController) {
+            controller = (TileEntityController) te;
+        }
+    }
+
+    @Override
+    public void clearControllerVariables(int sourceControllerX, int sourceControllerY, int sourceControllerZ,
+            boolean nullController) {
+
+        if (controllerCoord == null || controllerCoord.x() != sourceControllerX
+                || controllerCoord.y() != sourceControllerY
+                || controllerCoord.z() != sourceControllerZ) {
+
+            for (IDrawer drawer : drawers) {
+                drawer.clearTileEntityController();
+            }
+
+            if (nullController) {
+                controllerCoord = null;
+                controller = null;
+                markDirty();
+            }
+        }
+    }
+
+    /**
+     * For interactions that change controller drawer priority (e.g. void upgrade, locking, sealing) reschedule
+     * controller priority update.
+     */
+    public void controllerSchedulePriorityUpdate() {
+
+        if (controller != null && !controller.isInvalid()) {
+            controller.schedulePriorityUpdate();
+        }
+    }
 
     protected TileEntityDrawers(int drawerCount) {
         initWithDrawerCount(drawerCount);
@@ -173,12 +240,16 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     }
 
     public void setUpgrade(int slot, ItemStack upgrade) {
+
         slot = MathHelper.clamp_int(slot, 0, 4);
 
         if (upgrade != null) {
             upgrade = upgrade.copy();
             upgrade.stackSize = 1;
+
         }
+
+        controllerSchedulePriorityUpdate();
 
         upgrades[slot] = upgrade;
 
@@ -230,12 +301,16 @@ public abstract class TileEntityDrawers extends BaseTileEntity
             if (lockAttributes == null) lockAttributes = EnumSet.of(attr);
             else lockAttributes.add(attr);
 
+            controllerSchedulePriorityUpdate();
+
             if (worldObj != null && !worldObj.isRemote) {
                 markDirty();
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             }
         } else if (!isLocked && lockAttributes != null && lockAttributes.contains(attr)) {
+
             lockAttributes.remove(attr);
+            controllerSchedulePriorityUpdate();
 
             if (worldObj != null && !worldObj.isRemote) {
                 markDirty();
@@ -348,6 +423,8 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         if (this.taped != state) {
             this.taped = state;
 
+            controllerSchedulePriorityUpdate();
+
             if (worldObj != null && !worldObj.isRemote) {
                 markDirty();
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -396,6 +473,10 @@ public abstract class TileEntityDrawers extends BaseTileEntity
 
         int amount = getTakeAmount(player, invertShift, drawer);
         ItemStack item = takeItemsFromSlot(slot, amount, player, isHoldingClick);
+
+        if (controller != null && !controller.isInvalid() && !controller.getClientAutoSync()) {
+            controller.syncClient();
+        }
 
         traceItem(item);
 
@@ -606,6 +687,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
      * Returns an ItemStack that will have a maximum size of {@link ItemStack#getMaxStackSize()}
      */
     public ItemStack takeItemsFromSlot(int slot, int count, EntityPlayer player, boolean isHoldingClick) {
+
         if (slot < 0 || slot >= getDrawerCount()) return null;
 
         ItemStack stack = getItemsFromSlot(slot, count);
@@ -637,6 +719,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     }
 
     public ItemStack takeItemsFromSlotWithDestroy(int slot, int count) {
+
         if (slot < 0 || slot >= getDrawerCount()) return null;
 
         ItemStack stack = getItemsFromSlot(slot, count);
@@ -657,6 +740,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
      * Returns an ItemStack that will have a maximum size of {@link ItemStack#getMaxStackSize()}
      */
     protected ItemStack getItemsFromSlot(int slot, int count) {
+
         if (drawers[slot].isEmpty()) return null;
 
         ItemStack stack = drawers[slot].getStoredItemCopy();
@@ -667,6 +751,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     }
 
     public int putItemsIntoSlot(int slot, ItemStack stack, int count) {
+
         if (slot < 0 || slot >= getDrawerCount()) return 0;
 
         IDrawer drawer = drawers[slot];
@@ -714,16 +799,29 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         return count;
     }
 
-    public int interactPutItemsIntoSlot(int slot, EntityPlayer player) {
+    public void interactPutItemsIntoSlot(int slot, EntityPlayer player) {
+
         int count = 0;
-        if (worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID))
+        if (worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID)) {
             count = interactPutCurrentInventoryIntoSlot(slot, player);
-        else count = interactPutCurrentItemIntoSlot(slot, player);
+        } else count = interactPutCurrentItemIntoSlot(slot, player);
 
         lastClickTime = worldObj.getTotalWorldTime();
         lastClickUUID = player.getPersistentID();
 
-        return count;
+        IDrawer drawer = getDrawer(slot);
+
+        // Sync with client
+        if (drawer != null) {
+
+            if (controller != null && !controller.isInvalid() && !controller.getClientAutoSync()) {
+                controller.syncClient();
+            } else {
+                ItemStack currentStack = drawer.getStoredItemPrototype();
+                if (count > 0 && currentStack != null) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            }
+
+        }
     }
 
     private void readLegacyUpgradeNBT(NBTTagCompound tag) {
@@ -736,6 +834,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
 
     @Override
     protected void readFromFixedNBT(NBTTagCompound tag) {
+
         super.readFromFixedNBT(tag);
 
         setDirection(tag.getByte("Dir"));
@@ -747,10 +846,20 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         if (tag.hasKey("CustomName", Constants.NBT.TAG_STRING)) customName = tag.getString("CustomName");
 
         downgraded = tag.hasKey("Down") && tag.getBoolean("Down");
+
+        controllerCoord = null;
+        if (tag.hasKey("controllerCoords", Constants.NBT.TAG_COMPOUND)) {
+            NBTTagCompound ctag = tag.getCompoundTag("controllerCoords");
+            controllerCoord = new BlockCoord(
+                    ctag.getInteger("xController"),
+                    ctag.getInteger("yController"),
+                    ctag.getInteger("zController"));
+        }
     }
 
     @Override
     protected void writeToFixedNBT(NBTTagCompound tag) {
+
         super.writeToFixedNBT(tag);
 
         tag.setByte("Dir", (byte) direction);
@@ -760,10 +869,19 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         if (hasCustomInventoryName()) tag.setString("CustomName", customName);
 
         if (checkDowngraded()) tag.setBoolean("Down", downgraded);
+
+        if (controllerCoord != null) {
+            NBTTagCompound ctag = new NBTTagCompound();
+            ctag.setInteger("xController", controllerCoord.x());
+            ctag.setInteger("yController", controllerCoord.y());
+            ctag.setInteger("zController", controllerCoord.z());
+            tag.setTag("controllerCoords", ctag);
+        }
     }
 
     @Override
     public void readFromPortableNBT(NBTTagCompound tag) {
+
         super.readFromPortableNBT(tag);
 
         upgrades = new ItemStack[upgrades.length];
@@ -819,8 +937,6 @@ public abstract class TileEntityDrawers extends BaseTileEntity
 
         materialTrim = null;
         if (tag.hasKey("MatT")) materialTrim = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("MatT"));
-
-        io = null; // Rebuild ItemIO after drawer slots are recreated.
     }
 
     @Override
@@ -882,12 +998,29 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     }
 
     @Override
+    public void updateEntity() {
+
+        if (isFirstTick && worldObj != null && !worldObj.isRemote && controllerCoord != null) {
+
+            isFirstTick = false;
+
+            TileEntity te = worldObj.getTileEntity(controllerCoord.x(), controllerCoord.y(), controllerCoord.z());
+
+            if (te instanceof TileEntityController) {
+                controller = ((TileEntityController) te);
+                ((TileEntityController) te).scheduleFullUpdate();
+            }
+        }
+    }
+
+    @Override
     public boolean canUpdate() {
         return false;
     }
 
     @Override
     public void markDirty() {
+
         inventory.markDirty();
         if (isRedstone() && worldObj != null) {
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
@@ -927,14 +1060,22 @@ public abstract class TileEntityDrawers extends BaseTileEntity
         if (drawer.getStoredItemCount() != count) {
             drawer.setStoredItemCount(count);
 
-            switch (getEffectiveStatusLevel()) {
-                case 1:
-                    if (drawer.getStoredItemCount() == 0 || drawer.getRemainingCapacity() == 0)
-                        getWorldObj().func_147479_m(xCoord, yCoord, zCoord); // markBlockForRenderUpdate
-                    break;
-                case 2:
-                    getWorldObj().func_147479_m(xCoord, yCoord, zCoord); // markBlockForRenderUpdate
-                    break;
+            int statusLevel = getEffectiveStatusLevel();
+
+            if (statusLevel == 0) {
+                drawer.setStoredItemCount(count);
+            } else if (statusLevel == 1) {
+                int capacityBefore = drawer.getRemainingCapacity();
+                drawer.setStoredItemCount(count);
+                int capacityAfter = drawer.getRemainingCapacity();
+
+                if (capacityBefore != capacityAfter) getWorldObj().func_147479_m(xCoord, yCoord, zCoord); // markBlockForRenderUpdate
+
+            } else if (statusLevel == 2) {
+                drawer.setStoredItemCount(count);
+                getWorldObj().func_147479_m(xCoord, yCoord, zCoord); // markBlockForRenderUpdate
+            } else {
+                drawer.setStoredItemCount(count);
             }
         }
     }

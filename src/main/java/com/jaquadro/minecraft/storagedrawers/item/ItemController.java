@@ -26,7 +26,7 @@ public class ItemController extends ItemBlock {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityController tile = (TileEntityController) world.getTileEntity(x, y, z);
-        if (tile != null) {
+        if (tile != null && !player.isSneaking()) {
             if (side > 1) tile.setDirection(side);
         }
 

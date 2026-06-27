@@ -34,7 +34,7 @@ public class ItemCompDrawers extends ItemDrawers {
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("tile"))
                 tile.readFromPortableNBT(stack.getTagCompound().getCompoundTag("tile"));
 
-            if (side > 1) tile.setDirection(side);
+            if (side > 1 && !player.isSneaking()) tile.setDirection(side);
 
             tile.setIsSealed(false);
         }

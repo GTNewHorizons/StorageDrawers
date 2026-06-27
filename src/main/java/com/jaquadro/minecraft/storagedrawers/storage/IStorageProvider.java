@@ -1,6 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.storage;
 
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 
 public interface IStorageProvider {
 
@@ -32,7 +33,7 @@ public interface IStorageProvider {
 
     public boolean isRedstone(int slot);
 
-    public void markAmountDirty(int slot);
+    public void markAmountDirty(int slot, TileEntityController controller);
 
-    public void markDirty(int slot);
+    public void markDirty(TileEntityController controller);
 }

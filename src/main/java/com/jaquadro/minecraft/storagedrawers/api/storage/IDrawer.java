@@ -1,15 +1,35 @@
 package com.jaquadro.minecraft.storagedrawers.api.storage;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public interface IDrawer {
+
+    List<ItemStack> getOreDictMatches();
+
+    TileEntityController getController();
+
+    int getControllerDrawerSlot();
+
+    /**
+     * Provide reference to controller
+     */
+    void setTileEntityController(TileEntityController controller, int controllerDrawerSlot);
+
+    /**
+     * Delete reference to controller
+     */
+    void clearTileEntityController();
 
     /**
      * Gets an ItemStack of size 1 representing the type, metadata, and tags of the stored items. The returned ItemStack

@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 
 public interface ICentralInventory {
 
@@ -14,7 +15,7 @@ public interface ICentralInventory {
 
     public int getStoredItemCount(int slot);
 
-    public void setStoredItemCount(int slot, int amount);
+    public void setStoredItemCount(int slot, int amount, TileEntityController controller, int controllerDrawerSlot);
 
     public int getMaxCapacity(int slot);
 

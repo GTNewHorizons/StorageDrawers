@@ -4,7 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -51,8 +54,61 @@ public class BlockSlave extends BlockContainer implements INetworked {
         return new TileEntitySlave();
     }
 
-    public void bindController(World world, int x, int y, int z) {
+    @Override
+    public void onPostBlockPlaced(World world, int x, int y, int z, int meta) {
+        if (world.isRemote) return;
+
         TileEntitySlave te = getTileEntitySafe(world, x, y, z);
+        if (te == null) return;
+
+        te.refreshController(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockPreDestroy(World worldIn, int x, int y, int z, int meta) {
+        if (worldIn.isRemote) return;
+
+        TileEntitySlave te = getTileEntitySafe(worldIn, x, y, z);
+        if (te == null) return;
+
+        te.controllerFullUpdate();
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+            float hitY, float hitZ) {
+
+        TileEntitySlave te = getTileEntitySafe(world, x, y, z);
+        boolean isSneaking = player.isSneaking();
+        ItemStack heldItem = player.inventory.getCurrentItem();
+
+        if (!isSneaking) {
+
+            if (heldItem == null || heldItem.getItem() == null) {
+                if (!world.isRemote) {
+                    player.addChatMessage(
+                            new ChatComponentText(
+                                    "Extracting " + ((te.getExtractionItem() == null) ? "Nothing"
+                                            : te.getExtractionItem().getDisplayName())));
+                }
+            } else {
+                if (!world.isRemote) {
+                    if (te.getExtractionItem() == null) te.setExtractionItem(heldItem);
+                    player.addChatMessage(
+                            new ChatComponentText(
+                                    "Extracting " + ((te.getExtractionItem() == null) ? "Nothing"
+                                            : te.getExtractionItem().getDisplayName())));
+                }
+            }
+            return true;
+        } else if (heldItem == null || heldItem.getItem() == null) {
+            if (!world.isRemote) {
+                te.setExtractionItem(null);
+                player.addChatMessage(new ChatComponentText("Extracting Nothing"));
+            }
+            return true;
+        }
+        return false;
     }
 
     public TileEntitySlave getTileEntity(IBlockAccess blockAccess, int x, int y, int z) {
@@ -65,7 +121,6 @@ public class BlockSlave extends BlockContainer implements INetworked {
         if (tile == null) {
             tile = createNewTileEntity(world, world.getBlockMetadata(x, y, z));
             world.setTileEntity(x, y, z, tile);
-            tile.ensureInitialized();
         }
 
         return tile;

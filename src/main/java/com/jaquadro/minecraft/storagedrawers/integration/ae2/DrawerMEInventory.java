@@ -32,6 +32,7 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
 
     @Override
     public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src) {
+
         long itemsLeft = input.getStackSize();
 
         if (group instanceof ISmartGroup) {
@@ -40,15 +41,16 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
 
             try {
                 for (int slot : ((ISmartGroup) group).enumerateDrawersForInsertion(input.getItemStack(), false)) {
+
                     IDrawer drawer = group.getDrawer(slot);
                     ItemStack itemProto = drawer.getStoredItemPrototype();
+
                     if (itemProto == null) {
                         drawer = drawer.setStoredItemRedir(input.getItemStack(), 0);
                         if (clearSet != null) clearSet.add(drawer);
                     }
 
-                    if (drawer.canItemBeStored(input.getItemStack()))
-                        itemsLeft = injectItemsIntoDrawer(drawer, itemsLeft, type);
+                    itemsLeft = injectItemsIntoDrawer(drawer, itemsLeft, type);
 
                     if (drawer instanceof IVoidable && ((IVoidable) drawer).isVoid()) itemsLeft = 0;
                     if (itemsLeft == 0) return null;
@@ -58,6 +60,7 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
                     for (IDrawer drawer : clearSet) drawer.setStoredItemRedir(null, 0);
                 }
             }
+
         } else {
             int[] order = null;
             if (group instanceof IPriorityGroup) order = ((IPriorityGroup) group).getAccessibleDrawerSlots();
@@ -133,13 +136,16 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
 
     @Override
     public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src) {
+
         long itemsLeft = request.getStackSize();
         if (group instanceof ISmartGroup) {
+
             for (int slot : ((ISmartGroup) group).enumerateDrawersForExtraction(request.getItemStack(), true)) {
                 if (itemsLeft == 0) break;
 
                 IDrawer drawer = group.getDrawer(slot);
                 int itemCount = drawer.getStoredItemCount();
+
                 if (itemsLeft > itemCount) {
                     if (mode == Actionable.MODULATE) drawer.setStoredItemCount(0);
                     itemsLeft -= itemCount;
@@ -149,6 +155,7 @@ public class DrawerMEInventory implements IMEInventory<IAEItemStack> {
                     break;
                 }
             }
+
         } else {
             int[] order = null;
             if (group instanceof IPriorityGroup) order = ((IPriorityGroup) group).getAccessibleDrawerSlots();

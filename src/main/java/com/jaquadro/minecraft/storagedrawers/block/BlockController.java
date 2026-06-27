@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -83,6 +84,7 @@ public class BlockController extends BlockContainer implements INetworked {
         if (tile.getDirection() > 1) return;
 
         int quadrant = MathHelper.floor_double((entity.rotationYaw * 4f / 360f) + .5) & 3;
+
         switch (quadrant) {
             case 0:
                 tile.setDirection(2);
@@ -113,46 +115,100 @@ public class BlockController extends BlockContainer implements INetworked {
         TileEntityController te = getTileEntity(world, x, y, z);
         if (te == null) return;
 
-        te.updateCache();
+        te.fullDrawerUpdate();
+    }
+
+    @Override
+    public void onBlockPreDestroy(World worldIn, int x, int y, int z, int meta) {
+        if (worldIn.isRemote) return;
+
+        TileEntityController te = getTileEntity(worldIn, x, y, z);
+        if (te == null) return;
+
+        te.syncClient();
+        te.clearStorage(true);
     }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
             float hitY, float hitZ) {
+
         TileEntityController te = getTileEntitySafe(world, x, y, z);
-        ItemStack item = player.inventory.getCurrentItem();
+        ItemStack heldItem = player.inventory.getCurrentItem();
 
-        if (item != null && item.getItem() != null) {
-            if (item.getItem() == ModItems.shroudKey) {
-                if (!world.isRemote) te.toggleShroud(player.getGameProfile());
-                return true;
-            } else if (item.getItem() == ModItems.upgradeLock) {
-                if (!world.isRemote) te.toggleLock(
-                        EnumSet.allOf(LockAttribute.class),
-                        LockAttribute.LOCK_POPULATED,
-                        player.getGameProfile());
-                return true;
-            } else if (item.getItem() == ModItems.personalKey) {
-                if (!world.isRemote) {
-                    String securityKey = ((ItemPersonalKey) item.getItem())
-                            .getSecurityProviderKey(item.getItemDamage());
-                    ISecurityProvider provider = StorageDrawers.securityRegistry.getProvider(securityKey);
+        boolean isSneaking = player.isSneaking();
 
-                    te.toggleProtection(player.getGameProfile(), provider);
+        if (te.getDirection() != side) {
+
+            if (!isSneaking) {
+
+                if (heldItem == null || heldItem.getItem() == null) {
+                    if (!world.isRemote) {
+                        player.addChatMessage(
+                                new ChatComponentText(
+                                        "Extracting " + ((te.getExtractionItem() == null) ? "Nothing"
+                                                : te.getExtractionItem().getDisplayName())));
+                    }
+                } else {
+                    if (!world.isRemote) {
+                        if (te.getExtractionItem() == null) te.setExtractionItem(heldItem);
+                        player.addChatMessage(
+                                new ChatComponentText(
+                                        "Extracting " + ((te.getExtractionItem() == null) ? "Nothing"
+                                                : te.getExtractionItem().getDisplayName())));
+                    }
                 }
-
                 return true;
-            } else if (item.getItem() == ModItems.quantifyKey) {
-                if (!world.isRemote) te.toggleQuantify(player.getGameProfile());
+            } else if (heldItem == null || heldItem.getItem() == null) {
+                if (!world.isRemote) {
+                    te.setExtractionItem(null);
+                    player.addChatMessage(new ChatComponentText("Extracting Nothing"));
+                }
                 return true;
             }
+            return false;
         }
 
-        if (te.getDirection() != side) return false;
+        else {
 
-        if (!world.isRemote) te.interactPutItemsIntoInventory(player);
+            if (heldItem != null && heldItem.getItem() != null) {
+                if (heldItem.getItem() == ModItems.shroudKey) {
+                    if (!world.isRemote) te.toggleShroud(player.getGameProfile());
+                    return true;
+                } else if (heldItem.getItem() == ModItems.upgradeLock) {
+                    if (!world.isRemote) te.toggleLock(
+                            EnumSet.allOf(LockAttribute.class),
+                            LockAttribute.LOCK_POPULATED,
+                            player.getGameProfile());
+                    return true;
+                } else if (heldItem.getItem() == ModItems.personalKey) {
+                    if (!world.isRemote) {
+                        String securityKey = ((ItemPersonalKey) heldItem.getItem())
+                                .getSecurityProviderKey(heldItem.getItemDamage());
+                        ISecurityProvider provider = StorageDrawers.securityRegistry.getProvider(securityKey);
 
-        return true;
+                        te.toggleProtection(player.getGameProfile(), provider);
+                    }
+
+                    return true;
+                } else if (heldItem.getItem() == ModItems.quantifyKey) {
+                    if (!world.isRemote) te.toggleQuantify(player.getGameProfile());
+                    return true;
+                }
+            } else if (isSneaking) {
+                if (!world.isRemote) {
+                    te.toggleSync();
+                    if (te.getClientAutoSync()) {
+                        player.addChatMessage(new ChatComponentText("Client Auto Sync Enabled"));
+                    } else player.addChatMessage(new ChatComponentText("Client Auto Sync Disabled"));
+                }
+            }
+            if (!world.isRemote) {
+                te.interactPutItemsIntoInventory(player);
+            }
+            return true;
+
+        }
     }
 
     @Override
@@ -184,7 +240,7 @@ public class BlockController extends BlockContainer implements INetworked {
         TileEntityController te = getTileEntity(world, x, y, z);
         if (te == null) return;
 
-        te.updateCache();
+        te.updateOnTick();
 
         world.scheduleBlockUpdate(x, y, z, this, this.tickRate(world));
     }
