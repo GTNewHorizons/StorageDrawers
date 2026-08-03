@@ -15,6 +15,7 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.inventory.IInventoryAdapter;
 import com.jaquadro.minecraft.storagedrawers.api.inventory.SlotType;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import com.jaquadro.minecraft.storagedrawers.inventory.InventoryStack;
 
 import cpw.mods.fml.relauncher.Side;
@@ -23,12 +24,43 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
 
     protected InventoryStack inventoryStack;
-    private List<ItemStack> oreDictMatches;
+    protected List<ItemStack> oreDictMatches;
     private Map<String, Object> auxData;
     @SideOnly(Side.CLIENT)
     private ItemStack itemStackForRender;
     @SideOnly(Side.CLIENT)
     private EntityItem entityItemForRender;
+
+    /**
+     * This is the index of the SlotRecord inside controller variable drawerSlotList when a controller is connected
+     * (Used to update controller lookup when item in the slot is changed)
+     */
+    protected int controllerDrawerSlot = -1;
+    protected TileEntityController controller = null;
+
+    public List<ItemStack> getOreDictMatches() {
+        return oreDictMatches;
+    }
+
+    public TileEntityController getController() {
+        return controller;
+    }
+
+    public int getControllerDrawerSlot() {
+        return controllerDrawerSlot;
+    }
+
+    public void setTileEntityController(TileEntityController controller, int controllerDrawerSlot) {
+
+        this.controller = controller;
+        this.controllerDrawerSlot = controllerDrawerSlot;
+    }
+
+    public void clearTileEntityController() {
+
+        this.controller = null;
+        this.controllerDrawerSlot = -1;
+    }
 
     protected BaseDrawerData() {
         inventoryStack = new DrawerInventoryStack();
@@ -70,7 +102,7 @@ public abstract class BaseDrawerData implements IDrawer, IInventoryAdapter {
                 }
             }
 
-            if (oreDictMatches.size() == 0) oreDictMatches = null;
+            if (oreDictMatches.isEmpty()) oreDictMatches = null;
         }
     }
 

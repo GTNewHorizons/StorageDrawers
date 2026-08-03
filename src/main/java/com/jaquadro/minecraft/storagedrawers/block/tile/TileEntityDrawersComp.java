@@ -20,7 +20,6 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.config.CompTierRegistry;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
-import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import com.jaquadro.minecraft.storagedrawers.storage.BaseDrawerData;
 import com.jaquadro.minecraft.storagedrawers.storage.CompDrawerData;
 import com.jaquadro.minecraft.storagedrawers.storage.DrawerData;
@@ -28,8 +27,6 @@ import com.jaquadro.minecraft.storagedrawers.storage.ICentralInventory;
 import com.jaquadro.minecraft.storagedrawers.util.ItemStackConversion;
 
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -52,6 +49,35 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
         protoStack = new ItemStack[getDrawerCount()];
         convRate = new int[getDrawerCount()];
+    }
+
+    public void setLookupController(int slot, ItemStack itemPrototype, TileEntityController controller,
+            int controllerDrawerSlot, List<ItemStack> oreDictMatches) {
+
+        if (controller == null || controller.isInvalid() || controllerDrawerSlot == -1) {
+
+            drawers[slot].clearTileEntityController();
+        } else if (itemPrototype != null) {
+            controller.setLookup(
+                    itemPrototype,
+                    controllerDrawerSlot,
+                    StorageDrawers.config.cache.enableItemConversion ? oreDictMatches : null);
+        }
+    }
+
+    public void removeLookupController(int slot, TileEntityController controller, int controllerDrawerSlot) {
+
+        if (controller == null || controller.isInvalid() || controllerDrawerSlot == -1) {
+
+            drawers[slot].clearTileEntityController();
+
+        } else if (protoStack[slot] != null) {
+
+            controller.removeLookup(
+                    protoStack[slot],
+                    controllerDrawerSlot,
+                    StorageDrawers.config.cache.enableItemConversion ? drawers[slot].getOreDictMatches() : null);
+        }
     }
 
     protected ICentralInventory getCentralInventory() {
@@ -92,6 +118,13 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
             for (int i = 0; i < getDrawerCount(); i++) {
                 IDrawer drawer = getDrawer(i);
                 if (drawer instanceof CompDrawerData) ((CompDrawerData) drawer).refresh();
+
+                setLookupController(
+                        i,
+                        protoStack[i],
+                        drawers[i].getController(),
+                        drawers[i].getControllerDrawerSlot(),
+                        drawers[i].getOreDictMatches());
             }
         }
 
@@ -151,6 +184,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
     }
 
     private void populateSlots(ItemStack stack) {
+
         int index = 0;
 
         ItemStack uTier1 = findHigherTier(stack);
@@ -204,12 +238,11 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
     }
 
     private void populateSlot(int slot, ItemStack stack, int conversion) {
+
         convRate[slot] = conversion;
         protoStack[slot] = stack.copy();
-        // centralInventory.setStoredItem(slot, stack, 0);
-        // getDrawer(slot).setStoredItem(stack, 0);
 
-        if (worldObj != null && worldObj.isRemote) getWorldObj().func_147479_m(xCoord, yCoord, zCoord); // markBlockForRenderUpdate
+        if (worldObj != null && worldObj.isRemote) getWorldObj().func_147479_m(xCoord, yCoord, zCoord);
     }
 
     private ItemStack findHigherTier(ItemStack stack) {
@@ -497,6 +530,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
         @Override
         public IDrawer setStoredItem(int slot, ItemStack itemPrototype, int amount) {
+
             if (itemPrototype != null && convRate != null && convRate[0] == 0) {
                 IDrawer target = null;
                 populateSlots(itemPrototype);
@@ -508,23 +542,43 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
                 }
 
                 for (int i = 0; i < getDrawerCount(); i++) {
-                    if (i == slot) continue;
 
                     IDrawer drawer = getDrawer(i);
+
                     if (drawer instanceof CompDrawerData) ((CompDrawerData) drawer).refresh();
+
+                    setLookupController(
+                            i,
+                            protoStack[i],
+                            drawers[i].getController(),
+                            drawers[i].getControllerDrawerSlot(),
+                            drawers[i].getOreDictMatches());
                 }
 
                 if (worldObj != null && !worldObj.isRemote) {
-                    // TileEntityDrawersComp.this.markDirty();
-                    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+                    if (controller != null && !controller.isInvalid() && !controller.getClientAutoSync()) {
+                        controller.addClientSyncList(xCoord, yCoord, zCoord);
+                    } else {
+                        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                    }
                 }
 
                 return target;
             } else if (itemPrototype == null) {
-                // setStoredItemCount(slot, 0);
+
                 pooledCount = 0;
+
                 clear();
-                if (worldObj != null && !worldObj.isRemote) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+                if (worldObj != null && !worldObj.isRemote) {
+
+                    if (controller != null && !controller.isInvalid() && !controller.getClientAutoSync()) {
+                        controller.addClientSyncList(xCoord, yCoord, zCoord);
+                    } else {
+                        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                    }
+                }
             }
 
             return getDrawer(slot);
@@ -540,7 +594,9 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         }
 
         @Override
-        public void setStoredItemCount(int slot, int amount) {
+        public void setStoredItemCount(int slot, int amount, TileEntityController controller,
+                int controllerDrawerSlot) {
+
             if (convRate == null || convRate[slot] == 0) return;
 
             if (TileEntityDrawersComp.this.isVending()) return;
@@ -552,13 +608,27 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
             if (pooledCount > poolMax) pooledCount = poolMax;
 
             if (pooledCount != oldCount) {
-                if (pooledCount != 0 || TileEntityDrawersComp.this.isLocked(LockAttribute.LOCK_POPULATED))
-                    markAmountDirty();
-                else {
-                    clear();
-                    if (worldObj != null && !worldObj.isRemote) {
-                        // TileEntityDrawersComp.this.markDirty();
+
+                if (pooledCount != 0 || TileEntityDrawersComp.this.isLocked(LockAttribute.LOCK_POPULATED)) {
+
+                    if (controller != null && !controller.isInvalid() && !controller.getClientAutoSync()) {
+                        controller.addClientSyncList(xCoord, yCoord, zCoord);
+                    } else {
                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                    }
+                }
+
+                else {
+
+                    clear();
+
+                    if (worldObj != null && !worldObj.isRemote) {
+
+                        if (controller != null && !controller.isInvalid() && !controller.getClientAutoSync()) {
+                            controller.addClientSyncList(xCoord, yCoord, zCoord);
+                        } else {
+                            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                        }
                     }
                 }
             }
@@ -682,6 +752,9 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
         private void clear() {
             for (int i = 0; i < getDrawerCount(); i++) {
+
+                removeLookupController(i, drawers[i].getController(), drawers[i].getControllerDrawerSlot());
+
                 protoStack[i] = null;
                 convRate[i] = 0;
             }
@@ -710,26 +783,6 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
             ConfigManager config = StorageDrawers.config;
             return TileEntityDrawersComp.this.getEffectiveStorageMultiplier()
                     * TileEntityDrawersComp.this.getDrawerCapacity();
-        }
-
-        public void markAmountDirty() {
-            if (getWorldObj().isRemote) return;
-
-            IMessage message = new CountUpdateMessage(xCoord, yCoord, zCoord, 0, pooledCount);
-            NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(
-                    getWorldObj().provider.dimensionId,
-                    xCoord,
-                    yCoord,
-                    zCoord,
-                    500);
-
-            StorageDrawers.network.sendToAllAround(message, targetPoint);
-        }
-
-        public void markDirty(int slot) {
-            if (getWorldObj().isRemote) return;
-
-            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 

@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.event.DrawerPopulatedEvent;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ILockable;
@@ -18,18 +19,50 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
 
     private static final ItemStack nullStack = new ItemStack((Item) null);
 
-    private IStorageProvider storageProvider;
-    private int slot;
+    // Syncs Client with Server and marks chunk for saving when protostack/count changes
+    private final IStorageProvider storageProvider;
 
+    // Drawer Slot within IDrawerGroup
+    private final int slot;
+
+    // Item that is held in this slot
     private ItemStack protoStack;
     private int count;
 
     public DrawerData(IStorageProvider provider, int slot) {
+
         storageProvider = provider;
         protoStack = nullStack;
         this.slot = slot;
 
         postInit();
+    }
+
+    public void setLookupController(ItemStack itemPrototype) {
+
+        if (controller == null || controller.isInvalid() || controllerDrawerSlot == -1) {
+            clearTileEntityController();
+        } else if (itemPrototype != nullStack) {
+            controller.setLookup(
+                    itemPrototype,
+                    controllerDrawerSlot,
+                    StorageDrawers.config.cache.enableItemConversion ? oreDictMatches : null);
+        }
+
+    }
+
+    public void removeLookupController() {
+
+        if (controller == null || controller.isInvalid() || controllerDrawerSlot == -1) {
+            clearTileEntityController();
+        }
+
+        else if (protoStack != nullStack) {
+            controller.removeLookup(
+                    protoStack,
+                    controllerDrawerSlot,
+                    StorageDrawers.config.cache.enableItemConversion ? oreDictMatches : null);
+        }
     }
 
     @Override
@@ -56,29 +89,38 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
     }
 
     private void setStoredItem(ItemStack itemPrototype, int amount, boolean mark) {
+
         if (itemPrototype == null) {
-            setStoredItemCount(0, false, true);
+
+            removeLookupController();
+
+            boolean amountDirty = protoStack == null;
+
             protoStack = nullStack;
             inventoryStack.reset();
+
+            setStoredItemCount(0, false, true, amountDirty);
 
             DrawerPopulatedEvent event = new DrawerPopulatedEvent(this);
             MinecraftForge.EVENT_BUS.post(event);
 
-            if (mark) storageProvider.markDirty(slot);
             return;
         }
 
+        boolean amountDirty = (protoStack == null || !itemPrototype.isItemEqual(protoStack)
+                || !ItemStack.areItemStackTagsEqual(itemPrototype, protoStack));
+
         protoStack = itemPrototype.copy();
         protoStack.stackSize = 1;
-
-        refreshOreDictMatches();
-        setStoredItemCount(amount, mark, false);
         inventoryStack.reset();
+        refreshOreDictMatches();
+
+        setLookupController(protoStack);
+
+        setStoredItemCount(amount, mark, false, amountDirty);
 
         DrawerPopulatedEvent event = new DrawerPopulatedEvent(this);
         MinecraftForge.EVENT_BUS.post(event);
-
-        if (mark) storageProvider.markDirty(slot);
     }
 
     @Override
@@ -90,21 +132,28 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
 
     @Override
     public void setStoredItemCount(int amount) {
-        setStoredItemCount(amount, true, true);
+        setStoredItemCount(amount, true, true, amount != 0);
     }
 
-    public void setStoredItemCount(int amount, boolean mark, boolean clearOnEmpty) {
+    public void setStoredItemCount(int amount, boolean mark, boolean clearOnEmpty, boolean amountDirty) {
+
         if (isVendingUnlimited()) return;
 
         count = amount;
         if (count > getMaxCapacity()) count = getMaxCapacity();
 
-        if (amount == 0) {
-            if (clearOnEmpty) {
-                if (!storageProvider.isLocked(slot, LockAttribute.LOCK_POPULATED)) reset();
-                if (mark) storageProvider.markDirty(slot);
+        if (amount == 0 && clearOnEmpty) {
+            if (!storageProvider.isLocked(slot, LockAttribute.LOCK_POPULATED)) {
+                reset();
             }
-        } else if (mark) storageProvider.markAmountDirty(slot);
+        }
+        if (mark) {
+            if (amountDirty) {
+                storageProvider.markAmountDirty(slot, controller);
+            } else {
+                storageProvider.markDirty(controller);
+            }
+        }
     }
 
     @Override
@@ -180,6 +229,8 @@ public class DrawerData extends BaseDrawerData implements IVoidable, IShroudable
 
     @Override
     protected void reset() {
+
+        removeLookupController();
         protoStack = nullStack;
         super.reset();
 

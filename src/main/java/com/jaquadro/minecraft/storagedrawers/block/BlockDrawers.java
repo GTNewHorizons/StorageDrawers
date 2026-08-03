@@ -325,8 +325,29 @@ public class BlockDrawers extends BlockContainer implements INetworked {
     }
 
     @Override
+    public void onPostBlockPlaced(World world, int x, int y, int z, int meta) {
+        if (world.isRemote) return;
+
+        TileEntityDrawers te = getTileEntitySafe(world, x, y, z);
+        if (te == null) return;
+
+        te.refreshController(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockPreDestroy(World worldIn, int x, int y, int z, int meta) {
+        if (worldIn.isRemote) return;
+
+        TileEntityDrawers te = getTileEntitySafe(worldIn, x, y, z);
+        if (te == null) return;
+
+        te.controllerFullUpdate();
+    }
+
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
             float hitY, float hitZ) {
+
         if (world.isRemote && Minecraft.getSystemTime() == ignoreEventTime) {
             ignoreEventTime = 0;
             return false;
@@ -391,13 +412,9 @@ public class BlockDrawers extends BlockContainer implements INetworked {
         if (tileDrawers.isSealed()) return false;
 
         int slot = getDrawerSlot(side, hitX, hitY, hitZ);
-        IDrawer drawer = tileDrawers.getDrawer(slot);
-        if (drawer != null) {
-            ItemStack currentStack = drawer.getStoredItemPrototype();
 
-            int countAdded = tileDrawers.interactPutItemsIntoSlot(slot, player);
-            if (countAdded > 0 && currentStack != null) world.markBlockForUpdate(x, y, z);
-        }
+        if (!world.isRemote) tileDrawers.interactPutItemsIntoSlot(slot, player);
+
         return true;
     }
 
@@ -612,7 +629,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
      * Drops stacks with an "illegal" size that will contain all the items in one stack. The downside of this method is
      * that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It will not
      * save the size of the ItemStack correctly since the size is stored as a byte (max 255)
-     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     * {@link ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
      */
     private static void dropMergedStacks(TileEntityDrawers tile, World world, int x, int y, int z) {
         for (int i = 0; i < tile.getDrawerCount(); i++) {
@@ -632,7 +649,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
      * Drops an ItemStack with an "illegal" size that will contain all the items in one stack. The downside of this
      * method is that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It
      * will not save the size of the ItemStack correctly since the size is stored as a byte (max 255)
-     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     * {@link ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
      */
     private static void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
         if (stack == null || stack.stackSize <= 0) return;
