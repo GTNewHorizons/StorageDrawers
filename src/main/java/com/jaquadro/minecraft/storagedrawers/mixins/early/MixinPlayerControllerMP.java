@@ -35,7 +35,7 @@ public abstract class MixinPlayerControllerMP {
     private boolean storageDrawers$isHoldingClick = false;
 
     @ModifyExpressionValue(
-            method = "onPlayerDamageBlock",
+            method = { "clickBlock", "onPlayerDamageBlock" },
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/block/Block;getPlayerRelativeBlockHardness(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;III)F"))
