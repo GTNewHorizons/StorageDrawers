@@ -144,6 +144,7 @@ public class TileEntityController extends TileEntity
     private int[] drawerSlots = new int[0];
     private int[] autoSides = new int[] { 0, 1, 2, 3, 4, 5 };
     private int direction;
+    private int rotation;
 
     private int drawerSize = 0;
     private int range;
@@ -168,6 +169,14 @@ public class TileEntityController extends TileEntity
 
     public void setDirection(int direction) {
         this.direction = direction % 6;
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(int rotation) {
+        this.rotation = ((rotation % 4) + 4) % 4;
     }
 
     public int interactPutItemsIntoInventory(EntityPlayer player) {
@@ -652,6 +661,7 @@ public class TileEntityController extends TileEntity
         super.readFromNBT(tag);
 
         setDirection(tag.getByte("Dir"));
+        rotation = tag.hasKey("Rot") ? tag.getByte("Rot") : 0;
 
         if (tag.hasKey("CustomName", Constants.NBT.TAG_STRING)) customName = tag.getString("CustomName");
 
@@ -663,6 +673,7 @@ public class TileEntityController extends TileEntity
         super.writeToNBT(tag);
 
         tag.setByte("Dir", (byte) direction);
+        if (rotation != 0) tag.setByte("Rot", (byte) rotation);
 
         if (hasCustomInventoryName()) tag.setString("CustomName", customName);
     }

@@ -355,10 +355,73 @@ public class RenderHelperLL {
     public void drawPartialFace(int face, double x, double y, double z, IIcon icon, double uMin, double vMin,
             double uMax, double vMax) {
         setXYZ(x, y, z);
+        int rotate = state.uvRotate[face];
+        if (rotate == RenderHelperState.ROTATE180) {
+            setUV(icon, uMax, uMin, vMax, vMin);
+            if (state.enableAO) renderXYZUVAO(xyzuvMap[face], RenderHelperState.ROTATE0);
+            else renderXYZUV(xyzuvMap[face], RenderHelperState.ROTATE0);
+            return;
+        }
+
         setUV(icon, uMin, uMax, vMin, vMax);
 
-        if (state.enableAO) renderXYZUVAO(xyzuvMap[face], state.uvRotate[face]);
-        else renderXYZUV(xyzuvMap[face], state.uvRotate[face]);
+        if (rotate == RenderHelperState.ROTATE90) {
+            if (state.enableAO)
+                renderXYZUVCustomAOPartial(xyzuvMap[face], uv[1], uv[2], uv[0], uv[2], uv[0], uv[3], uv[1], uv[3]);
+            else renderXYZUVCustomPartial(xyzuvMap[face], uv[1], uv[2], uv[0], uv[2], uv[0], uv[3], uv[1], uv[3]);
+            return;
+        }
+
+        if (rotate == RenderHelperState.ROTATE270) {
+            if (state.enableAO)
+                renderXYZUVCustomAOPartial(xyzuvMap[face], uv[0], uv[3], uv[1], uv[3], uv[1], uv[2], uv[0], uv[2]);
+            else renderXYZUVCustomPartial(xyzuvMap[face], uv[0], uv[3], uv[1], uv[3], uv[1], uv[2], uv[0], uv[2]);
+            return;
+        }
+
+        if (state.enableAO) renderXYZUVAO(xyzuvMap[face], rotate);
+        else renderXYZUV(xyzuvMap[face], rotate);
+    }
+
+    private void renderXYZUVCustomPartial(int[][] index, double tlU, double tlV, double blU, double blV, double brU,
+            double brV, double trU, double trV) {
+        Tessellator tessellator = Tessellator.instance;
+
+        int[] tl = index[TL];
+        int[] bl = index[BL];
+        int[] br = index[BR];
+        int[] tr = index[TR];
+
+        tessellator.addVertexWithUV(xyz[tl[0]], xyz[tl[1]], xyz[tl[2]], tlU, tlV);
+        tessellator.addVertexWithUV(xyz[bl[0]], xyz[bl[1]], xyz[bl[2]], blU, blV);
+        tessellator.addVertexWithUV(xyz[br[0]], xyz[br[1]], xyz[br[2]], brU, brV);
+        tessellator.addVertexWithUV(xyz[tr[0]], xyz[tr[1]], xyz[tr[2]], trU, trV);
+    }
+
+    private void renderXYZUVCustomAOPartial(int[][] index, double tlU, double tlV, double blU, double blV, double brU,
+            double brV, double trU, double trV) {
+        Tessellator tessellator = Tessellator.instance;
+
+        int[] tl = index[TL];
+        int[] bl = index[BL];
+        int[] br = index[BR];
+        int[] tr = index[TR];
+
+        tessellator.setColorOpaque_F(state.colorTopLeft[0], state.colorTopLeft[1], state.colorTopLeft[2]);
+        tessellator.setBrightness(state.brightnessTopLeft);
+        tessellator.addVertexWithUV(xyz[tl[0]], xyz[tl[1]], xyz[tl[2]], tlU, tlV);
+
+        tessellator.setColorOpaque_F(state.colorBottomLeft[0], state.colorBottomLeft[1], state.colorBottomLeft[2]);
+        tessellator.setBrightness(state.brightnessBottomLeft);
+        tessellator.addVertexWithUV(xyz[bl[0]], xyz[bl[1]], xyz[bl[2]], blU, blV);
+
+        tessellator.setColorOpaque_F(state.colorBottomRight[0], state.colorBottomRight[1], state.colorBottomRight[2]);
+        tessellator.setBrightness(state.brightnessBottomRight);
+        tessellator.addVertexWithUV(xyz[br[0]], xyz[br[1]], xyz[br[2]], brU, brV);
+
+        tessellator.setColorOpaque_F(state.colorTopRight[0], state.colorTopRight[1], state.colorTopRight[2]);
+        tessellator.setBrightness(state.brightnessTopRight);
+        tessellator.addVertexWithUV(xyz[tr[0]], xyz[tr[1]], xyz[tr[2]], trU, trV);
     }
 
     private void setupUVPoints(double uStart, double vStart, double uStop, double vStop, int rangeU, int rangeV,

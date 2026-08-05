@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
@@ -262,6 +261,12 @@ public class BlockDrawers extends BlockContainer implements INetworked {
 
         float depth = halfDepth ? .5f : 1;
         switch (tile.getDirection()) {
+            case 0:
+                setBlockBounds(0, 1 - depth, 0, 1, 1, 1);
+                break;
+            case 1:
+                setBlockBounds(0, 0, 0, 1, depth, 1);
+                break;
             case 2:
                 setBlockBounds(0, 0, 1 - depth, 1, 1, 1);
                 break;
@@ -293,23 +298,6 @@ public class BlockDrawers extends BlockContainer implements INetworked {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
         TileEntityDrawers tile = getTileEntitySafe(world, x, y, z);
-        if (tile.getDirection() > 1) return;
-
-        int quadrant = MathHelper.floor_double((entity.rotationYaw * 4f / 360f) + .5) & 3;
-        switch (quadrant) {
-            case 0:
-                tile.setDirection(2);
-                break;
-            case 1:
-                tile.setDirection(5);
-                break;
-            case 2:
-                tile.setDirection(3);
-                break;
-            case 3:
-                tile.setDirection(4);
-                break;
-        }
 
         if (itemStack.hasDisplayName()) tile.setInventoryName(itemStack.getDisplayName());
 
@@ -390,7 +378,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
 
         if (tileDrawers.isSealed()) return false;
 
-        int slot = getDrawerSlot(side, hitX, hitY, hitZ);
+        int slot = getDrawerSlot(side, tileDrawers.getRotation(), hitX, hitY, hitZ);
         IDrawer drawer = tileDrawers.getDrawer(slot);
         if (drawer != null) {
             ItemStack currentStack = drawer.getStoredItemPrototype();
@@ -408,7 +396,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
                 boolean locked = tileDrawers.isLocked(LockAttribute.LOCK_POPULATED);
 
                 if (locked) {
-                    int slot = getDrawerSlot(side, hitX, hitY, hitZ);
+                    int slot = getDrawerSlot(side, tileDrawers.getRotation(), hitX, hitY, hitZ);
                     IDrawer drawer = tileDrawers.getDrawer(slot);
                     if (drawer != null) {
                         ItemStack stack = drawer.getStoredItemPrototype();
@@ -448,30 +436,119 @@ public class BlockDrawers extends BlockContainer implements INetworked {
     }
 
     public int getDrawerSlot(int side, float hitX, float hitY, float hitZ) {
+        return getDrawerSlot(side, 0, hitX, hitY, hitZ);
+    }
+
+    public int getDrawerSlot(int side, int rotation, float hitX, float hitY, float hitZ) {
         if (drawerCount == 1) return 0;
-        if (drawerCount == 2) return hitTop(hitY) ? 0 : 1;
 
-        if (hitLeft(side, hitX, hitZ)) return hitTop(hitY) ? 0 : 1;
-        else return hitTop(hitY) ? 2 : 3;
+        float u = faceLocalU(side, rotation, hitX, hitY, hitZ);
+        float v = faceLocalV(side, rotation, hitX, hitY, hitZ);
+        boolean top = v > .5f;
+        if (drawerCount == 2) return top ? 0 : 1;
+
+        boolean left = u < .5f;
+        if (left) return top ? 0 : 1;
+        else return top ? 2 : 3;
     }
 
-    protected boolean hitTop(float hitY) {
-        return hitY > .5;
-    }
-
-    protected boolean hitLeft(int side, float hitX, float hitZ) {
-        switch (side) {
+    /**
+     * Maps a block hit position to face-local coordinates of the drawer front, where {@code u} runs left (0) to right
+     * (1) and {@code v} runs bottom (0) to top (1) as the front is seen by the player. The horizontal cases reproduce
+     * the legacy hit mapping exactly; up/down cases honor the placement {@code rotation} so slot picking matches what
+     * is rendered.
+     */
+    protected static float faceLocalU(int direction, int rotation, float hitX, float hitY, float hitZ) {
+        int rot = normalizeQuarterTurn(rotation);
+        switch (direction) {
+            case 1: // UP: front is the top face; mapping is the inverse of the item/texture rigid tilt.
+                switch (rot) {
+                    case 1 -> {
+                        return 1 - hitZ;
+                    }
+                    case 2 -> {
+                        return 1 - hitX;
+                    }
+                    case 3 -> {
+                        return hitZ;
+                    }
+                    default -> {
+                        return hitX;
+                    }
+                }
+            case 0: // DOWN: front is the bottom face.
+                switch (rot) {
+                    case 1 -> {
+                        return 1 - hitZ;
+                    }
+                    case 2 -> {
+                        return 1 - hitX;
+                    }
+                    case 3 -> {
+                        return hitZ;
+                    }
+                    default -> {
+                        return hitX;
+                    }
+                }
             case 2:
-                return hitX > .5;
+                return 1 - hitX;
             case 3:
-                return hitX < .5;
+                return hitX;
             case 4:
-                return hitZ < .5;
+                return hitZ;
             case 5:
-                return hitZ > .5;
+                return 1 - hitZ;
             default:
-                return true;
+                return hitX;
         }
+    }
+
+    protected static float faceLocalV(int direction, int rotation, float hitX, float hitY, float hitZ) {
+        int rot = normalizeQuarterTurn(rotation);
+        switch (direction) {
+            case 1: // UP: front is the top face; mapping is the inverse of the item/texture rigid tilt.
+                switch (rot) {
+                    case 1 -> {
+                        return 1 - hitX;
+                    }
+                    case 2 -> {
+                        return hitZ;
+                    }
+                    case 3 -> {
+                        return hitX;
+                    }
+                    default -> {
+                        return 1 - hitZ;
+                    }
+                }
+            case 0: // DOWN: front is the bottom face.
+                switch (rot) {
+                    case 1 -> {
+                        return hitX;
+                    }
+                    case 2 -> {
+                        return 1 - hitZ;
+                    }
+                    case 3 -> {
+                        return 1 - hitX;
+                    }
+                    default -> {
+                        return hitZ;
+                    }
+                }
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            default:
+                return hitY;
+        }
+    }
+
+    protected static int normalizeQuarterTurn(int rotation) {
+        int normalized = rotation % 4;
+        return normalized >= 0 ? normalized : normalized + 4;
     }
 
     @Override
@@ -485,9 +562,8 @@ public class BlockDrawers extends BlockContainer implements INetworked {
 
         if (tile.getDirection() == axis.ordinal()) return false;
 
-        if (axis == ForgeDirection.UP || axis == ForgeDirection.DOWN) return false;
-
         tile.setDirection(axis.ordinal());
+        tile.setRotation(0);
 
         world.markBlockForUpdate(x, y, z);
 
@@ -914,6 +990,9 @@ public class BlockDrawers extends BlockContainer implements INetworked {
             case 1:
                 if (halfDepth) {
                     switch (tile.getDirection()) {
+                        case 0:
+                        case 1:
+                            return (level > 0) ? iconOverlay[level] : iconSide[meta];
                         case 2:
                         case 3:
                         case 4:
@@ -926,6 +1005,9 @@ public class BlockDrawers extends BlockContainer implements INetworked {
             case 3:
                 if (halfDepth) {
                     switch (tile.getDirection()) {
+                        case 0:
+                        case 1:
+                            return (level > 0) ? iconOverlayH[level] : iconSideH[meta];
                         case 2:
                         case 3:
                             return (level > 0) ? iconOverlay[level] : iconSide[meta];
@@ -939,6 +1021,9 @@ public class BlockDrawers extends BlockContainer implements INetworked {
             case 5:
                 if (halfDepth) {
                     switch (tile.getDirection()) {
+                        case 0:
+                        case 1:
+                            return (level > 0) ? iconOverlayH[level] : iconSideH[meta];
                         case 2:
                         case 3:
                             return (level > 0) ? iconOverlayV[level] : iconSideV[meta];

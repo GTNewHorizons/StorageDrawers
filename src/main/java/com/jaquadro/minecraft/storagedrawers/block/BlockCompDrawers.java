@@ -47,11 +47,11 @@ public class BlockCompDrawers extends BlockDrawers implements INetworked {
     }
 
     @Override
-    public int getDrawerSlot(int side, float hitX, float hitY, float hitZ) {
-        if (hitTop(hitY)) return 0;
-
-        if (hitLeft(side, hitX, hitZ)) return 1;
-        else return 2;
+    public int getDrawerSlot(int side, int rotation, float hitX, float hitY, float hitZ) {
+        float u = faceLocalU(side, rotation, hitX, hitY, hitZ);
+        float v = faceLocalV(side, rotation, hitX, hitY, hitZ);
+        if (v > .5f) return 0;
+        return (u < .5f) ? 1 : 2;
     }
 
     @Override

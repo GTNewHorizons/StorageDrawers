@@ -10,6 +10,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
+import com.jaquadro.minecraft.storagedrawers.util.DrawerOrientation;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,7 +28,9 @@ public class ItemController extends ItemBlock {
 
         TileEntityController tile = (TileEntityController) world.getTileEntity(x, y, z);
         if (tile != null) {
-            if (side > 1) tile.setDirection(side);
+            DrawerOrientation orientation = DrawerOrientation.forEntity(player);
+            tile.setDirection(orientation.direction());
+            tile.setRotation(orientation.rotation());
         }
 
         return true;

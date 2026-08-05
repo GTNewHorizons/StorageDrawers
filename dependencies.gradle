@@ -1,6 +1,8 @@
 // Add your dependencies here
 
 dependencies {
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.103-GTNH:dev")
+
     implementation("com.github.GTNewHorizons:GTNHLib:0.11.35:dev")
     compileOnlyApi('com.github.GTNewHorizons:Angelica:2.1.60:api')
     compileOnly('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-999-GTNH:api') {transitive=false}

@@ -147,16 +147,15 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
                 Tessellator tessellator = Tessellator.instance;
                 tessellator.startDrawingQuads();
-                tessellator
-                        .addVertexWithUV(x + 0, y + h, 0, (u + (float) h * hScale) * uScale, (v + (float) h) * vScale);
+                tessellator.addVertexWithUV(x, y + h, 0, (u + (float) h * hScale) * uScale, (v + (float) h) * vScale);
                 tessellator.addVertexWithUV(
                         x + w,
                         y + h,
                         0,
                         (u + (float) w + (float) h * hScale) * uScale,
                         (v + (float) h) * vScale);
-                tessellator.addVertexWithUV(x + w, y + 0, 0, (u + (float) w) * uScale, (v + 0.0F) * vScale);
-                tessellator.addVertexWithUV(x + 0, y + 0, 0, (u + 0.0F) * uScale, (v + 0.0F) * vScale);
+                tessellator.addVertexWithUV(x + w, y, 0, (u + (float) w) * uScale, (v + 0.0F) * vScale);
+                tessellator.addVertexWithUV(x, y, 0, (u + 0.0F) * uScale, (v + 0.0F) * vScale);
                 tessellator.draw();
             }
         }
@@ -252,6 +251,17 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
 
+        // Up/down placements reuse the horizontal rendering path: rotate the block-local frame so the canonical south
+        // face maps onto the top or bottom face, spun by the placement rotation, then render as if facing south.
+        ForgeDirection renderSide = side;
+        if (side == ForgeDirection.UP || side == ForgeDirection.DOWN) {
+            GL11.glTranslatef(.5f, .5f, .5f);
+            GL11.glRotatef(tileDrawers.getRotation() * 90f, 0, 1, 0);
+            GL11.glRotatef(side == ForgeDirection.UP ? -90f : 90f, 1, 0, 0);
+            GL11.glTranslatef(-.5f, -.5f, -.5f);
+            renderSide = ForgeDirection.SOUTH;
+        }
+
         itemRenderer.setRenderManager(RenderManager.instance);
 
         int ambLight = tile.getWorldObj().getLightBrightnessForSkyBlocks(
@@ -273,34 +283,35 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
         mc.gameSettings.fancyGraphics = true;
 
         try {
-            if (StorageDrawers.config.isFancyItemRenderEnabled()) {
-                renderFancyItemSet(tileDrawers, side, depth);
-            } else {
-                renderFastItemSet(tileDrawers, side, depth, partialTickTime);
-            }
-        } catch (Exception e) {
-            // Swallow exception
-        }
-
-        if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
-            float alpha = 1.0f;
-            double distance = Math.sqrt(distanceSq);
-            if (distance > 4.0) {
-                alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
+            try {
+                if (StorageDrawers.config.isFancyItemRenderEnabled()) {
+                    renderFancyItemSet(tileDrawers, renderSide, depth);
+                } else {
+                    renderFastItemSet(tileDrawers, renderSide, depth, partialTickTime);
+                }
+            } catch (Exception e) {
+                // Swallow exception
             }
 
-            if (distance < 10.0) {
-                for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
-                    if (!tileDrawers.isDrawerEnabled(i)) continue;
+            if (StorageDrawers.config.cache.enableQuantifyUpgrades && tileDrawers.isQuantified()) {
+                float alpha = 1.0f;
+                double distance = Math.sqrt(distanceSq);
+                if (distance > 4.0) {
+                    alpha = Math.max(1.0f - (float) ((distance - 4.0) / 6.0), 0.05f);
+                }
 
-                    drawDrawerTexts(tileDrawers, i, side, depth, alpha);
+                if (distance < 10.0) {
+                    for (int i = 0; i < tileDrawers.getDrawerCount(); i++) {
+                        if (!tileDrawers.isDrawerEnabled(i)) continue;
+
+                        drawDrawerTexts(tileDrawers, i, renderSide, depth, alpha);
+                    }
                 }
             }
+        } finally {
+            mc.gameSettings.fancyGraphics = cache;
+            GL11.glPopMatrix();
         }
-
-        mc.gameSettings.fancyGraphics = cache;
-
-        GL11.glPopMatrix();
     }
 
     private void renderFancyItemSet(TileEntityDrawers tile, ForgeDirection side, float depth) {
@@ -480,27 +491,28 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
                 double zDepth = 1 / relScale - itemBlock.getBlockBoundsMaxZ();
                 itemDepth += zDepth * zunit;
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
 
-        switch (tile.getDirection()) {
-            case 3:
+        zc = switch (side.ordinal()) {
+            case 3 -> {
                 xc = xunit;
-                zc = itemDepth - zunit;
-                break;
-            case 2:
+                yield itemDepth - zunit;
+            }
+            case 2 -> {
                 xc = 1 - xunit;
-                zc = 1 - itemDepth + zunit;
-                break;
-            case 5:
+                yield 1 - itemDepth + zunit;
+            }
+            case 5 -> {
                 xc = itemDepth - zunit;
-                zc = 1 - xunit;
-                break;
-            case 4:
+                yield 1 - xunit;
+            }
+            case 4 -> {
                 xc = 1 - itemDepth + zunit;
-                zc = xunit;
-                break;
-        }
+                yield xunit;
+            }
+            default -> zc;
+        };
 
         float yAdj = 0;
         if (drawerCount == 2 || drawerCount == 4) yAdj = -.5f;
@@ -520,6 +532,9 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
+        // The block-local frame may be tilted for up/down drawers; renormalize so directional item lighting is not
+        // skewed by the rotation and does not bleed into adjacent slots.
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
         IDrawer drawer = tile.getDrawer(slot);
         try {
@@ -527,6 +542,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             itemRenderer.doRender(itemEnt, 0, 0, 0, 0, 0);
         } catch (Exception ignored) {}
 
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
     }
 
@@ -557,8 +573,8 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
                 1f - depth + block.getTrimDepth() - .005f);
 
         List<IRenderLabel> renderHandlers = StorageDrawers.renderRegistry.getRenderHandlers();
-        for (int i = 0, n = renderHandlers.size(); i < n; i++) {
-            renderHandlers.get(i).render(tile, tile, slot, brightness, partialTickTime);
+        for (IRenderLabel renderHandler : renderHandlers) {
+            renderHandler.render(tile, tile, slot, brightness, partialTickTime);
         }
 
         GL11.glPushMatrix();
@@ -582,7 +598,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
             if (skipRenderHook || !ForgeHooksClient
                     .renderInventoryItem(this.renderBlocks, mc.renderEngine, itemStack, true, 0, 0, 0))
                 itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, 0, 0, true);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
 
         GL11.glPopMatrix();
     }
@@ -607,33 +623,23 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer {
     }
 
     private float getXOffset(int drawerCount, int slot) {
-        switch (drawerCount) {
-            case 1:
-                return 0.5f;
-            case 2:
-                return itemOffset2X[slot];
-            case 3:
-                return itemOffset3X[slot];
-            case 4:
-                return itemOffset4X[slot];
-            default:
-                return 0;
-        }
+        return switch (drawerCount) {
+            case 1 -> 0.5f;
+            case 2 -> itemOffset2X[slot];
+            case 3 -> itemOffset3X[slot];
+            case 4 -> itemOffset4X[slot];
+            default -> 0;
+        };
     }
 
     private float getYOffset(int drawerCount, int slot) {
-        switch (drawerCount) {
-            case 1:
-                return 8.25f;
-            case 2:
-                return itemOffset2Y[slot];
-            case 3:
-                return itemOffset3Y[slot];
-            case 4:
-                return itemOffset4Y[slot];
-            default:
-                return 0;
-        }
+        return switch (drawerCount) {
+            case 1 -> 8.25f;
+            case 2 -> itemOffset2Y[slot];
+            case 3 -> itemOffset3Y[slot];
+            case 4 -> itemOffset4Y[slot];
+            default -> 0;
+        };
     }
 
     private void alignRendering(ForgeDirection side) {
