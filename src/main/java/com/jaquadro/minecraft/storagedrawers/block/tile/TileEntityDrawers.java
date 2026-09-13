@@ -398,8 +398,7 @@ public abstract class TileEntityDrawers extends BaseTileEntity
             boolean isHoldingClick) {
         double reachDistance = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
         reachDistance *= reachDistance;
-        if (getDirection() != face
-                || !(hitX >= 0 && hitX <= 1 && hitY >= 0 && hitY <= 1 && hitZ >= 0 && hitZ <= 1)
+        if (getDirection() != face || !(hitX >= 0 && hitX <= 1 && hitY >= 0 && hitY <= 1 && hitZ >= 0 && hitZ <= 1)
                 || player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) > reachDistance
                 || !SecurityManager.hasAccess(player.getGameProfile(), this)) {
             return;
