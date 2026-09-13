@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -395,11 +396,10 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     @Override
     public void onBlockClicked(EntityPlayer player, int face, float hitX, float hitY, float hitZ, boolean invertShift,
             boolean isHoldingClick) {
-        if (player == null || worldObj == null
-                || worldObj.isRemote
-                || getDirection() != face
+        if (getDirection() != face
                 || !(hitX >= 0 && hitX <= 1 && hitY >= 0 && hitY <= 1 && hitZ >= 0 && hitZ <= 1)
-                || player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) > 36
+                || player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5)
+                        > Math.pow(((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance(), 2)
                 || !SecurityManager.hasAccess(player.getGameProfile(), this)) {
             return;
         }
