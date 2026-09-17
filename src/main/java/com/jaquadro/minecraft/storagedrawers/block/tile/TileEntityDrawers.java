@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,6 +17,8 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
@@ -47,9 +50,11 @@ import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.inventory.ISideManager;
 import com.jaquadro.minecraft.storagedrawers.inventory.StorageInventory;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
+import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import com.jaquadro.minecraft.storagedrawers.storage.IUpgradeProvider;
 
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -391,7 +396,23 @@ public abstract class TileEntityDrawers extends BaseTileEntity
     @Override
     public void onBlockClicked(EntityPlayer player, int face, float hitX, float hitY, float hitZ, boolean invertShift,
             boolean isHoldingClick) {
-        if (getDirection() != face) {
+        double reachDistance = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance() + 1;
+        reachDistance *= reachDistance;
+        if (getDirection() != face || !(hitX >= 0 && hitX <= 1 && hitY >= 0 && hitY <= 1 && hitZ >= 0 && hitZ <= 1)
+                || player.getDistanceSq(xCoord + 0.5, yCoord - 1.0, zCoord + 0.5) > reachDistance
+                || !SecurityManager.hasAccess(player.getGameProfile(), this)) {
+            return;
+        }
+
+        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(
+                player,
+                PlayerInteractEvent.Action.LEFT_CLICK_BLOCK,
+                xCoord,
+                yCoord,
+                zCoord,
+                face,
+                worldObj);
+        if (event.isCanceled() || event.useBlock == Event.Result.DENY) {
             return;
         }
 
