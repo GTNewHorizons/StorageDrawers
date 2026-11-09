@@ -16,7 +16,6 @@ import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 
@@ -711,7 +710,7 @@ public class ModRecipes {
                 .duration(10 * SECONDS).eut(TierEU.RECIPE_LV).addTo(assemblerRecipes);
 
         GTValues.RA.stdBuilder().itemInputs(new ItemStack(Items.paper)).circuit(1)
-                .fluidInputs(Materials.Glue.getFluid(144)).itemOutputs(new ItemStack(ModItems.tape))
+                .fluidInputs(getFluidStack(FLUID_NAME_refinedglue, 144)).itemOutputs(new ItemStack(ModItems.tape))
                 .duration(10 * SECONDS).eut(TierEU.RECIPE_LV).addTo(assemblerRecipes);
     }
 
