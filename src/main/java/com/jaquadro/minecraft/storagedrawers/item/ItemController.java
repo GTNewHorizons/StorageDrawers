@@ -27,13 +27,16 @@ public class ItemController extends ItemBlock {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityController tile = (TileEntityController) world.getTileEntity(x, y, z);
+
         if (tile != null) {
             DrawerOrientation orientation = DrawerOrientation.forEntity(player);
             tile.setDirection(orientation.direction());
             tile.setRotation(orientation.rotation());
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @Override

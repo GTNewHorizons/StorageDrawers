@@ -58,9 +58,11 @@ public class ItemDrawers extends ItemBlock {
             tile.setRotation(orientation.rotation());
 
             tile.setIsSealed(false);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @Override

@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
@@ -313,8 +314,29 @@ public class BlockDrawers extends BlockContainer implements INetworked {
     }
 
     @Override
+    public void onPostBlockPlaced(World world, int x, int y, int z, int meta) {
+        if (world.isRemote) return;
+
+        TileEntityDrawers te = getTileEntitySafe(world, x, y, z);
+        if (te == null) return;
+
+        te.refreshController(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockPreDestroy(World worldIn, int x, int y, int z, int meta) {
+        if (worldIn.isRemote) return;
+
+        TileEntityDrawers te = getTileEntitySafe(worldIn, x, y, z);
+        if (te == null) return;
+
+        te.controllerFullUpdate();
+    }
+
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
             float hitY, float hitZ) {
+
         if (world.isRemote && Minecraft.getSystemTime() == ignoreEventTime) {
             ignoreEventTime = 0;
             return false;
@@ -368,6 +390,22 @@ public class BlockDrawers extends BlockContainer implements INetworked {
             if (tileDrawers.isSealed()) {
                 tileDrawers.setIsSealed(false);
                 return true;
+            }
+
+            else if (tileDrawers.getDirection() != side) {
+
+                if (!world.isRemote) {
+                    tileDrawers.toggleSync();
+                    if (tileDrawers.getClientAutoSync()) {
+                        player.addChatMessage(new ChatComponentText("Client Auto Sync Enabled"));
+                        world.markBlockForUpdate(tileDrawers.xCoord, tileDrawers.yCoord, tileDrawers.zCoord);
+                    } else {
+                        player.addChatMessage(new ChatComponentText("Client Auto Sync Disabled"));
+                        world.markBlockForUpdate(tileDrawers.xCoord, tileDrawers.yCoord, tileDrawers.zCoord);
+                    }
+                }
+
+                return true;
             } else if (StorageDrawers.config.cache.enableDrawerUI) {
                 player.openGui(StorageDrawers.instance, GuiHandler.drawersGuiID, world, x, y, z);
                 return true;
@@ -375,18 +413,16 @@ public class BlockDrawers extends BlockContainer implements INetworked {
         }
 
         if (tileDrawers.getDirection() != side) return false;
-
         if (tileDrawers.isSealed()) return false;
 
         int slot = getDrawerSlot(side, tileDrawers.getRotation(), hitX, hitY, hitZ);
         IDrawer drawer = tileDrawers.getDrawer(slot);
-        if (drawer != null) {
-            ItemStack currentStack = drawer.getStoredItemPrototype();
 
-            int countAdded = tileDrawers.interactPutItemsIntoSlot(slot, player);
-            if (countAdded > 0 && currentStack != null) world.markBlockForUpdate(x, y, z);
+        if (drawer != null) {
+            if (!world.isRemote) tileDrawers.interactPutItemsIntoSlot(slot, player);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean useKey(TileEntityDrawers tileDrawers, EntityPlayer player, ItemStack item, int side, float hitX,
@@ -688,7 +724,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
      * Drops stacks with an "illegal" size that will contain all the items in one stack. The downside of this method is
      * that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It will not
      * save the size of the ItemStack correctly since the size is stored as a byte (max 255)
-     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     * {@link ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
      */
     private static void dropMergedStacks(TileEntityDrawers tile, World world, int x, int y, int z) {
         for (int i = 0; i < tile.getDrawerCount(); i++) {
@@ -708,7 +744,7 @@ public class BlockDrawers extends BlockContainer implements INetworked {
      * Drops an ItemStack with an "illegal" size that will contain all the items in one stack. The downside of this
      * method is that if the ItemStack is still on the ground when the chunk is saved (stopping game, or going away). It
      * will not save the size of the ItemStack correctly since the size is stored as a byte (max 255)
-     * {@link net.minecraft.item.ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
+     * {@link ItemStack#writeToNBT(NBTTagCompound)}, ITEMS WILL BE LOST !!
      */
     private static void dropBigStackInWorld(World world, int x, int y, int z, ItemStack stack) {
         if (stack == null || stack.stackSize <= 0) return;

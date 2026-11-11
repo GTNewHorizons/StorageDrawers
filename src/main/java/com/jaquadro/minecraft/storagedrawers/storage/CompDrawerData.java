@@ -33,16 +33,11 @@ public class CompDrawerData extends BaseDrawerData
     @Override
     public void setStoredItem(ItemStack itemPrototype, int amount) {
         central.setStoredItem(slot, itemPrototype, amount);
-        refresh();
-
-        // markDirty
     }
 
     @Override
     public IDrawer setStoredItemRedir(ItemStack itemPrototype, int amount) {
         IDrawer target = central.setStoredItem(slot, itemPrototype, amount);
-        refresh();
-
         return target;
     }
 
@@ -53,7 +48,7 @@ public class CompDrawerData extends BaseDrawerData
 
     @Override
     public void setStoredItemCount(int amount) {
-        central.setStoredItemCount(slot, amount);
+        central.setStoredItemCount(slot, amount, controller, controllerDrawerSlot);
     }
 
     @Override

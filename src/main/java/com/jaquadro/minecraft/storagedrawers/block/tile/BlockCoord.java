@@ -3,11 +3,11 @@ package com.jaquadro.minecraft.storagedrawers.block.tile;
 /**
  * Created by Justin on 4/25/2015.
  */
-class BlockCoord {
+public class BlockCoord {
 
-    private int x;
-    private int y;
-    private int z;
+    private final int x;
+    private final int y;
+    private final int z;
 
     public BlockCoord(int x, int y, int z) {
         this.x = x;

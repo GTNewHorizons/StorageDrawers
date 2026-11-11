@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.Constants;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.util.DrawerOrientation;
 
 public class ItemCompDrawers extends ItemDrawers {
 
@@ -27,6 +28,7 @@ public class ItemCompDrawers extends ItemDrawers {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
 
         TileEntityDrawers tile = (TileEntityDrawers) world.getTileEntity(x, y, z);
+
         if (tile != null) {
             int initCapacity = StorageDrawers.config.getBlockBaseStorage("compdrawers");
             tile.setDrawerCapacity(initCapacity);
@@ -34,10 +36,16 @@ public class ItemCompDrawers extends ItemDrawers {
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("tile"))
                 tile.readFromPortableNBT(stack.getTagCompound().getCompoundTag("tile"));
 
+            DrawerOrientation orientation = DrawerOrientation.forEntity(player);
+            tile.setDirection(orientation.direction());
+            tile.setRotation(orientation.rotation());
+
             tile.setIsSealed(false);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @Override
